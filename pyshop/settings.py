@@ -61,3 +61,5 @@ LOGOUT_REDIRECT_URL = 'products:product_list'
 # In pyshop/settings.py
 
 ROOT_URLCONF = 'pyshop.urls'
+
+WSGI_APPLICATION = 'pyshop.wsgi.application'
