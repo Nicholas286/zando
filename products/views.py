@@ -41,6 +41,18 @@ def generate_description(request, product_id):
 
     client = genai.Client(api_key=api_key)
 
+    # Update your view logic to be smarter
+    def generate_description(request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+
+        # Check if a description already exists
+        if product.description and len(product.description) > 10:
+            messages.info(request, "Description already exists!")
+            return redirect('index')
+
+        # Only proceed if there is no description
+        # ... rest of your AI call code here ...
+
     try:
         # 2. Generate content using the client
         response = client.models.generate_content(
