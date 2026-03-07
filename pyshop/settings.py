@@ -57,3 +57,7 @@ CSRF_TRUSTED_ORIGINS = ['https://zando-online-shopping.onrender.com']
 # settings.py
 LOGIN_REDIRECT_URL = 'products:product_list' # Replace with your actual product list URL name
 LOGOUT_REDIRECT_URL = 'products:product_list'
+
+# In pyshop/settings.py
+
+ROOT_URLCONF = 'pyshop.urls'
