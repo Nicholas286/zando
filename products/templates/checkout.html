@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0 fw-bold">Shipping & Payment</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{% url 'checkout' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold">First Name</label>
+                                <input type="text" name="first_name" class="form-control" placeholder="John" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold">Last Name</label>
+                                <input type="text" name="last_name" class="form-control" placeholder="Doe" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Email Address</label>
+                            <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Shipping Address</label>
+                            <textarea name="address" class="form-control" rows="3" placeholder="Street, Building, Apartment No." required></textarea>
+                        </div>
+
+                        <div class="card bg-light border-0 p-3 mb-4">
+                            <label class="form-label fw-bold text-success">M-Pesa Number</label>
+                            <input type="text" name="phone_number" class="form-control border-success" placeholder="254712345678" required>
+                            <small class="text-muted">Enter number in format 2547XXXXXXXX</small>
+                        </div>
+
+                        <hr class="my-4">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">
+                            PLACE ORDER (KSh {{ total_price }})
+                        </button>
+                    </form>
+                    </div>
+            </div>
+            <a href="{% url 'view_cart' %}" class="btn btn-link mt-3 text-decoration-none text-muted">← Back to Cart</a>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-4">Order Summary</h5>
+                    {% for item in cart_items %}
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span>{{ item.product.name }} (x{{ item.quantity }})</span>
+                        <span>KSh {{ item.product.price }}</span>
+                    </div>
+                    {% endfor %}
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal:</span>
+                        <strong>KSh {{ total_price }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="text-muted">Shipping:</span>
+                        <span class="text-success fw-bold">FREE</span>
+                    </div>
+                    <div class="d-flex justify-content-between border-top pt-3">
+                        <span class="h5 fw-bold">Grand Total:</span>
+                        <span class="h5 fw-bold text-primary">KSh {{ total_price }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

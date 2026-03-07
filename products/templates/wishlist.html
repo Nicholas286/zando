@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold">My Wishlist ({{ wishlist_items|length }})</h4>
+        <a href="{% url 'index' %}" class="btn btn-outline-primary btn-sm fw-bold">CONTINUE SHOPPING</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card border-0 shadow-sm p-3">
+                {% for item in wishlist_items %}
+                <div class="row align-items-center mb-4 border-bottom pb-3">
+                    <div class="col-2 text-center">
+                        <img src="{{ item.product.image_url }}" class="img-fluid rounded" style="max-height: 80px; object-fit: contain;">
+                    </div>
+
+                    <div class="col-5">
+                        <h6 class="fw-bold mb-0 text-truncate">{{ item.product.name }}</h6>
+                        <p class="text-primary fw-bold mb-0">KSh {{ item.product.price }}</p>
+                    </div>
+
+                    <div class="col-5 text-end">
+                        <a href="{% url 'add_to_cart' item.product.id %}" class="btn btn-primary btn-sm px-3 fw-bold shadow-sm me-2">
+                            ADD TO CART
+                        </a>
+
+                        <a href="{% url 'remove_from_wishlist' item.product.id %}"
+                           class="btn btn-outline-danger btn-sm rounded-circle"
+                           title="Remove"
+                           onclick="return confirm('Remove {{ item.product.name }} from wishlist?')">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-5">
+                    <i class="far fa-heart fa-3x text-muted mb-3"></i>
+                    <h5>Your wishlist is empty</h5>
+                    <p class="text-muted">Save items you love here to buy them later.</p>
+                    <a href="{% url 'index' %}" class="btn btn-primary mt-2 px-4 fw-bold">DISCOVER PRODUCTS</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

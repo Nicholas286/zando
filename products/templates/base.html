@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zando | Shop Smarter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --pro-blue: #0d6efd;
+            --soft-bg: #f4f6f9;
+            --pro-orange: #f68b1e;
+        }
+        body { background-color: var(--soft-bg); font-family: 'Inter', sans-serif; }
+
+        .navbar { background-color: #ffffff; border-bottom: 3px solid var(--pro-blue); padding: 0.8rem 0; }
+        .navbar-brand { letter-spacing: -1px; }
+        .text-pro { color: var(--pro-blue) !important; }
+
+        /* Search Bar Integration */
+        .search-container .input-group { border: 1px solid #ced4da; border-radius: 4px; overflow: hidden; background: #fff; }
+        .search-container .form-control { border: none !important; box-shadow: none !important; }
+
+        /* The Clear Button on the Left */
+        .btn-clear { background: white; border: none; color: #dc3545; padding: 0 15px; text-decoration: none; display: flex; align-items: center; border-right: 1px solid #eee; }
+        .btn-clear:hover { background: #fff5f5; color: #a71d2a; }
+
+        .btn-pro {
+            background-color: var(--pro-blue);
+            color: white;
+            border-radius: 0 !important;
+            font-weight: 600;
+            border: none;
+            transition: background 0.2s;
+        }
+        .btn-pro:hover { background-color: #0b5ed7; color: white; }
+
+        .nav-icon-link { color: #333; transition: color 0.2s; position: relative; }
+        .nav-icon-link:hover { color: var(--pro-orange); }
+
+        @media (max-width: 768px) {
+            .search-container { order: 3; margin-top: 15px; }
+        }
+
+        /* Ensure Suggestions stay on top */
+        #suggestionsBox {
+            z-index: 9999 !important;
+            background: white !important;
+            border: 1px solid #ced4da !important;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-2 text-pro" href="{% url 'index' %}">ZANDO</a>
+
+            <form action="{% url 'index' %}" method="GET" class="d-flex flex-grow-1 mx-lg-5 search-container position-relative">
+                <div class="input-group w-100">
+                    {% if request.GET.q %}
+                    <a href="{% url 'index' %}" class="btn-clear" title="Clear search">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    {% endif %}
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        name="q"
+                        class="form-control"
+                        placeholder="Search products, brands and categories..."
+                        value="{{ request.GET.q|default:'' }}"
+                        autocomplete="off"
+                    >
+
+                    <button class="btn btn-pro px-4" type="submit">
+                        <i class="fas fa-search"></i> <span class="d-none d-md-inline ms-1">SEARCH</span>
+                    </button>
+                </div>
+
+                <div id="suggestionsBox" class="list-group position-absolute w-100 shadow-lg d-none" style="top: 100%; z-index: 1050; max-height: 300px; overflow-y: auto; background: white; border: 1px solid #ced4da;">
+                </div>
+            </form>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="dropdown">
+                    <a href="#" class="nav-icon-link text-decoration-none d-flex align-items-center" data-bs-toggle="dropdown">
+                        <i class="far fa-user fs-4"></i>
+                        <span class="d-none d-md-inline ms-2 small fw-bold text-pro">Hi, {{ user.username|default:"Guest" }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                        {% if user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{% url 'account_settings' %}">My Account</a></li>
+                            <li><a class="dropdown-item" href="{% url 'my_orders' %}">Orders</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+                        {% else %}
+                            <li><a class="dropdown-item fw-bold" href="{% url 'login' %}">LOGIN</a></li>
+                            <li><a class="dropdown-item" href="{% url 'register' %}">REGISTER</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <a href="{% url 'view_wishlist' %}" class="nav-icon-link text-decoration-none">
+                    <i class="far fa-heart fs-4"></i>
+                </a>
+
+                <a href="{% url 'view_cart' %}" class="nav-icon-link text-decoration-none">
+                    <div class="position-relative">
+                        <i class="fas fa-shopping-cart fs-4"></i>
+                        <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.6rem;">
+                            {{ request.session.cart|length|default:"0" }}
+                        </span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="py-5 mt-5 bg-white border-top">
+        <div class="container text-center">
+            <p class="text-muted small">&copy; 2026 ZANDO Pro - Built with Gemini AI Intelligence</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const suggestionsBox = document.getElementById('suggestionsBox');
+
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+
+        if (query.length > 1) {
+            // Attempting to fetch from the specific products path based on your URLs
+            fetch(`api/suggestions/?q=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsBox.innerHTML = '';
+                    if (data && data.length > 0) {
+                        suggestionsBox.classList.remove('d-none');
+                        suggestionsBox.style.display = 'block';
+                        data.forEach(item => {
+                            const div = document.createElement('div');
+                            div.className = 'list-group-item list-group-item-action border-0 py-2 d-flex align-items-center';
+                            div.style.cursor = 'pointer';
+                            div.innerHTML = `
+                                <i class="fas fa-search text-muted me-2 small"></i>
+                                <span>${item.name}</span>
+                            `;
+                            div.addEventListener('click', () => {
+                                searchInput.value = item.name;
+                                suggestionsBox.classList.add('d-none');
+                                searchInput.closest('form').submit();
+                            });
+                            suggestionsBox.appendChild(div);
+                        });
+                    } else {
+                        suggestionsBox.classList.add('d-none');
+                        suggestionsBox.style.display = 'none';
+                    }
+                })
+                .catch(err => {
+                    console.error('Suggestion error:', err);
+                });
+        } else {
+            suggestionsBox.classList.add('d-none');
+            suggestionsBox.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+            suggestionsBox.classList.add('d-none');
+            suggestionsBox.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4 col-lg-3">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'account_settings' %}" class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-user me-2"></i> My Account
+                    </a>
+                    <a href="{% url 'my_orders' %}" class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-box me-2"></i> My Orders
+                    </a>
+                    <a href="{% url 'view_wishlist' %}" class="list-group-item list-group-item-action py-3">
+                        <i class="fas fa-heart me-2"></i> Wishlist
+                    </a>
+                    <a href="{% url 'logout' %}" class="list-group-item list-group-item-action py-3 text-danger">
+                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 col-lg-9">
+            <div class="card border-0 shadow-sm p-4">
+                <h4 class="fw-bold mb-4 border-bottom pb-2">Account Overview</h4>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 border rounded bg-light">
+                            <h6 class="small fw-bold text-muted text-uppercase">Profile Info</h6>
+                            <p class="mb-1"><strong>Username:</strong> {{ user.username }}</p>
+                            <p class="mb-0"><strong>Email:</strong> {{ user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 border rounded h-100">
+                            <h6 class="small fw-bold text-muted text-uppercase">Shipping Address</h6>
+                            <p class="small text-muted mb-2">No default address saved.</p>
+                            <a href="{% url 'address_book' %}" class="btn btn-sm btn-outline-primary fw-bold">Manage Addresses</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> </div> {% endblock %}
