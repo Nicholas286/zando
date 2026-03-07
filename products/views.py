@@ -15,7 +15,7 @@ from django.contrib import messages
 from .models import Product
 from .models import Product, Category  # Add Category here!
 from django.http import JsonResponse
-
+import os
 def search_suggestions(request):
     query = request.GET.get('q', '')
     suggestions = []
@@ -29,26 +29,30 @@ def search_suggestions(request):
             })
     return JsonResponse(suggestions, safe=False)
 
-def generate_description(request, product_id):
-    product = Product.objects.get(id=product_id)
 
-    # Configure with your key
-    genai.configure(api_key="AIzaSyDpAFAbCqDNxOguKPAdKT5S-ZuFb2B7MnM")
+def generate_description(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    # 1. Initialize the client using the environment variable
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        messages.error(request, "API Key not configured.")
+        return redirect('index')
+
+    client = genai.Client(api_key=api_key)
 
     try:
-        # Using the exact model name from your terminal list
-        model = genai.GenerativeModel('models/gemini-3-flash-preview')
+        # 2. Generate content using the client
+        response = client.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=f"Write a catchy 2-sentence shop description for a product named {product.name}."
+        )
 
-        prompt = f"Write a catchy 2-sentence shop description for a product named {product.name}."
-
-        # Generate the content
-        response = model.generate_content(prompt)
-
-        # Save the result to the database
+        # 3. Save the result
         if response.text:
             product.description = response.text
             product.save()
-            messages.success(request, f"AI generated a 2026-grade description for {product.name}!")
+            messages.success(request, f"AI generated a description for {product.name}!")
         else:
             messages.warning(request, "AI returned an empty response.")
 
