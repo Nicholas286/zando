@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+path('products/', include('products.urls', namespace='products')),
     path('products/', include('products.urls')),
 path('accounts/', include('django.contrib.auth.urls')),
     # Redirect root to products
