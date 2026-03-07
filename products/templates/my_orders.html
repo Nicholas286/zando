@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold">My Orders</h4>
+        <span class="badge bg-primary rounded-pill">Total Orders: {{ orders|length }}</span>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 py-3">Order ID</th>
+                            <th class="py-3">Date</th>
+                            <th class="py-3">Status</th>
+                            <th class="py-3 text-end pe-4">Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td class="ps-4 py-3 fw-bold text-primary">#{{ order.id }}</td>
+                            <td class="py-3">{{ order.created_at|date:"d M Y" }}</td>
+                            <td class="py-3">
+                                <span class="badge {% if order.status == 'Completed' %}bg-success{% else %}bg-warning{% endif %}">
+                                    {{ order.status }}
+                                </span>
+                            </td>
+                            <td class="py-3 text-end pe-4 fw-bold">KSh {{ order.total_price }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-5">
+                                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">You haven't placed any orders yet.</p>
+                                <a href="{% url 'index' %}" class="btn btn-primary btn-sm">Start Shopping</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<td>
+    {% if order.status == 'Paid' %}
+        <span class="badge bg-success">
+            <i class="bi bi-check-circle"></i> Paid
+        </span>
+    {% elif order.status == 'Pending' %}
+        <span class="badge bg-warning text-dark">
+            <i class="bi bi-hourglass-split"></i> Pending PIN
+        </span>
+    {% else %}
+        <span class="badge bg-danger">Failed</span>
+    {% endif %}
+</td>
+{% endblock %}

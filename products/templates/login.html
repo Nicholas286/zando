@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5" style="max-width: 450px;">
+    <div class="card p-4 shadow-sm border-0">
+        <h4 class="text-center fw-bold mb-4" style="color: #f68b1e;">Login to ZANDO</h4>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="btn btn-warning w-100 fw-bold py-2">LOGIN</button>
+        </form>
+        <div class="text-center mt-3">
+            <small>New to ZANDO? <a href="{% url 'register' %}" class="text-warning text-decoration-none fw-bold">Create an account</a></small>
+        </div>
+    </div>
+</div>
+{% endblock %}

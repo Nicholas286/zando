@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 d-md-none mb-3">
+        <button class="btn btn-pro w-100 fw-bold" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileFilterSidebar">
+            <i class="fa-solid fa-list me-2"></i> CATEGORIES & FILTERS
+        </button>
+    </div>
+
+    <div class="col-md-3 d-none d-md-block">
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="list-group list-group-flush">
+                <h6 class="p-3 mb-0 fw-bold border-bottom bg-light">
+                    <i class="fa-solid fa-bars me-2"></i> CATEGORIES
+                </h6>
+                <a href="{% url 'index' %}" class="list-group-item list-group-item-action border-0 py-2">
+                    <i class="fa-solid fa-layer-group me-2 text-primary" style="width: 20px;"></i> All Products
+                </a>
+                {% for cat in categories %}
+                <a href="{% url 'index' %}?category={{ cat.id }}" class="list-group-item list-group-item-action border-0 py-2 {% if request.GET.category == cat.id|stringformat:'i' %}active-cat{% endif %}">
+                    <i class="{{ cat.icon_class|default:'fa-solid fa-chevron-right' }} me-2 text-muted" style="width: 20px;"></i>
+                    {{ cat.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm p-3 sticky-top" style="top: 100px; z-index: 10;">
+            <h6 class="fw-bold mb-3 border-bottom pb-2">REFINE SEARCH</h6>
+            {% include 'includes/filter_form.html' %}
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        {% if request.GET.q or active_category %}
+        <div class="mb-3">
+            <span class="text-muted small">
+                Showing results for:
+                <span class="fw-bold text-dark">
+                    {% if request.GET.q %}"{{ request.GET.q }}"{% else %}{{ active_category.name }}{% endif %}
+                </span>
+            </span>
+        </div>
+        {% endif %}
+
+        <div class="row row-cols-2 row-cols-lg-4 g-3">
+            {% for product in products %}
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm p-2 product-card position-relative">
+                    <div class="position-absolute top-0 end-0 p-2" style="z-index: 5;">
+                        <a href="{% url 'add_to_wishlist' product.id %}" class="text-decoration-none">
+                            <div class="wishlist-btn bg-white shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                <i class="fa-regular fa-heart text-danger"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                    <a href="{% url 'product_detail' product.id %}" class="text-center">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top p-2" style="height: 150px; object-fit: contain;">
+                        {% else %}
+                            <div class="card-img-top p-2 d-flex align-items-center justify-content-center bg-light" style="height: 150px;">
+                                <i class="fa-solid fa-image text-muted fa-2x"></i>
+                            </div>
+                        {% endif %}
+                    </a>
+
+                    <div class="card-body p-2 d-flex flex-column text-center">
+                        <h6 class="card-title text-truncate small mb-1 text-dark">{{ product.name }}</h6>
+                        <p class="fw-bold mb-2 text-primary">KSh {{ product.price }}</p>
+
+                        <div class="mb-2 border-top pt-2 bg-light rounded p-1">
+                            <p class="small text-muted mb-1 description-text">
+                                {{ product.description|default:"No description yet." }}
+                            </p>
+                            <a href="{% url 'generate_desc' product.id %}" class="btn btn-sm btn-outline-info w-100 ai-btn">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Write
+                            </a>
+                        </div>
+
+                        <div class="mt-auto">
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-warning btn-sm w-100 fw-bold shadow-sm">
+                                ADD TO CART
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fa-solid fa-magnifying-glass fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Oops! We couldn't find any products matching those criteria.</p>
+                <a href="{% url 'index' %}" class="btn btn-pro btn-sm">View All Products</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileFilterSidebar">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title fw-bold">Shop Menu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <h6 class="fw-bold text-uppercase small mb-3">Categories</h6>
+        <div class="list-group list-group-flush mb-4">
+            {% for cat in categories %}
+            <a href="{% url 'index' %}?category={{ cat.id }}" class="list-group-item px-0 border-0">{{ cat.name }}</a>
+            {% endfor %}
+        </div>
+        <hr>
+        <h6 class="fw-bold text-uppercase small mb-3">Filter By</h6>
+        {% include 'includes/filter_form.html' %}
+    </div>
+</div>
+
+<style>
+    .product-card { transition: transform 0.2s, box-shadow 0.2s; border-radius: 8px; overflow: hidden; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+    .wishlist-btn { transition: all 0.2s; border: 1px solid #eee; }
+    .wishlist-btn:hover { background-color: #ffefef !important; transform: scale(1.1); }
+    .wishlist-btn i { font-size: 14px; }
+    .description-text { font-size: 0.65rem; height: 35px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .ai-btn { font-size: 0.65rem; border-radius: 4px; }
+    .active-cat { background-color: #fef4e8 !important; color: #f68b1e !important; font-weight: bold; }
+    .btn-warning { background-color: #f68b1e; border-color: #f68b1e; color: white; }
+    .btn-warning:hover { background-color: #e67a0d; border-color: #e67a0d; color: white; }
+</style>
+{% endblock %}
