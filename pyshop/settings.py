@@ -1,11 +1,16 @@
-from pathlib import Path
 import os
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-uqu%i=%%36d@&v6hp1r(2!1vcxljou(yl4f-n-2n!5-dm5rze3'
-DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.ngrok-free.dev', '.ngrok-free.app', '*']
+# 1. Use Environment Variables for sensitive data
+SECRET_KEY = os.environ.get('SECRET_KEY', 'a-safe-fallback-for-local-only')
+
+# 2. DEBUG should only be True if you explicitly set it to 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+
+# 3. Only allow your production domain
+ALLOWED_HOSTS = ['zando-online-shopping.onrender.com', 'localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -13,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic', # Add for WhiteNoise
     'django.contrib.staticfiles',
     'products.apps.ProductsConfig',
     'django_daraja',
@@ -20,6 +26,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Add for WhiteNoise
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -28,51 +35,25 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'pyshop.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # Corrected path for templates
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'products.context_processors.cart_contents',
-            ],
-        },
-    },
-]
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
+# 4. Configure Static and Media properly
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
-# --- MPESA SETTINGS ---
-MPESA_ENVIRONMENT = 'sandbox'
-MPESA_CONSUMER_KEY = 'your_key'
-MPESA_CONSUMER_SECRET = 'your_secret'
-MPESA_SHORTCODE = '174379'
-MPESA_PASSKEY = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'
-
-# Corrected CSRF list: Ensure there are no extra brackets below this
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.ngrok-free.dev',
-    'https://*.ngrok-free.app'
-]
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-import os
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# 5. M-Pesa Settings (Pull from Environment Variables)
+MPESA_ENVIRONMENT = os.environ.get('MPESA_ENVIRONMENT', 'sandbox')
+MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY')
+MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET')
+MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE')
+MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY')
+
+CSRF_TRUSTED_ORIGINS = ['https://zando-online-shopping.onrender.com']
+
+
+# settings.py
+LOGIN_REDIRECT_URL = 'products:product_list' # Replace with your actual product list URL name
+LOGOUT_REDIRECT_URL = 'products:product_list'
