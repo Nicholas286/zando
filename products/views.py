@@ -32,47 +32,26 @@ def search_suggestions(request):
 
 def generate_description(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-
-    # 1. Initialize the client using the environment variable
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        messages.error(request, "API Key not configured.")
-        return redirect('index')
-
-    client = genai.Client(api_key=api_key)
-
-    # Update your view logic to be smarter
-    def generate_description(request, product_id):
-        product = get_object_or_404(Product, id=product_id)
-
-        # Check if a description already exists
-        if product.description and len(product.description) > 10:
-            messages.info(request, "Description already exists!")
-            return redirect('index')
-
-        # Only proceed if there is no description
-        # ... rest of your AI call code here ...
-
-    try:
-        # 2. Generate content using the client
-        response = client.models.generate_content(
-            model='gemini-2.0-flash',
-            contents=f"Write a catchy 2-sentence shop description for a product named {product.name}."
-        )
-
-        # 3. Save the result
-        if response.text:
-            product.description = response.text
-            product.save()
-            messages.success(request, f"AI generated a description for {product.name}!")
+    if product.description and len(product.description) > 10:
+        messages.info(request, "Description already exists!")
+    else:
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            messages.error(request, "API Key not configured.")
         else:
-            messages.warning(request, "AI returned an empty response.")
-
-    except Exception as e:
-        messages.error(request, f"AI Error: {str(e)}")
-        print(f"DEBUG ERROR: {e}")
-
-    return redirect('index')
+            try:
+                client = genai.Client(api_key=api_key)
+                response = client.models.generate_content(
+                    model='gemini-2.0-flash',
+                    contents=f"Write a catchy 2-sentence shop description for {product.name}."
+                )
+                if response.text:
+                    product.description = response.text
+                    product.save()
+                    messages.success(request, "AI description generated!")
+            except Exception as e:
+                messages.error(request, f"AI Error: {str(e)}")
+    return redirect('products:product_list')
 
 
 @login_required
@@ -328,24 +307,8 @@ def index(request):
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    # Get up to 4 other products in the same category
-    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
-
-    return render(request, 'product_detail.html', {
-        'product': product,
-        'related_products': related_products
-    })
-
-
-def product_detail(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    # Fetching related items so 'related_products' isn't empty in the template
-    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
-
-    return render(request, 'product_detail.html', {
-        'product': product,
-        'related_products': related_products
-    })
+    related = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
+    return render(request, 'product_detail.html', {'product': product, 'related_products': related})
 
 
 from django.shortcuts import render, redirect
