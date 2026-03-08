@@ -1,6 +1,7 @@
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from .models import Product, Cart, CartItem
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib import messages
@@ -16,6 +17,12 @@ from .models import Product
 from .models import Product, Category  # Add Category here!
 from django.http import JsonResponse
 import os
+
+def get_user_cart(user):
+    cart, _ = Cart.objects.get_or_create(user=user)
+    return cart
+
+
 def search_suggestions(request):
     query = request.GET.get('q', '')
     suggestions = []
@@ -99,44 +106,41 @@ def remove_from_wishlist(request, product_id):
 
 # --- CART MANAGEMENT VIEWS ---
 
+@login_required
 def add_to_cart(request, product_id):
+    cart = get_user_cart(request.user)
     product = get_object_or_404(Product, id=product_id)
-    cart = request.session.get('cart', {})
-    p_id = str(product_id)
-    cart[p_id] = cart.get(p_id, 0) + 1
-    request.session['cart'] = cart
-    messages.success(request, f"{product.name} added to cart.")
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    messages.success(request, f"{product.name} added!")
     return redirect('products:index')
 
-
+@login_required
 def increase_cart(request, product_id):
-    cart = request.session.get('cart', {})
-    p_id = str(product_id)
-    if p_id in cart:
-        cart[p_id] += 1
-    request.session['cart'] = cart
-    return redirect('view_cart')
+    cart = get_user_cart(request.user)
+    item = get_object_or_404(CartItem, cart=cart, product_id=product_id)
+    item.quantity += 1
+    item.save()
+    return redirect('products:view_cart')
 
-
+@login_required
 def decrease_cart(request, product_id):
-    cart = request.session.get('cart', {})
-    p_id = str(product_id)
-    if p_id in cart:
-        if cart[p_id] > 1:
-            cart[p_id] -= 1
-        else:
-            del cart[p_id]
-    request.session['cart'] = cart
-    return redirect('view_cart')
+    cart = get_user_cart(request.user)
+    item = get_object_or_404(CartItem, cart=cart, product_id=product_id)
+    if item.quantity > 1:
+        item.quantity -= 1
+        item.save()
+    else:
+        item.delete()
+    return redirect('products:view_cart')
 
-
+@login_required
 def remove_from_cart(request, product_id):
-    cart = request.session.get('cart', {})
-    p_id = str(product_id)
-    if p_id in cart:
-        del cart[p_id]
-    request.session['cart'] = cart
-    return redirect('view_cart')
+    cart = get_user_cart(request.user)
+    CartItem.objects.filter(cart=cart, product_id=product_id).delete()
+    return redirect('products:view_cart')
 
 
 # --- AUTH VIEWS ---
@@ -173,39 +177,33 @@ def logout_view(request):
 # --- MAIN SHOP VIEWS ---
 
 
+@login_required
 def view_cart(request):
-    cart = request.session.get('cart', {})
-    cart_items = []
-    total_price = 0
-    for p_id, qty in cart.items():
-        try:
-            product = Product.objects.get(id=int(p_id))
-            cart_items.append({'product': product, 'quantity': qty})
-            total_price += product.price * qty
-        except (Product.DoesNotExist, ValueError):
-            continue
-    return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price})
+    cart = Cart.objects.filter(user=request.user).first()
+
+    # We rename 'items' to 'cart_items' so it matches what your template expects
+    cart_items = cart.items.all() if cart else []
+    total_price = cart.total_price if cart else 0
+
+    return render(request, 'cart.html', {
+        'cart_items': cart_items,
+        'total_price': total_price
+    })
 
 
 # --- CHECKOUT & MPESA CALLBACK ---
 
 @login_required
 def checkout(request):
-    cart = request.session.get('cart', {})
-    if not cart:
+    cart = get_user_cart(request.user)
+    items = cart.items.all()
+
+    if not items.exists():
         messages.warning(request, "Your cart is empty.")
         return redirect('products:index')
 
-    # Verify products and calculate total
-    total_price = 0
-    product_names_list = []
-    for p_id, qty in cart.items():
-        try:
-            product = Product.objects.get(id=int(p_id))
-            total_price += product.price * qty
-            product_names_list.append(product.name)
-        except (Product.DoesNotExist, ValueError):
-            continue
+    total_price = cart.total_price
+    product_names = ", ".join([item.product.name for item in items])
 
     if request.method == 'POST':
         phone = request.POST.get('phone_number')
@@ -214,17 +212,17 @@ def checkout(request):
 
         try:
             response = cl.stk_push(phone, int(total_price), "ZandoStore", "Payment", callback_url)
-
             if response.response_code == "0":
                 Order.objects.create(
                     user=request.user,
-                    product_names=", ".join(product_names_list),
+                    product_names=product_names,
                     total_price=total_price,
                     phone_number=phone,
                     transaction_id=response.checkout_request_id,
                     status='Pending'
                 )
-                request.session['cart'] = {}
+                # CLEAR THE CART AFTER PUSH
+                items.delete()
                 messages.success(request, "M-Pesa prompt sent! Enter your PIN.")
                 return redirect('products:my_orders')
             else:
