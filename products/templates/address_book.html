@@ -4,11 +4,9 @@
 <div class="container mt-4" style="max-width: 800px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold">Address Book</h4>
-      <button class="btn btn-primary btn-sm fw-bold">+ ADD NEW ADDRESS</button>
-
-<a href="{% url 'add_address' %}" class="btn btn-primary btn-sm fw-bold text-decoration-none">
-    + ADD NEW ADDRESS
-</a>
+        <a href="{% url 'products:add_address' %}" class="btn btn-primary btn-sm fw-bold text-decoration-none">
+            + ADD NEW ADDRESS
+        </a>
     </div>
 
     {% if addresses %}
@@ -34,7 +32,7 @@
         <div class="alert alert-info border-0 shadow-sm">
             <i class="fa-solid fa-location-dot me-2"></i> You haven't saved any addresses yet.
         </div>
-        <a href="{% url 'account_settings' %}" class="btn btn-outline-secondary btn-sm mt-2">Back to Settings</a>
+        <a href="{% url 'products:account_settings' %}" class="btn btn-outline-secondary btn-sm mt-2">Back to Settings</a>
     {% endif %}
 </div>
 {% endblock %}

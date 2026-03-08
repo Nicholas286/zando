@@ -81,8 +81,8 @@ MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY')
 
 CSRF_TRUSTED_ORIGINS = ['https://zando-online-shopping.onrender.com']
 
-LOGIN_REDIRECT_URL = 'products:product_list'
-LOGOUT_REDIRECT_URL = 'products:product_list'
+LOGIN_REDIRECT_URL = 'products:index'
+LOGOUT_REDIRECT_URL = 'products:index'
 
 ROOT_URLCONF = 'pyshop.urls'
 

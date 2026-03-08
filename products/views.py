@@ -51,7 +51,7 @@ def generate_description(request, product_id):
                     messages.success(request, "AI description generated!")
             except Exception as e:
                 messages.error(request, f"AI Error: {str(e)}")
-    return redirect('products:product_list')
+    return redirect('products:index')
 
 
 @login_required
@@ -87,14 +87,14 @@ def add_to_wishlist(request, product_id):
     wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
     if created:
         messages.success(request, f"{product.name} added to wishlist.")
-    return redirect('index')
+    return redirect('products:index')
 
 
 @login_required
 def remove_from_wishlist(request, product_id):
     Wishlist.objects.filter(user=request.user, product_id=product_id).delete()
     messages.success(request, "Item removed from wishlist.")
-    return redirect('view_wishlist')
+    return redirect('products:view_wishlist')
 
 
 # --- CART MANAGEMENT VIEWS ---
@@ -106,7 +106,7 @@ def add_to_cart(request, product_id):
     cart[p_id] = cart.get(p_id, 0) + 1
     request.session['cart'] = cart
     messages.success(request, f"{product.name} added to cart.")
-    return redirect('index')
+    return redirect('products:index')
 
 
 def increase_cart(request, product_id):
@@ -147,7 +147,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            return redirect('index')
+            return redirect('products:index')
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
@@ -159,7 +159,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
-            return redirect('index')
+            return redirect('products:index')
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
@@ -194,7 +194,7 @@ def checkout(request):
     cart = request.session.get('cart', {})
     if not cart:
         messages.warning(request, "Your cart is empty.")
-        return redirect('index')
+        return redirect('products:index')
 
     # Verify products and calculate total
     total_price = 0
@@ -226,7 +226,7 @@ def checkout(request):
                 )
                 request.session['cart'] = {}
                 messages.success(request, "M-Pesa prompt sent! Enter your PIN.")
-                return redirect('my_orders')
+                return redirect('products:my_orders')
             else:
                 messages.error(request, f"M-Pesa Error: {response.response_description}")
         except Exception as err:
@@ -321,7 +321,7 @@ def add_address(request):
             address = form.save(commit=False)
             address.user = request.user
             address.save()
-            return redirect('address_book') # Redirect back to your address book
+            return redirect('products:address_book') # Redirect back to your address book
     else:
         form = AddressForm()
     return render(request, 'add_address.html', {'form': form})

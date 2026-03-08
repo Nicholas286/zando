@@ -9,7 +9,7 @@
                     <h5 class="mb-0 fw-bold">Shipping & Payment</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form method="POST" action="{% url 'checkout' %}">
+                    <form method="POST" action="{% url 'products:checkout' %}">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -43,7 +43,7 @@
                     </form>
                     </div>
             </div>
-            <a href="{% url 'view_cart' %}" class="btn btn-link mt-3 text-decoration-none text-muted">← Back to Cart</a>
+            <a href="{% url 'products:view_cart' %}" class="btn btn-link mt-3 text-decoration-none text-muted">← Back to Cart</a>
         </div>
 
         <div class="col-md-4">

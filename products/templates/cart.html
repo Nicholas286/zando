@@ -17,7 +17,7 @@
                     </div>
 
                     <div class="col-3 d-flex align-items-center justify-content-center">
-                        <a href="{% url 'decrease_cart' item.product.id %}"
+                        <a href="{% url 'products:decrease_cart' item.product.id %}"
                            class="btn btn-sm btn-outline-primary rounded-circle fw-bold"
                            style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
                            -
@@ -25,7 +25,7 @@
 
                         <span class="mx-3 fw-bold fs-5">{{ item.quantity }}</span>
 
-                        <a href="{% url 'increase_cart' item.product.id %}"
+                        <a href="{% url 'products:increase_cart' item.product.id %}"
                            class="btn btn-sm btn-outline-primary rounded-circle fw-bold"
                            style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
                            +
@@ -34,7 +34,7 @@
 
                     <div class="col-3 text-end">
                         <p class="fw-bold text-primary mb-1">KSh {{ item.subtotal }}</p>
-                        <a href="{% url 'remove_from_cart' item.product.id %}"
+                        <a href="{% url 'products:remove_from_cart' item.product.id %}"
                            class="text-danger small fw-bold text-decoration-none"
                            onclick="return confirm('Remove this item?')">
                            REMOVE
@@ -45,7 +45,7 @@
                 <div class="text-center py-5">
                     <i class="fas fa-shopping-basket fa-3x text-muted mb-3"></i>
                     <h5>Your cart is empty</h5>
-                    <a href="{% url 'index' %}" class="btn btn-primary mt-3">Start Shopping</a>
+                    <a href="{% url 'products:index' %}" class="btn btn-primary mt-3">Start Shopping</a>
                 </div>
                 {% endfor %}
             </div>
@@ -59,7 +59,7 @@
                     <span class="fw-bold fs-5 text-primary">KSh {{ total_price }}</span>
                 </div>
                 <p class="small text-muted mb-4">Delivery fees not included yet.</p>
-                <a href="{% url 'checkout' %}" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+                <a href="{% url 'products:checkout' %}" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
                     CHECKOUT (KSh {{ total_price }})
                 </a>
             </div>
