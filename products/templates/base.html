@@ -109,14 +109,14 @@
                     <i class="far fa-heart fs-4"></i>
                 </a>
 
-                <a href="{% url 'products:view_cart' %}" class="nav-icon-link text-decoration-none">
-                    <div class="position-relative">
-                        <i class="fas fa-shopping-cart fs-4"></i>
-                        <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.6rem;">
-                            {{ request.session.cart|length|default:"0" }}
-                        </span>
-                    </div>
-                </a>
+               <a href="{% url 'products:view_cart' %}" class="nav-icon-link text-decoration-none">
+    <div class="position-relative">
+        <i class="fas fa-shopping-cart fs-4"></i>
+        <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.6rem;">
+            {{ global_cart_count|default:"0" }}
+        </span>
+    </div>
+</a>
             </div>
         </div>
     </nav>

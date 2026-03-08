@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="card shadow-sm p-4">
+        <h4 class="fw-bold">Confirm Delete</h4>
+        <p>Are you sure you want to delete this address?</p>
+        <p class="text-muted">
+            {{ address.street }}<br>
+            {{ address.town.name }}, {{ address.town.county.name }}
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                <a href="{% url 'products:address_book' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

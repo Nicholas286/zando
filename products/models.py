@@ -1,6 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class County(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+
+class Town(models.Model):
+    county = models.ForeignKey(County, on_delete=models.CASCADE, related_name='towns')
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+
+
 # 1. CATEGORY
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -21,7 +33,7 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-# 3. CART (Fixed Indentation - Moved to the left)
+# 3. CART
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -33,7 +45,7 @@ class Cart(models.Model):
     def total_price(self):
         return sum(item.subtotal for item in self.items.all())
 
-# 4. CART ITEM (Fixed Indentation)
+# 4. CART ITEM
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -50,13 +62,16 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     phone_number = models.CharField(max_length=15)
     transaction_id = models.CharField(max_length=100, null=True, blank=True)
+    payment_method = models.CharField(max_length=50, default='M-Pesa')
     status = models.CharField(max_length=50, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
+    address = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"
 
-# 6. WISHLIST
+
+# 7. WISHLIST
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -65,17 +80,24 @@ class Wishlist(models.Model):
     def __str__(self):
         return f"{self.user.username}'s wishlist: {self.product.name}"
 
-# 7. ADDRESS
+# 8. ADDRESS
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # ADD THESE TWO LINES:
+    first_name = models.CharField(max_length=50, default='')
+    last_name = models.CharField(max_length=50, default='')
+
     street = models.CharField(max_length=255)
-    city = models.CharField(max_length=100)
+    town = models.ForeignKey(Town, on_delete=models.CASCADE)
     postal_code = models.CharField(max_length=20, blank=True, null=True)
     phone = models.CharField(max_length=15)
     is_default = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user.username} - {self.street}, {self.city}"
+        return f"{self.user.username} - {self.street}, {self.town.name}"
 
+    # THIS IS THE ONLY ALLOWED META ATTRIBUTE FOR THIS MODEL
     class Meta:
         verbose_name_plural = "Addresses"
+
+

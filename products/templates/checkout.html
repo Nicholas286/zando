@@ -25,14 +25,50 @@
                             <label class="form-label small fw-bold">Email Address</label>
                             <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
                         </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold">County</label>
+                                <select id="countySelect" name="county" class="form-control" required>
+                                    <option value="">Select a county</option>
+                                    {% for county in counties %}
+                                        <option value="{{ county.id }}">{{ county.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold">Town/City</label>
+                                <select id="townSelect" name="town" class="form-control" required>
+                                    <option value="">Select a town</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="mb-3">
-                            <label class="form-label small fw-bold">Shipping Address</label>
-                            <textarea name="address" class="form-control" rows="3" placeholder="Street, Building, Apartment No." required></textarea>
+                            <label class="form-label small fw-bold">Street/Building Details</label>
+                            <textarea name="address" class="form-control" rows="2" placeholder="e.g. Landmark, House number" required></textarea>
                         </div>
 
-                        <div class="card bg-light border-0 p-3 mb-4">
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold">Select Payment Method</label>
+                            <div class="card border-0 bg-light p-3">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="methodMpesa" value="mpesa" checked onclick="togglePaymentFields()">
+                                    <label class="form-check-label fw-bold" for="methodMpesa">
+                                        <i class="fas fa-mobile-alt text-success me-2"></i> Pay via M-Pesa
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="methodDelivery" value="delivery" onclick="togglePaymentFields()">
+                                    <label class="form-check-label fw-bold" for="methodDelivery">
+                                        <i class="fas fa-truck text-primary me-2"></i> Pay on Delivery
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="mpesaFields" class="card bg-light border-0 p-3 mb-4">
                             <label class="form-label fw-bold text-success">M-Pesa Number</label>
-                            <input type="text" name="phone_number" class="form-control border-success" placeholder="254712345678" required>
+                            <input type="text" name="phone_number" class="form-control border-success" placeholder="254712345678">
                             <small class="text-muted">Enter number in format 2547XXXXXXXX</small>
                         </div>
 
@@ -41,7 +77,7 @@
                             PLACE ORDER (KSh {{ total_price }})
                         </button>
                     </form>
-                    </div>
+                </div>
             </div>
             <a href="{% url 'products:view_cart' %}" class="btn btn-link mt-3 text-decoration-none text-muted">← Back to Cart</a>
         </div>
@@ -74,4 +110,40 @@
         </div>
     </div>
 </div>
-{% endblock %}
+
+<script>
+    function togglePaymentFields() {
+        const mpesaDiv = document.getElementById('mpesaFields');
+        const deliverySelected = document.getElementById('methodDelivery').checked;
+        mpesaDiv.style.display = deliverySelected ? 'none' : 'block';
+    }
+
+    // Dynamic City/Town loader
+    document.getElementById('countySelect').addEventListener('change', function() {
+        const countyId = this.value;
+        const townSelect = document.getElementById('townSelect');
+
+        if (!countyId) {
+            townSelect.innerHTML = '<option value="">Select a town</option>';
+            return;
+        }
+
+        townSelect.innerHTML = '<option>Loading...</option>';
+
+        // Use the exact URL name defined in your products/urls.py
+        fetch("{% url 'products:get_towns' %}?county_id=" + countyId)
+            .then(response => response.json())
+            .then(data => {
+                townSelect.innerHTML = '<option value="">Select a town</option>';
+
+                // Add the towns to the dropdown
+                data.forEach(town => {
+                    townSelect.innerHTML += `<option value="${town.id}">${town.name}</option>`;
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                townSelect.innerHTML = '<option value="">Error loading towns</option>';
+            });
+    });
+</script>{% endblock %}

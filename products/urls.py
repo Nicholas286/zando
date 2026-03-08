@@ -4,6 +4,7 @@ from . import views
 app_name = 'products'
 
 urlpatterns = [
+path('get-towns/', views.get_towns, name='get_towns'),
     # --- Home & Shop ---
     path('', views.index, name='index'),  # This is the ONLY root path
 
@@ -45,4 +46,6 @@ path('api/suggestions/', views.search_suggestions, name='search_suggestions'),
 path('product/<int:product_id>/', views.product_detail, name='product_detail'),
 # Add this inside urlpatterns
 path('add-address/', views.add_address, name='add_address'),
+path('edit-address/<int:id>/', views.edit_address, name='edit_address'),
+path('delete-address/<int:id>/', views.delete_address, name='delete_address'),
 ]

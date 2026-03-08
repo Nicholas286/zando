@@ -12,7 +12,8 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # 3. Only allow your production domain
 ALLOWED_HOSTS = ['zando-online-shopping.onrender.com', 'localhost', '127.0.0.1']
-
+DEBUG = True
+['127.0.0.1', 'localhost']
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -48,6 +49,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+'products.context_processors.cart_contents',
             ],
         },
     },

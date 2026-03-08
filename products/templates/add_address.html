@@ -8,19 +8,36 @@
         <form method="POST">
             {% csrf_token %}
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Street Address</label>
-                {{ form.street }}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">First Name</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Last Name</label>
+                    {{ form.last_name }}
+                </div>
             </div>
 
             <div class="mb-3">
-                <label class="form-label fw-bold">City</label>
-                {{ form.city }}
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Phone Number</label>
+                <label class="form-label">Phone Number</label>
                 {{ form.phone }}
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">County</label>
+                    {{ form.county }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Town/City</label>
+                    {{ form.town }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Street/Building Details</label>
+                {{ form.street }}
             </div>
 
             <div class="mb-3 form-check">
@@ -28,9 +45,24 @@
                 <label class="form-check-label">Set as default address</label>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 fw-bold">SAVE ADDRESS</button>
-            <a href="{% url 'products:address_book' %}" class="btn btn-link w-100 mt-2 text-muted">Cancel</a>
+            <button type="submit" class="btn btn-primary w-100">SAVE ADDRESS</button>
         </form>
     </div>
 </div>
+
+<script>
+    document.getElementById('id_county').addEventListener('change', function() {
+        var countyId = this.value;
+        if (!countyId) return;
+        fetch(`/products/get-towns/?county_id=${countyId}`)
+            .then(response => response.json())
+            .then(data => {
+                var townSelect = document.getElementById('id_town');
+                townSelect.innerHTML = '<option value="">Select a town</option>';
+                data.forEach(town => {
+                    townSelect.innerHTML += `<option value="${town.id}">${town.name}</option>`;
+                });
+            });
+    });
+</script>
 {% endblock %}

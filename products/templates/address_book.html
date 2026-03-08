@@ -9,30 +9,26 @@
         </a>
     </div>
 
-    {% if addresses %}
-        <div class="row">
-            {% for address in addresses %}
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm p-3 mb-3 border-start border-primary border-4">
-                    <div class="d-flex justify-content-between">
-                        <h6 class="fw-bold">{{ address.label|default:"Address" }}</h6>
-                        {% if address.is_default %}<span class="badge bg-success">Default</span>{% endif %}
-                    </div>
-                    <p class="mb-1 mt-2">{{ user.username }}</p>
-                    <p class="text-muted small mb-3">{{ address.street }}<br>{{ address.city }}<br>{{ address.phone }}</p>
-                    <div class="d-flex gap-2">
-                        <a href="#" class="text-primary small text-decoration-none fw-bold">EDIT</a>
-                        <a href="#" class="text-danger small text-decoration-none fw-bold">DELETE</a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+    {% for address in addresses %}
+<div class="col-md-6">
+    <div class="card border-0 shadow-sm p-3 mb-3 border-start border-primary border-4">
+        <div class="d-flex justify-content-between">
+            <h6 class="fw-bold text-uppercase">{{ address.user.first_name }} {{ address.user.last_name }}</h6>
+            {% if address.is_default %}<span class="badge bg-success">Default</span>{% endif %}
         </div>
-    {% else %}
-        <div class="alert alert-info border-0 shadow-sm">
-            <i class="fa-solid fa-location-dot me-2"></i> You haven't saved any addresses yet.
+
+        <p class="mb-1 mt-2 text-muted small">{{ address.street }}</p>
+        <p class="text-muted small mb-3">
+            {{ address.town.name }}, {{ address.town.county.name }}<br>
+            Phone: {{ address.phone }}
+        </p>
+
+        <div class="d-flex gap-2">
+            <a href="{% url 'products:edit_address' address.id %}" class="text-primary small text-decoration-none fw-bold">EDIT</a>
+            <a href="{% url 'products:delete_address' address.id %}" class="text-danger small text-decoration-none fw-bold">DELETE</a>
         </div>
-        <a href="{% url 'products:account_settings' %}" class="btn btn-outline-secondary btn-sm mt-2">Back to Settings</a>
-    {% endif %}
+    </div>
+</div>
+{% endfor %}
 </div>
 {% endblock %}

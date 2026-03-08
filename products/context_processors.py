@@ -2,13 +2,23 @@ from pathlib import Path
 import os
 from .models import Product
 
+from .models import Cart
+
+
+
 def cart_contents(request):
-    """Provides cart data globally to all templates."""
-    cart = request.session.get('cart', {})
-    item_count = sum(cart.values()) if isinstance(cart, dict) else 0
-    return {
-        'global_cart_count': item_count
-    }
+    # Default count is 0
+    count = 0
+
+    if request.user.is_authenticated:
+        # Fetch the cart for the current user from the database
+        cart = Cart.objects.filter(user=request.user).first()
+        if cart:
+            # Calculate the sum of all item quantities in this cart
+            # We use a generator expression for memory efficiency
+            count = sum(item.quantity for item in cart.items.all())
+
+    return {'global_cart_count': count}
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-uqu%i=%%36d@&v6hp1r(2!1vcxljou(yl4f-n-2n!5-dm5rze3'
