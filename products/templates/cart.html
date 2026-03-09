@@ -1,44 +1,62 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-4">
-    <h4 class="fw-bold mb-4">Shopping Cart ({{ total_quantity|default:"0" }})</h4>
+    <!-- CART HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold">Cart ({{ total_quantity|default:"0" }})</h4>
+    </div>
+
     <div class="row">
-        <div class="col-md-8">
-            <div class="card border-0 shadow-sm p-3">
+        <!-- MAIN CART SECTION -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4">
                 {% for item in cart_items %}
-                <div class="row align-items-center mb-4 border-bottom pb-3">
-                    <div class="col-2 text-center">
-                        <img src="{{ item.product.image_url }}" class="img-fluid rounded" style="max-height: 80px; object-fit: contain;">
+                <div class="row align-items-center mb-4 pb-4 border-bottom" style="border-bottom: 1px solid #e8e8e8;">
+                    <!-- Product Image -->
+                    <div class="col-3">
+                        <div class="position-relative">
+                            <img src="{% if item.product.image %}{{ item.product.image.url }}{% endif %}" 
+                                 class="img-fluid rounded" 
+                                 style="max-height: 120px; object-fit: cover; width: 100%;">
+                            <span class="badge bg-danger position-absolute top-0 start-0">Sale</span>
+                        </div>
                     </div>
 
+                    <!-- Product Details -->
                     <div class="col-4">
-                        <h6 class="fw-bold mb-0 text-truncate">{{ item.product.name }}</h6>
-                        <small class="text-muted d-block">Unit: KSh {{ item.product.price }}</small>
+                        <h6 class="fw-bold mb-2 text-dark">{{ item.product.name }}</h6>
+                        <p class="text-muted small mb-1">In Stock</p>
+                        <p class="text-muted small">Seller: ZANDO Shop</p>
                     </div>
 
-                    <div class="col-3 d-flex align-items-center justify-content-center">
-                        <a href="{% url 'products:decrease_cart' item.product.id %}"
-                           class="btn btn-sm btn-outline-primary rounded-circle fw-bold"
-                           style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
-                           -
-                        </a>
-
-                        <span class="mx-3 fw-bold fs-5">{{ item.quantity }}</span>
-
-                        <a href="{% url 'products:increase_cart' item.product.id %}"
-                           class="btn btn-sm btn-outline-primary rounded-circle fw-bold"
-                           style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
-                           +
-                        </a>
+                    <!-- Price Section -->
+                    <div class="col-2 text-end">
+                        <p class="fw-bold text-primary mb-1" style="font-size: 18px;">KSh {{ item.subtotal }}</p>
+                        <p class="text-muted text-decoration-line-through small mb-0">KSh {{ item.product.price|add:item.product.price }}</p>
+                        <p class="text-danger small fw-bold mb-0">-30%</p>
                     </div>
 
-                    <div class="col-3 text-end">
-                        <p class="fw-bold text-primary mb-1">KSh {{ item.subtotal }}</p>
-                        <a href="{% url 'products:remove_from_cart' item.product.id %}"
-                           class="text-danger small fw-bold text-decoration-none"
-                           onclick="return confirm('Remove this item?')">
-                           REMOVE
-                        </a>
+                    <!-- Quantity Controls -->
+                    <div class="col-3 d-flex align-items-center justify-content-end gap-2">
+                        <button class="btn btn-sm border border-secondary rounded" 
+                                onclick="location.href='{% url 'products:decrease_cart' item.product.id %}';"
+                                style="width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                            −
+                        </button>
+                        <input type="text" value="{{ item.quantity }}" class="form-control text-center" 
+                               style="width: 50px; border: 1px solid #ddd;" readonly>
+                        <button class="btn btn-sm border border-secondary rounded" 
+                                onclick="location.href='{% url 'products:increase_cart' item.product.id %}';"
+                                style="width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                            +
+                        </button>
+                        <span class="text-danger small fw-bold ms-2" style="cursor: pointer;">
+                            <a href="{% url 'products:remove_from_cart' item.product.id %}"
+                               style="text-decoration: none; color: inherit;"
+                               onclick="return confirm('Remove this item?');">
+                               <i class="fas fa-trash"></i>
+                            </a>
+                        </span>
                     </div>
                 </div>
                 {% empty %}
@@ -51,19 +69,132 @@
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm p-3">
-                <h6 class="fw-bold mb-3 border-bottom pb-2">CART SUMMARY</h6>
+        <!-- CART SUMMARY SIDEBAR -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 sticky-top" style="top: 20px;">
+                <h6 class="fw-bold mb-4 border-bottom pb-3">CART SUMMARY</h6>
+                
                 <div class="d-flex justify-content-between mb-3">
-                    <span>Subtotal</span>
-                    <span class="fw-bold fs-5 text-primary">KSh {{ total_price }}</span>
+                    <span class="text-muted">Subtotal</span>
+                    <span class="fw-bold" style="font-size: 18px; color: #ff6b35;">KSh {{ total_price }}</span>
                 </div>
-                <p class="small text-muted mb-4">Delivery fees not included yet.</p>
-                <a href="{% url 'products:checkout' %}" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+
+                <div class="d-flex justify-content-between mb-4 pb-3 border-bottom">
+                    <span class="text-muted">Delivery</span>
+                    <span class="text-success fw-bold">FREE</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="fw-bold">Total</span>
+                    <span class="fw-bold" style="font-size: 20px; color: #ff6b35;">KSh {{ total_price }}</span>
+                </div>
+
+                <a href="{% url 'products:checkout' %}" class="btn w-100 fw-bold py-3 mb-3" 
+                   style="background-color: #ff6b35; color: white; border-radius: 6px;">
                     CHECKOUT (KSh {{ total_price }})
+                </a>
+
+                <a href="{% url 'products:index' %}" class="btn btn-outline-secondary w-100 fw-bold py-2">
+                    Continue Shopping
                 </a>
             </div>
         </div>
     </div>
+
+    <!-- WISHLIST SECTION -->
+    {% if wishlist_items %}
+    <div class="mt-5 mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold">Wishlist ({{ wishlist_items|length }})</h5>
+            <a href="{% url 'products:view_wishlist' %}" class="text-primary small fw-bold">See All ></a>
+        </div>
+
+        <div class="row g-3">
+            {% for item in wishlist_items %}
+            <div class="col-md-4 col-lg-3">
+                <div class="card border-0 shadow-sm position-relative h-100">
+                    <div class="position-relative overflow-hidden" style="height: 180px;">
+                        <img src="{% if item.product.image %}{{ item.product.image.url }}{% endif %}" 
+                             class="card-img-top" 
+                             style="height: 100%; object-fit: cover;">
+                        <span class="badge bg-danger position-absolute top-2 start-2">-30%</span>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate small">{{ item.product.name }}</h6>
+                        <p class="fw-bold text-primary mb-2">KSh {{ item.product.price }}</p>
+                        <small class="text-muted d-block mb-3">In Stock</small>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'products:add_to_cart' item.product.id %}" 
+                               class="btn btn-sm btn-warning fw-bold">Add to Cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- RECENTLY VIEWED SECTION -->
+    {% if recently_viewed %}
+    <div class="mt-5 mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold">Recently Viewed</h5>
+            <a href="{% url 'products:index' %}" class="text-primary small fw-bold">See All ></a>
+        </div>
+
+        <div class="row g-3">
+            {% for product in recently_viewed %}
+            <div class="col-md-4 col-lg-3">
+                <div class="card border-0 shadow-sm position-relative h-100">
+                    <div class="position-relative overflow-hidden" style="height: 180px;">
+                        <img src="{% if product.image %}{{ product.image.url }}{% endif %}" 
+                             class="card-img-top" 
+                             style="height: 100%; object-fit: cover;">
+                        <span class="badge bg-danger position-absolute top-2 start-2">-30%</span>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate small">{{ product.name }}</h6>
+                        <p class="fw-bold text-primary mb-2">KSh {{ product.price }}</p>
+                        <small class="text-muted d-block mb-3">In Stock</small>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'products:add_to_cart' product.id %}" 
+                               class="btn btn-sm btn-warning fw-bold">Add to Cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </div>
+
+<style>
+    .sticky-top {
+        position: sticky;
+        top: 20px;
+        z-index: 10;
+    }
+    
+    .card {
+        border-radius: 8px;
+        transition: transform 0.2s;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .btn-warning {
+        background-color: #ff6b35;
+        border-color: #ff6b35;
+        color: white;
+    }
+    
+    .btn-warning:hover {
+        background-color: #ff5a1f;
+        border-color: #ff5a1f;
+    }
+</style>
 {% endblock %}

@@ -1,13 +1,11 @@
 import json # Standard library
-# Third-party libraries
-import google.generativeai as genai
 # ... other imports ...
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Address
-from .forms import AddressForm
+from .forms import AddressForm, CustomUserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -41,36 +39,6 @@ def search_suggestions(request):
     return JsonResponse(suggestions, safe=False)
 
 
-def generate_description(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-
-    if product.description and len(product.description) > 10:
-        messages.info(request, "Description already exists!")
-    else:
-        api_key = os.environ.get("GEMINI_API_KEY")
-        if not api_key:
-            messages.error(request, "API Key not configured.")
-        else:
-            try:
-                # 1. Configure the SDK
-                genai.configure(api_key=api_key)
-                # 2. Select the model
-                model = genai.GenerativeModel('gemini-1.5-flash')
-
-                # 3. Generate content
-                response = model.generate_content(
-                    f"Write a catchy 2-sentence shop description for {product.name}."
-                )
-
-                if response.text:
-                    product.description = response.text.strip()
-                    product.save()
-                    messages.success(request, "AI description generated!")
-            except Exception as e:
-                messages.error(request, f"AI Error: {str(e)}")
-
-    return redirect('products:index')
-
 @login_required
 def account_settings(request):
     """Renders the user profile settings page."""
@@ -89,6 +57,13 @@ def my_orders(request):
     """Displays the user's past and pending orders."""
     orders = Order.objects.filter(user=request.user).order_by('-id')
     return render(request, 'my_orders.html', {'orders': orders})
+
+
+@login_required
+def order_detail(request, order_id):
+    """Displays detailed information for a specific order."""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'order_detail.html', {'order': order})
 
 
 # --- WISHLIST VIEWS ---
@@ -167,13 +142,13 @@ def remove_from_cart(request, product_id):
 
 def register_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
             return redirect('products:index')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
 
 
@@ -210,10 +185,18 @@ def view_cart(request):
     # 4. Use the model's property for price
     total_price = cart.total_price
 
+    # 5. Get wishlist items
+    wishlist_items = Wishlist.objects.filter(user=request.user)[:5]  # Show first 5
+
+    # 6. Get recently viewed products (first 5 products as recently viewed)
+    recently_viewed = Product.objects.all()[:5]
+
     return render(request, 'cart.html', {
         'cart_items': cart_items,
         'total_price': total_price,
-        'total_quantity': total_quantity
+        'total_quantity': total_quantity,
+        'wishlist_items': wishlist_items,
+        'recently_viewed': recently_viewed
     })
 
 
@@ -223,74 +206,99 @@ def checkout(request):
     cart = get_user_cart(request.user)
     items = cart.items.all()
     # Import these at the top of your file
-    from .models import Order, County, Town
+    from .models import Order, County, Town, Address, OrderItem
 
     if not items.exists():
         messages.warning(request, "Your cart is empty.")
         return redirect('products:index')
 
     total_price = cart.total_price
-    product_names = ", ".join([item.product.name for item in items])
+    
+    # Get all user addresses for selection
+    addresses = Address.objects.filter(user=request.user)
+    default_address = addresses.filter(is_default=True).first()
 
     if request.method == 'POST':
         payment_method = request.POST.get('payment_method')
         phone = request.POST.get('phone_number')
+        selected_address_id = request.POST.get('selected_address')
+        delivery_method = request.POST.get('delivery_method', 'standard')
 
-        # Capture the new location data
-        county_id = request.POST.get('county')
-        town_id = request.POST.get('town')
-        street_address = request.POST.get('address')
-
-        if county_id and town_id:
-            try:
-                county = County.objects.get(id=county_id).name
-                town = Town.objects.get(id=town_id).name
-                full_address = f"{street_address}, {town}, {county} County"
-            except (County.DoesNotExist, Town.DoesNotExist):
-                messages.error(request, "Invalid location selected.")
-                return redirect('products:checkout')
-        else:
-            messages.error(request, "Please select both a County and a Town.")
+        # Get the selected address
+        try:
+            selected_address = Address.objects.get(id=selected_address_id, user=request.user)
+        except Address.DoesNotExist:
+            messages.error(request, "Invalid address selected.")
             return redirect('products:checkout')
-        # 1. Handle M-Pesa
+
+        # Calculate delivery fee
+        delivery_fee = 500 if delivery_method == 'express' else 0
+        final_total = total_price + delivery_fee
+
+        # Get phone number - prefer M-Pesa phone if entered, otherwise use address phone
         if payment_method == 'mpesa':
             if not phone:
                 messages.error(request, "Please enter your M-Pesa phone number.")
                 return redirect('products:checkout')
+            order_phone = phone
+        else:
+            order_phone = selected_address.phone
 
-            # ... (keep your existing MpesaClient logic here) ...
-            # Inside the success block, use full_address for the Order record
-            Order.objects.create(
-                user=request.user,
-                product_names=product_names,
-                total_price=total_price,
-                phone_number=phone,
-                payment_method='M-Pesa',
-                status='Pending',
-                # Add these if you updated your model
-                # address=full_address
+        # Create the order
+        order = Order.objects.create(
+            user=request.user,
+            total_price=final_total,
+            phone_number=order_phone,
+            payment_method='M-Pesa' if payment_method == 'mpesa' else 'Pay on Delivery',
+            status='Pending',
+            address=selected_address
+        )
+
+        # Create OrderItems
+        for item in items:
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                price=item.product.price  # capture price at purchase time
             )
 
-        # 2. Handle Delivery
+        # 1. Handle M-Pesa
+        if payment_method == 'mpesa':
+            mpesa_client = MpesaClient()
+            account_reference = f"Order-{order.id}"
+            transaction_desc = f"Payment for Order {order.id}"
+            callback_url = request.build_absolute_uri('/products/mpesa-callback/')
+            response = mpesa_client.stk_push(
+                phone_number=order_phone,
+                amount=int(final_total),
+                account_reference=account_reference,
+                transaction_desc=transaction_desc,
+                callback_url=callback_url
+            )
+            if response.get('ResponseCode') == '0':
+                order.transaction_id = response.get('CheckoutRequestID')
+                order.save()
+                messages.success(request, "M-Pesa payment initiated. Please complete the payment on your phone.")
+            else:
+                order.delete()  # Delete the order if STK push failed
+                messages.error(request, "Failed to initiate M-Pesa payment. Please try again.")
+                return redirect('products:checkout')
+
+        # 2. Handle Pay on Delivery
         elif payment_method == 'delivery':
-            Order.objects.create(
-                user=request.user,
-                product_names=product_names,
-                total_price=total_price,
-                phone_number=phone,
-                payment_method='Pay on Delivery',
-                status='Pending'
-                # address=full_address
-            )
             items.delete()
-            messages.success(request, "Order placed! We will collect payment upon delivery.")
+            messages.success(request, f"Order placed successfully! Total: KSh {final_total} (including delivery). We will collect payment upon delivery.")
             return redirect('products:my_orders')
 
-    # Send counties to the template
+    # Send counties and default address to the template
     return render(request, 'checkout.html', {
         'total_price': total_price,
         'cart_items': items,
-        'counties': County.objects.all()
+        'addresses': addresses,
+        'default_address': default_address,
+        'delivery_fee': 0,  # Default delivery fee
+        'final_total': total_price  # Default final total
     })
 
 
@@ -313,6 +321,9 @@ def mpesa_callback(request):
                 if receipt:
                     order.transaction_id = receipt
                 order.save()
+                # Clear cart items after successful payment
+                from .models import CartItem
+                CartItem.objects.filter(cart__user=order.user).delete()
             else:
                 order.status = f"Failed: {callback_content.get('ResultDesc', 'Cancelled')}"
                 order.save()
@@ -374,15 +385,33 @@ from django.shortcuts import render, redirect
 from .forms import AddressForm # You will create this form file
 
 
+def get_towns(request):
+    county_id = request.GET.get('county_id')
+    if county_id:
+        towns = Town.objects.filter(county_id=county_id).values('id', 'name')
+        return JsonResponse(list(towns), safe=False)
+    return JsonResponse([], safe=False)
+
+
 @login_required
 def add_address(request):
     if request.method == 'POST':
         form = AddressForm(request.POST)
+        print(f"DEBUG: Form data: {request.POST}")
+        print(f"DEBUG: Form is valid: {form.is_valid()}")
+        if not form.is_valid():
+            print(f"DEBUG: Form errors: {form.errors}")
         if form.is_valid():
             address = form.save(commit=False)
             address.user = request.user
-            # The 'town' is saved from the form, which implies the county
             address.save()
+            
+            # Ensure only one default address per user
+            if address.is_default:
+                Address.objects.filter(user=request.user).exclude(id=address.id).update(is_default=False)
+            
+            messages.success(request, "Address added successfully.")
+            print(f"DEBUG: Address saved: {address}")
             return redirect('products:address_book')
     else:
         form = AddressForm()
@@ -405,6 +434,7 @@ def delete_address(request, id):
 
     if request.method == 'POST':
         address.delete()
+        messages.success(request, "Address deleted.")
         return redirect('products:address_book')
 
     return render(request, 'confirm_delete.html', {'address': address})
@@ -418,7 +448,13 @@ def edit_address(request, id):
         # Pass the instance so the form knows it's an update, not a new entry
         form = AddressForm(request.POST, instance=address)
         if form.is_valid():
-            form.save()
+            updated_address = form.save()
+            
+            # Ensure only one default address per user
+            if updated_address.is_default:
+                Address.objects.filter(user=request.user).exclude(id=updated_address.id).update(is_default=False)
+            
+            messages.success(request, "Address updated.")
             return redirect('products:address_book')
     else:
         # Populate the form with the existing address data

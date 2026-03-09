@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 800px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold">Order #{{ order.id }}</h4>
+        <a href="{% url 'products:my_orders' %}" class="btn btn-outline-primary btn-sm">
+            <i class="fas fa-arrow-left"></i> Back to Orders
+        </a>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h6 class="mb-0 fw-bold">Order Summary</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Order Date:</strong> {{ order.created_at|date:"F j, Y g:i A" }}</p>
+                    <p class="mb-1"><strong>Status:</strong>
+                        {% if order.status == 'Paid' %}
+                            <span class="badge bg-success">Paid</span>
+                        {% elif order.status == 'Pending' %}
+                            <span class="badge bg-warning text-dark">Pending Payment</span>
+                        {% else %}
+                            <span class="badge bg-danger">{{ order.status }}</span>
+                        {% endif %}
+                    </p>
+                    <p class="mb-1"><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+                    {% if order.transaction_id %}
+                        <p class="mb-1"><strong>Transaction ID:</strong> {{ order.transaction_id }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Phone:</strong> {{ order.phone_number }}</p>
+                    {% if order.address %}
+                        <p class="mb-1"><strong>Delivery Address:</strong></p>
+                        <address class="text-muted small">
+                            {{ order.address.first_name }} {{ order.address.last_name }}<br>
+                            {{ order.address.street }}<br>
+                            {{ order.address.town.name }}, {{ order.address.town.county.name }}<br>
+                            {% if order.address.postal_code %}Postal Code: {{ order.address.postal_code }}<br>{% endif %}
+                        </address>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light">
+            <h6 class="mb-0 fw-bold">Order Items</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 py-3">Product</th>
+                            <th class="py-3 text-center">Quantity</th>
+                            <th class="py-3 text-end">Unit Price</th>
+                            <th class="py-3 text-end pe-4">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                            <i class="fas fa-image text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <h6 class="mb-0">{{ item.product.name }}</h6>
+                                        <small class="text-muted">{{ item.product.category.name|default:"Uncategorized" }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 text-center">{{ item.quantity }}</td>
+                            <td class="py-3 text-end">KSh {{ item.price }}</td>
+                            <td class="py-3 text-end pe-4 fw-bold">KSh {{ item.subtotal }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="bg-light">
+                        <tr>
+                            <td colspan="3" class="ps-4 py-3 fw-bold">Total Amount</td>
+                            <td class="py-3 text-end pe-4 fw-bold fs-5 text-primary">KSh {{ order.total_price }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{% url 'products:index' %}" class="btn btn-primary">
+            <i class="fas fa-shopping-bag"></i> Continue Shopping
+        </a>
+        {% if order.status == 'Paid' %}
+            <button class="btn btn-success" disabled>
+                <i class="fas fa-check"></i> Order Completed
+            </button>
+        {% elif order.status == 'Pending' %}
+            <button class="btn btn-warning" disabled>
+                <i class="fas fa-clock"></i> Payment Pending
+            </button>
+        {% else %}
+            <button class="btn btn-danger" disabled>
+                <i class="fas fa-times"></i> Payment Failed
+            </button>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

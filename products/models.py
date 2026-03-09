@@ -55,23 +55,8 @@ class CartItem(models.Model):
     def subtotal(self):
         return self.product.price * self.quantity
 
-# 5. ORDER
-class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product_names = models.TextField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    phone_number = models.CharField(max_length=15)
-    transaction_id = models.CharField(max_length=100, null=True, blank=True)
-    payment_method = models.CharField(max_length=50, default='M-Pesa')
-    status = models.CharField(max_length=50, default='Pending')
-    created_at = models.DateTimeField(auto_now_add=True)
-    address = models.TextField(blank=True, null=True)
 
-    def __str__(self):
-        return f"Order {self.id} by {self.user.username}"
-
-
-# 7. WISHLIST
+# 5. WISHLIST
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -80,7 +65,7 @@ class Wishlist(models.Model):
     def __str__(self):
         return f"{self.user.username}'s wishlist: {self.product.name}"
 
-# 8. ADDRESS
+# 6. ADDRESS
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     # ADD THESE TWO LINES:
@@ -99,5 +84,33 @@ class Address(models.Model):
     # THIS IS THE ONLY ALLOWED META ATTRIBUTE FOR THIS MODEL
     class Meta:
         verbose_name_plural = "Addresses"
+
+# 7. ORDER
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    phone_number = models.CharField(max_length=15)
+    transaction_id = models.CharField(max_length=100, null=True, blank=True)
+    payment_method = models.CharField(max_length=50, default='M-Pesa')
+    status = models.CharField(max_length=50, default='Pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"Order {self.id} by {self.user.username}"
+
+# 8. ORDER ITEM
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)  # price at time of purchase
+
+    @property
+    def subtotal(self):
+        return self.quantity * self.price
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name} in Order {self.order.id}"
 
 

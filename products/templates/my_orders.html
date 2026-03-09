@@ -17,6 +17,7 @@
                             <th class="py-3">Date</th>
                             <th class="py-3">Status</th>
                             <th class="py-3 text-end pe-4">Total Amount</th>
+                            <th class="py-3 text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,10 +35,15 @@
                                 {% endif %}
                             </td>
                             <td class="py-3 text-end pe-4 fw-bold">KSh {{ order.total_price }}</td>
+                            <td class="py-3 text-center">
+                                <a href="{% url 'products:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="4" class="text-center py-5">
+                            <td colspan="5" class="text-center py-5">
                                 <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
                                 <p class="text-muted">You haven't placed any orders yet.</p>
                                 <a href="{% url 'products:index' %}" class="btn btn-primary btn-sm">Start Shopping</a>

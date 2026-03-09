@@ -72,11 +72,8 @@
 
                         <div class="mb-2 border-top pt-2 bg-light rounded p-1">
                             <p class="small text-muted mb-1 description-text">
-                                {{ product.description|default:"No description yet." }}
+                                {{ product.description }}
                             </p>
-                            <a href="{% url 'products:generate_desc' product.id %}" class="btn btn-sm btn-outline-info w-100 ai-btn">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Write
-                            </a>
                         </div>
 
                         <div class="mt-auto">

@@ -4,7 +4,7 @@ from . import views
 app_name = 'products'
 
 urlpatterns = [
-path('get-towns/', views.get_towns, name='get_towns'),
+    path('get-towns/', views.get_towns, name='get_towns'),
     # --- Home & Shop ---
     path('', views.index, name='index'),  # This is the ONLY root path
 
@@ -32,20 +32,13 @@ path('get-towns/', views.get_towns, name='get_towns'),
     # --- User Account & Orders ---
     path('account/', views.account_settings, name='account_settings'),
     path('orders/', views.my_orders, name='my_orders'),
+    path('order/<int:order_id>/', views.order_detail, name='order_detail'),
     path('address-book/', views.address_book, name='address_book'),
-
     path('add-address/', views.add_address, name='add_address'),
+    path('edit-address/<int:id>/', views.edit_address, name='edit_address'),
+    path('delete-address/<int:id>/', views.delete_address, name='delete_address'),
 
     # --- AI & Details ---
-    path('generate-desc/<int:product_id>/', views.generate_description, name='generate_desc'),
     path('api/suggestions/', views.search_suggestions, name='search_suggestions'),
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
-path('orders/', views.my_orders, name='my_orders'),
-path('generate-desc/<int:product_id>/', views.generate_description, name='generate_desc'),
-path('api/suggestions/', views.search_suggestions, name='search_suggestions'),
-path('product/<int:product_id>/', views.product_detail, name='product_detail'),
-# Add this inside urlpatterns
-path('add-address/', views.add_address, name='add_address'),
-path('edit-address/<int:id>/', views.edit_address, name='edit_address'),
-path('delete-address/<int:id>/', views.delete_address, name='delete_address'),
 ]
