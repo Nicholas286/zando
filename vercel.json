@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/products/(.*)", "destination": "https://zando-online-shopping.onrender.com/products/$1" },
+    { "source": "/admin/(.*)",    "destination": "https://zando-online-shopping.onrender.com/admin/$1" },
+    { "source": "/media/(.*)",    "destination": "https://zando-online-shopping.onrender.com/media/$1" },
+    { "source": "/static/(.*)",   "destination": "https://zando-online-shopping.onrender.com/static/$1" },
+    { "source": "/sitemap.xml",   "destination": "https://zando-online-shopping.onrender.com/sitemap.xml" },
+    { "source": "/",              "destination": "https://zando-online-shopping.onrender.com/" }
+  ]
+}

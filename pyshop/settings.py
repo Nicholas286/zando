@@ -11,7 +11,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'a-safe-fallback-for-local-only')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # 3. Allowed hosts
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'zando-online-shopping.onrender.com', '.onrender.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'zando-online-shopping.onrender.com', '.onrender.com', '.vercel.app']
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -83,7 +83,7 @@ MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET')
 MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE')
 MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY')
 
-CSRF_TRUSTED_ORIGINS = ['https://zando-online-shopping.onrender.com', 'https://*.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://zando-online-shopping.onrender.com', 'https://*.onrender.com', 'https://*.vercel.app']
 
 LOGIN_REDIRECT_URL = 'products:index'
 LOGOUT_REDIRECT_URL = 'products:index'
