@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
+from django.http import HttpResponse
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from products.sitemaps import ProductSitemap, CategorySitemap
@@ -19,6 +20,7 @@ urlpatterns = [
     path('', lambda request: redirect('products:index')),
     path('sitemap.xml', sitemap, {'sitemaps': {'products': ProductSitemap, 'categories': CategorySitemap}}, name='django.contrib.sitemaps.views.sitemap'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
+    path('health', lambda request: HttpResponse('ok')),
 ]
 
 if settings.DEBUG:
