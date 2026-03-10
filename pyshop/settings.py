@@ -10,10 +10,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'a-safe-fallback-for-local-only')
 # 2. DEBUG should only be True if you explicitly set it to 'True'
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# 3. Only allow your production domain
-ALLOWED_HOSTS = ['zando-online-shopping.onrender.com', 'localhost', '127.0.0.1']
-DEBUG = True
-['127.0.0.1', 'localhost']
+# 3. Allowed hosts
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'zando-online-shopping.onrender.com', '.onrender.com']
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -85,7 +83,7 @@ MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET')
 MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE')
 MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY')
 
-CSRF_TRUSTED_ORIGINS = ['https://zando-online-shopping.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://zando-online-shopping.onrender.com', 'https://*.onrender.com']
 
 LOGIN_REDIRECT_URL = 'products:index'
 LOGOUT_REDIRECT_URL = 'products:index'
@@ -103,3 +101,6 @@ EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'admin@zando.com')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
