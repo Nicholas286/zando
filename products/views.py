@@ -16,7 +16,7 @@ import os
 # Import all models from one place
 from .models import (
     Product, Category, Cart, CartItem, Order,
-    Wishlist, County, Town, Address
+    Wishlist, County, Town, Address, Review
 )
 # In products/views.py
 
@@ -92,76 +92,99 @@ def remove_from_wishlist(request, product_id):
 
 # --- CART MANAGEMENT VIEWS ---
 
-@login_required
 def add_to_cart(request, product_id):
-    cart = get_user_cart(request.user)
     product = get_object_or_404(Product, id=product_id)
-
-    # Get or create the item
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-
-    # If it already existed, increment the quantity
-    if not created:
-        cart_item.quantity += 1
-        cart_item.save()
-    # If it was 'created', it already has quantity=1 (your default),
-    # but we should ensure it's saved to the DB
+    if request.user.is_authenticated:
+        cart = get_user_cart(request.user)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
     else:
-        cart_item.save()
-
+        session_cart = request.session.get('cart', {})
+        key = str(product_id)
+        session_cart[key] = session_cart.get(key, 0) + 1
+        request.session['cart'] = session_cart
+        request.session.modified = True
     messages.success(request, f"{product.name} added!")
-    return redirect(request.META.get('HTTP_REFERER', 'products:index')) # Redirect to view_cart so you can verify immediately
+    return redirect(request.META.get('HTTP_REFERER', 'products:view_cart'))
 
-@login_required
 def increase_cart(request, product_id):
-    cart = get_user_cart(request.user)
-    item = get_object_or_404(CartItem, cart=cart, product_id=product_id)
-    item.quantity += 1
-    item.save()
-    return redirect('products:view_cart')
-
-@login_required
-def decrease_cart(request, product_id):
-    cart = get_user_cart(request.user)
-    item = get_object_or_404(CartItem, cart=cart, product_id=product_id)
-    if item.quantity > 1:
-        item.quantity -= 1
+    if request.user.is_authenticated:
+        cart = get_user_cart(request.user)
+        item = get_object_or_404(CartItem, cart=cart, product_id=product_id)
+        item.quantity += 1
         item.save()
     else:
-        item.delete()
+        session_cart = request.session.get('cart', {})
+        key = str(product_id)
+        if key in session_cart:
+            session_cart[key] += 1
+            request.session['cart'] = session_cart
+            request.session.modified = True
     return redirect('products:view_cart')
 
-@login_required
+def decrease_cart(request, product_id):
+    if request.user.is_authenticated:
+        cart = get_user_cart(request.user)
+        item = get_object_or_404(CartItem, cart=cart, product_id=product_id)
+        if item.quantity > 1:
+            item.quantity -= 1
+            item.save()
+        else:
+            item.delete()
+    else:
+        session_cart = request.session.get('cart', {})
+        key = str(product_id)
+        if key in session_cart:
+            if session_cart[key] > 1:
+                session_cart[key] -= 1
+            else:
+                session_cart.pop(key)
+            request.session['cart'] = session_cart
+            request.session.modified = True
+    return redirect('products:view_cart')
+
 def remove_from_cart(request, product_id):
-    cart = get_user_cart(request.user)
-    CartItem.objects.filter(cart=cart, product_id=product_id).delete()
+    if request.user.is_authenticated:
+        cart = get_user_cart(request.user)
+        CartItem.objects.filter(cart=cart, product_id=product_id).delete()
+    else:
+        session_cart = request.session.get('cart', {})
+        key = str(product_id)
+        if key in session_cart:
+            session_cart.pop(key)
+            request.session['cart'] = session_cart
+            request.session.modified = True
     return redirect('products:view_cart')
 
 
 # --- AUTH VIEWS ---
 
 def register_view(request):
+    next_url = request.GET.get('next') or request.POST.get('next')
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            return redirect('products:index')
+            return redirect(next_url or 'products:index')
     else:
         form = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'register.html', {'form': form, 'next': next_url})
 
 
 def login_view(request):
+    next_url = request.GET.get('next') or request.POST.get('next')
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
-            return redirect('products:index')
+            return redirect(next_url or 'products:index')
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'next': next_url})
 
 
 def logout_view(request):
@@ -171,26 +194,29 @@ def logout_view(request):
 
 # --- MAIN SHOP VIEWS ---
 
-@login_required
 def view_cart(request):
-    # 1. Get or create the cart so it's never None
-    cart, created = Cart.objects.get_or_create(user=request.user)
-
-    # 2. Get all items
-    cart_items = cart.items.all()
-
-    # 3. Calculate total quantity from the database
-    total_quantity = cart_items.aggregate(total=Sum('quantity'))['total'] or 0
-
-    # 4. Use the model's property for price
-    total_price = cart.total_price
-
-    # 5. Get wishlist items
-    wishlist_items = Wishlist.objects.filter(user=request.user)[:5]  # Show first 5
-
-    # 6. Get recently viewed products (first 5 products as recently viewed)
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        cart_items = cart.items.all()
+        total_quantity = cart_items.aggregate(total=Sum('quantity'))['total'] or 0
+        total_price = cart.total_price
+        wishlist_items = Wishlist.objects.filter(user=request.user)[:5]
+    else:
+        session_cart = request.session.get('cart', {})
+        cart_items = []
+        total_quantity = 0
+        total_price = 0
+        for pid_str, qty in session_cart.items():
+            try:
+                product = Product.objects.get(id=int(pid_str))
+                subtotal = product.price * qty
+                cart_items.append({'product': product, 'quantity': qty, 'subtotal': subtotal})
+                total_quantity += qty
+                total_price += subtotal
+            except Product.DoesNotExist:
+                continue
+        wishlist_items = []
     recently_viewed = Product.objects.all()[:5]
-
     return render(request, 'cart.html', {
         'cart_items': cart_items,
         'total_price': total_price,
@@ -203,16 +229,49 @@ def view_cart(request):
 # --- CHECKOUT & MPESA CALLBACK ---
 @login_required
 def checkout(request):
+    # Merge any session-based cart into the user's DB cart on checkout
+    session_cart = request.session.get('cart')
+    if session_cart:
+        db_cart = get_user_cart(request.user)
+        for pid_str, qty in session_cart.items():
+            try:
+                product = Product.objects.get(id=int(pid_str))
+                item, created = CartItem.objects.get_or_create(cart=db_cart, product=product)
+                if not created:
+                    item.quantity += int(qty)
+                else:
+                    item.quantity = int(qty)
+                item.save()
+            except Product.DoesNotExist:
+                continue
+        request.session.pop('cart')
+        request.session.modified = True
     cart = get_user_cart(request.user)
     items = cart.items.all()
     # Import these at the top of your file
-    from .models import Order, County, Town, Address, OrderItem
+    from .models import Order, County, Town, Address, OrderItem, Coupon
 
     if not items.exists():
         messages.warning(request, "Your cart is empty.")
         return redirect('products:index')
 
     total_price = cart.total_price
+    coupon_code = None
+    discount = 0
+    if request.method == 'POST':
+        submitted_coupon = request.POST.get('coupon')
+        if submitted_coupon:
+            coupon_obj = Coupon.objects.filter(code__iexact=submitted_coupon, active=True).first()
+            if coupon_obj:
+                from django.utils import timezone
+                now = timezone.now()
+                if (not coupon_obj.starts_at or coupon_obj.starts_at <= now) and (not coupon_obj.ends_at or coupon_obj.ends_at >= now) and total_price >= coupon_obj.min_total:
+                    discount = coupon_obj.compute_discount(total_price)
+                    coupon_code = coupon_obj.code
+                else:
+                    messages.warning(request, "This coupon is not valid for your order.")
+            else:
+                messages.warning(request, "Invalid coupon code.")
     
     # Get all user addresses for selection
     addresses = Address.objects.filter(user=request.user)
@@ -233,7 +292,7 @@ def checkout(request):
 
         # Calculate delivery fee
         delivery_fee = 500 if delivery_method == 'express' else 0
-        final_total = total_price + delivery_fee
+        final_total = total_price - discount + delivery_fee
 
         # Get phone number - prefer M-Pesa phone if entered, otherwise use address phone
         if payment_method == 'mpesa':
@@ -251,7 +310,9 @@ def checkout(request):
             phone_number=order_phone,
             payment_method='M-Pesa' if payment_method == 'mpesa' else 'Pay on Delivery',
             status='Pending',
-            address=selected_address
+            address=selected_address,
+            coupon_code=coupon_code,
+            discount_amount=discount
         )
 
         # Create OrderItems
@@ -297,8 +358,10 @@ def checkout(request):
         'cart_items': items,
         'addresses': addresses,
         'default_address': default_address,
-        'delivery_fee': 0,  # Default delivery fee
-        'final_total': total_price  # Default final total
+        'delivery_fee': 0,
+        'final_total': total_price,
+        'coupon_code': coupon_code,
+        'discount': discount
     })
 
 
@@ -378,7 +441,45 @@ def index(request):
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     related = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
-    return render(request, 'product_detail.html', {'product': product, 'related_products': related})
+    reviews = Review.objects.filter(product=product).order_by('-created_at')[:10]
+    return render(request, 'product_detail.html', {'product': product, 'related_products': related, 'reviews': reviews})
+
+@login_required
+def submit_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        try:
+            rating = int(request.POST.get('rating', 0))
+        except (TypeError, ValueError):
+            rating = 0
+        comment = (request.POST.get('comment') or '').strip()
+        if 1 <= rating <= 5:
+            Review.objects.update_or_create(
+                product=product,
+                user=request.user,
+                defaults={'rating': rating, 'comment': comment}
+            )
+            messages.success(request, "Thank you for your review.")
+        else:
+            messages.error(request, "Please select a rating between 1 and 5.")
+    return redirect('products:product_detail', product_id=product.id)
+
+def vouchers(request):
+    from .models import Coupon
+    from django.utils import timezone
+    now = timezone.now()
+    coupons = Coupon.objects.filter(active=True).all()
+    visible = []
+    for c in coupons:
+        if (not c.starts_at or c.starts_at <= now) and (not c.ends_at or c.ends_at >= now):
+            visible.append(c)
+    return render(request, 'vouchers.html', {'coupons': visible})
+
+@login_required
+def inbox(request):
+    # Placeholder inbox view
+    messages.info(request, "No new messages.")
+    return render(request, 'inbox.html', {})
 
 
 from django.shortcuts import render, redirect

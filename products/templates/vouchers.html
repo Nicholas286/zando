@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+<div class="container" style="padding-top: 2rem; max-width: 800px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold">Vouchers</h4>
+        <a href="{% url 'products:checkout' %}" class="btn btn-primary btn-sm">Go to Checkout</a>
+    </div>
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Code</th>
+                        <th>Description</th>
+                        <th>Discount</th>
+                        <th>Min Total</th>
+                        <th>Valid</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in coupons %}
+                    <tr>
+                        <td class="fw-bold">{{ c.code }}</td>
+                        <td>{{ c.description|default:'-' }}</td>
+                        <td>
+                            {% if c.discount_percent %}{{ c.discount_percent }}%{% endif %}
+                            {% if c.discount_amount and c.discount_amount|floatformat:"-2" != '0' %}
+                                {% if c.discount_percent %}+{% endif %} KSh {{ c.discount_amount|floatformat:"-2"|intcomma }}
+                            {% endif %}
+                        </td>
+                        <td>KSh {{ c.min_total|floatformat:"-2"|intcomma }}</td>
+                        <td>
+                            {% if c.starts_at %}from {{ c.starts_at|date:"M d" }}{% else %}Now{% endif %}
+                            {% if c.ends_at %} to {{ c.ends_at|date:"M d" }}{% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="navigator.clipboard.writeText('{{ c.code }}'); this.innerText='Copied';">Copy</button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">No vouchers available.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

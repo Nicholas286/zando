@@ -1,14 +1,21 @@
 {% extends 'base.html' %}
+{% load humanize %}
+{% block head_extra %}
+<meta name="description" content="{{ product.name }} - {{ product.description|truncatewords:20 }}">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "Product", "name": "{{ product.name|escapejs }}", "image": ["{% if product.image %}{{ product.image.url }}{% endif %}"], "description": "{{ product.description|default:''|escapejs }}", "offers": {"@type": "Offer", "priceCurrency": "KES", "price": "{{ product.price }}", "availability": "https://schema.org/InStock"}}
+</script>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container" style="padding-top: 2rem;">
     <div class="row g-3">
         <div class="col-lg-4 col-md-5">
             <div class="card border-0 shadow-sm p-3 h-100">
-                <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}" loading="lazy">
 
                 <div class="mt-3 d-flex gap-2">
-                    <img src="{{ product.image.url }}" class="img-thumbnail border-primary" style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;">
+                    <img src="{{ product.image.url }}" class="img-thumbnail border-primary" style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;" loading="lazy">
                 </div>
 
                 <hr>
@@ -37,8 +44,8 @@
                     </div>
                 </div>
 
-                <h3 class="fw-bold text-dark">KSh {{ product.price }}</h3>
-                <p class="text-muted small text-decoration-line-through mb-0">KSh {{ product.price|add:"500" }}</p>
+                <h3 class="fw-bold text-dark">KSh {{ product.price|floatformat:"-2"|intcomma }}</h3>
+                <p class="text-muted small text-decoration-line-through mb-0">KSh {{ product.price|add:"500"|floatformat:"-2"|intcomma }}</p>
                 <span class="badge bg-warning text-dark small" style="width: fit-content;">-15%</span>
 
                 <hr>
@@ -89,10 +96,10 @@
             <div class="col">
                 <div class="card shadow-sm border-0 h-100">
                     <a href="{% url 'products:product_detail' related.id %}" class="text-decoration-none">
-                        <img src="{{ related.image.url }}" class="card-img-top p-3" alt="{{ related.name }}" style="height: 180px; object-fit: contain;">
+                        <img src="{{ related.image.url }}" class="card-img-top p-3" alt="{{ related.name }}" style="height: 180px; object-fit: contain;" loading="lazy">
                         <div class="card-body">
                             <h6 class="card-title text-dark text-truncate">{{ related.name }}</h6>
-                            <p class="text-pro fw-bold mb-0">KSh {{ related.price }}</p>
+                            <p class="text-pro fw-bold mb-0">KSh {{ related.price|floatformat:"-2"|intcomma }}</p>
                         </div>
                     </a>
                 </div>
@@ -101,6 +108,50 @@
             <p class="text-muted small">No related products found.</p>
             {% endfor %}
         </div>
+    </div>
+
+    <div class="mt-5">
+        <h4 class="fw-bold mb-3">Customer Reviews</h4>
+        {% if reviews %}
+            {% for r in reviews %}
+            <div class="border rounded p-3 mb-2 bg-white">
+                <div class="d-flex justify-content-between">
+                    <strong>{{ r.user.username }}</strong>
+                    <span class="text-warning">{{ r.rating }}/5</span>
+                </div>
+                {% if r.comment %}<p class="mb-0 mt-1">{{ r.comment }}</p>{% endif %}
+                <small class="text-muted">{{ r.created_at|date:"M d, Y" }}</small>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No reviews yet.</p>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'products:submit_review' product.id %}" class="mt-3">
+            {% csrf_token %}
+            <div class="row g-2">
+                <div class="col-12 col-md-3">
+                    <select name="rating" class="form-select" required>
+                        <option value="">Rate</option>
+                        <option value="5">5 - Excellent</option>
+                        <option value="4">4 - Good</option>
+                        <option value="3">3 - Average</option>
+                        <option value="2">2 - Poor</option>
+                        <option value="1">1 - Bad</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-7">
+                    <input type="text" name="comment" class="form-control" placeholder="Write a short review (optional)">
+                </div>
+                <div class="col-12 col-md-2 d-grid">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+        {% else %}
+        <p class="text-muted mt-2">Please <a href="{% url 'products:login' %}?next={% url 'products:product_detail' product.id %}">login</a> to write a review.</p>
+        {% endif %}
     </div>
 </div>
 

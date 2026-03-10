@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
-<div class="container mt-4" style="max-width: 800px;">
+<div class="container" style="max-width: 800px; padding-top: 2rem;">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold">Order #{{ order.id }}</h4>
         <a href="{% url 'products:my_orders' %}" class="btn btn-outline-primary btn-sm">
@@ -83,15 +84,15 @@
                                 </div>
                             </td>
                             <td class="py-3 text-center">{{ item.quantity }}</td>
-                            <td class="py-3 text-end">KSh {{ item.price }}</td>
-                            <td class="py-3 text-end pe-4 fw-bold">KSh {{ item.subtotal }}</td>
+                            <td class="py-3 text-end">KSh {{ item.price|floatformat:"-2"|intcomma }}</td>
+                            <td class="py-3 text-end pe-4 fw-bold">KSh {{ item.subtotal|floatformat:"-2"|intcomma }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                     <tfoot class="bg-light">
                         <tr>
                             <td colspan="3" class="ps-4 py-3 fw-bold">Total Amount</td>
-                            <td class="py-3 text-end pe-4 fw-bold fs-5 text-primary">KSh {{ order.total_price }}</td>
+                            <td class="py-3 text-end pe-4 fw-bold fs-5 text-primary">KSh {{ order.total_price|floatformat:"-2"|intcomma }}</td>
                         </tr>
                     </tfoot>
                 </table>

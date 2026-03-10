@@ -4,6 +4,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps.views import sitemap
+from products.sitemaps import ProductSitemap, CategorySitemap
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -14,6 +17,8 @@ urlpatterns = [
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
 
     path('', lambda request: redirect('products:index')),
+    path('sitemap.xml', sitemap, {'sitemaps': {'products': ProductSitemap, 'categories': CategorySitemap}}, name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
 ]
 
 if settings.DEBUG:

@@ -41,4 +41,7 @@ urlpatterns = [
     # --- AI & Details ---
     path('api/suggestions/', views.search_suggestions, name='search_suggestions'),
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
+    path('product/<int:product_id>/review/', views.submit_review, name='submit_review'),
+    path('vouchers/', views.vouchers, name='vouchers'),
+    path('inbox/', views.inbox, name='inbox'),
 ]

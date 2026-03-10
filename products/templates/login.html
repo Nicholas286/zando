@@ -5,13 +5,14 @@
         <h4 class="text-center fw-bold mb-4" style="color: #f68b1e;">Login to ZANDO</h4>
         <form method="POST">
             {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
             <div class="mb-3">
                 {{ form.as_p }}
             </div>
             <button type="submit" class="btn btn-warning w-100 fw-bold py-2">LOGIN</button>
         </form>
         <div class="text-center mt-3">
-            <small>New to ZANDO? <a href="{% url 'products:register' %}" class="text-warning text-decoration-none fw-bold">Create an account</a></small>
+            <small>New to ZANDO? <a href="{% url 'products:register' %}{% if next %}?next={{ next }}{% endif %}" class="text-warning text-decoration-none fw-bold">Create an account</a></small>
         </div>
     </div>
 </div>

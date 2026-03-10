@@ -33,6 +33,24 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class Coupon(models.Model):
+    code = models.CharField(max_length=50, unique=True)
+    description = models.CharField(max_length=255, blank=True)
+    discount_percent = models.PositiveIntegerField(default=0)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    min_total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    active = models.BooleanField(default=True)
+    starts_at = models.DateTimeField(null=True, blank=True)
+    ends_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.code
+
+    def compute_discount(self, subtotal):
+        fixed = self.discount_amount or 0
+        percent = (subtotal * self.discount_percent / 100) if self.discount_percent else 0
+        return max(fixed, percent)
+
 # 3. CART
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -87,14 +105,25 @@ class Address(models.Model):
 
 # 7. ORDER
 class Order(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Processing', 'Processing'),
+        ('Paid', 'Paid'),
+        ('Shipped', 'Shipped'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     phone_number = models.CharField(max_length=15)
     transaction_id = models.CharField(max_length=100, null=True, blank=True)
     payment_method = models.CharField(max_length=50, default='M-Pesa')
-    status = models.CharField(max_length=50, default='Pending')
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True)
+    coupon_code = models.CharField(max_length=50, blank=True, null=True)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"
@@ -112,5 +141,15 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in Order {self.order.id}"
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField()
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review {self.rating} for {self.product.name} by {self.user.username}"
 
 

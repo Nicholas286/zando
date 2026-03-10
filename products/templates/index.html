@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
 <div class="row">
@@ -26,7 +27,7 @@
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm p-3 sticky-top" style="top: 100px; z-index: 10;">
+        <div class="card border-0 shadow-sm p-3 sticky-top" style="top: var(--page-top-offset, 84px); z-index: 10;">
             <h6 class="fw-bold mb-3 border-bottom pb-2">REFINE SEARCH</h6>
             {% include 'includes/filter_form.html' %}
         </div>
@@ -58,7 +59,7 @@
 
                     <a href="{% url 'products:product_detail' product.id %}" class="text-center">
                         {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top p-2" style="height: 150px; object-fit: contain;">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top p-2" style="height: 150px; object-fit: contain;" loading="lazy">
                         {% else %}
                             <div class="card-img-top p-2 d-flex align-items-center justify-content-center bg-light" style="height: 150px;">
                                 <i class="fa-solid fa-image text-muted fa-2x"></i>
@@ -68,7 +69,7 @@
 
                     <div class="card-body p-2 d-flex flex-column text-center">
                         <h6 class="card-title text-truncate small mb-1 text-dark">{{ product.name }}</h6>
-                        <p class="fw-bold mb-2 text-primary">KSh {{ product.price }}</p>
+                        <p class="fw-bold mb-2 text-primary">KSh {{ product.price|floatformat:"-2"|intcomma }}</p>
 
                         <div class="mb-2 border-top pt-2 bg-light rounded p-1">
                             <p class="small text-muted mb-1 description-text">

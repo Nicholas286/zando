@@ -1,10 +1,23 @@
 {% extends 'base.html' %}
+{% load humanize %}
 {% block content %}
-<div class="container mt-4">
+<div class="container" style="padding-top: 2rem;">
     <!-- CART HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold">Cart ({{ total_quantity|default:"0" }})</h4>
     </div>
+    {% if not user.is_authenticated %}
+    <div class="alert alert-info border-0 shadow-sm d-flex justify-content-between align-items-center">
+        <div>
+            <strong>Checkout requires an account.</strong>
+            You can add and review items now. Login or create an account to complete your order.
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'products:login' %}?next={% url 'products:checkout' %}" class="btn btn-primary btn-sm fw-bold">Login</a>
+            <a href="{% url 'products:register' %}?next={% url 'products:checkout' %}" class="btn btn-outline-primary btn-sm fw-bold">Register</a>
+        </div>
+    </div>
+    {% endif %}
 
     <div class="row">
         <!-- MAIN CART SECTION -->
@@ -15,7 +28,7 @@
                     <!-- Product Image -->
                     <div class="col-3">
                         <div class="position-relative">
-                            <img src="{% if item.product.image %}{{ item.product.image.url }}{% endif %}" 
+                            <img src="{% if item.product.image %}{{ item.product.image.url }}{% endif %}" loading="lazy"
                                  class="img-fluid rounded" 
                                  style="max-height: 120px; object-fit: cover; width: 100%;">
                             <span class="badge bg-danger position-absolute top-0 start-0">Sale</span>
@@ -31,8 +44,8 @@
 
                     <!-- Price Section -->
                     <div class="col-2 text-end">
-                        <p class="fw-bold text-primary mb-1" style="font-size: 18px;">KSh {{ item.subtotal }}</p>
-                        <p class="text-muted text-decoration-line-through small mb-0">KSh {{ item.product.price|add:item.product.price }}</p>
+                        <p class="fw-bold text-primary mb-1" style="font-size: 18px;">KSh {{ item.subtotal|floatformat:"-2"|intcomma }}</p>
+                        <p class="text-muted text-decoration-line-through small mb-0">KSh {{ item.product.price|add:item.product.price|floatformat:"-2"|intcomma }}</p>
                         <p class="text-danger small fw-bold mb-0">-30%</p>
                     </div>
 
@@ -71,12 +84,12 @@
 
         <!-- CART SUMMARY SIDEBAR -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm p-4 sticky-top" style="top: 20px;">
+            <div class="card border-0 shadow-sm p-4 sticky-top" style="top: var(--page-top-offset, 84px); z-index: 100;">
                 <h6 class="fw-bold mb-4 border-bottom pb-3">CART SUMMARY</h6>
                 
                 <div class="d-flex justify-content-between mb-3">
                     <span class="text-muted">Subtotal</span>
-                    <span class="fw-bold" style="font-size: 18px; color: #ff6b35;">KSh {{ total_price }}</span>
+                    <span class="fw-bold" style="font-size: 18px; color: #ff6b35;">KSh {{ total_price|floatformat:"-2"|intcomma }}</span>
                 </div>
 
                 <div class="d-flex justify-content-between mb-4 pb-3 border-bottom">
@@ -86,12 +99,12 @@
 
                 <div class="d-flex justify-content-between mb-4">
                     <span class="fw-bold">Total</span>
-                    <span class="fw-bold" style="font-size: 20px; color: #ff6b35;">KSh {{ total_price }}</span>
+                    <span class="fw-bold" style="font-size: 20px; color: #ff6b35;">KSh {{ total_price|floatformat:"-2"|intcomma }}</span>
                 </div>
 
                 <a href="{% url 'products:checkout' %}" class="btn w-100 fw-bold py-3 mb-3" 
                    style="background-color: #ff6b35; color: white; border-radius: 6px;">
-                    CHECKOUT (KSh {{ total_price }})
+                    CHECKOUT (KSh {{ total_price|floatformat:"-2"|intcomma }})
                 </a>
 
                 <a href="{% url 'products:index' %}" class="btn btn-outline-secondary w-100 fw-bold py-2">
@@ -121,7 +134,7 @@
                     </div>
                     <div class="card-body">
                         <h6 class="card-title text-truncate small">{{ item.product.name }}</h6>
-                        <p class="fw-bold text-primary mb-2">KSh {{ item.product.price }}</p>
+                        <p class="fw-bold text-primary mb-2">KSh {{ item.product.price|floatformat:"-2"|intcomma }}</p>
                         <small class="text-muted d-block mb-3">In Stock</small>
                         <div class="d-grid gap-2">
                             <a href="{% url 'products:add_to_cart' item.product.id %}" 
@@ -155,7 +168,7 @@
                     </div>
                     <div class="card-body">
                         <h6 class="card-title text-truncate small">{{ product.name }}</h6>
-                        <p class="fw-bold text-primary mb-2">KSh {{ product.price }}</p>
+                        <p class="fw-bold text-primary mb-2">KSh {{ product.price|floatformat:"-2"|intcomma }}</p>
                         <small class="text-muted d-block mb-3">In Stock</small>
                         <div class="d-grid gap-2">
                             <a href="{% url 'products:add_to_cart' product.id %}" 
