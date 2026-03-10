@@ -5,9 +5,10 @@ services:
     plan: free
     buildCommand: |
       pip install -r requirements.txt
-      python manage.py migrate --noinput
       python manage.py collectstatic --noinput
-    startCommand: gunicorn pyshop.wsgi:application --bind 0.0.0.0:$PORT --log-file -
+    startCommand: |
+      python manage.py migrate --noinput
+      gunicorn pyshop.wsgi:application --bind 0.0.0.0:$PORT --log-file -
     envVars:
       - key: SECRET_KEY
         generateValue: true
