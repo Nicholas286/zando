@@ -23,5 +23,6 @@ urlpatterns = [
     path('health', lambda request: HttpResponse('ok')),
 ]
 
-if settings.DEBUG:
+# Serve media files locally (even if DEBUG is False), but not on Render
+if settings.DEBUG or not getattr(settings, 'IS_RENDER', False):
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

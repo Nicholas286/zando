@@ -1,8 +1,11 @@
 import os
-import dj_database_url
 from pathlib import Path
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Detect if we're running on Render
+IS_RENDER = 'RENDER' in os.environ
 
 # 1. Use Environment Variables for sensitive data
 SECRET_KEY = os.environ.get('SECRET_KEY', 'a-safe-fallback-for-local-only')
@@ -57,15 +60,26 @@ TEMPLATES = [
     },
 ]
 
-# FIX: Environment-aware Database configuration
-DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
-        conn_max_age=600,
-        # Only require SSL if using a PostgreSQL database
-        ssl_require=os.environ.get('DATABASE_URL', '').startswith('postgres://')
-    )
-}
+# Environment-aware Database configuration:
+# - Use SQLite locally
+# - Use PostgreSQL only when running on Render
+if IS_RENDER:
+    # Render provides DATABASE_URL for the managed PostgreSQL instance
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+else:
+    # Local development uses SQLite (no sslmode issues)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # 4. Configure Static and Media properly
 STATIC_URL = 'static/'
