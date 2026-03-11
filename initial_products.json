@@ -1,0 +1,270 @@
+[
+  {
+    "model": "products.category",
+    "pk": 2,
+    "fields": {
+      "name": "Phones & Tablets",
+      "icon_class": "fa-solid fa-mobile-screen"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 4,
+    "fields": {
+      "name": "Appliances",
+      "icon_class": "fa-solid fa-plug"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 5,
+    "fields": {
+      "name": "Health & Beauty",
+      "icon_class": "fa-solid fa-sparkles"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 6,
+    "fields": {
+      "name": "Home & Office",
+      "icon_class": "fa-solid fa-couch"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 7,
+    "fields": {
+      "name": "Fashion",
+      "icon_class": "fa-solid fa-shirt"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 8,
+    "fields": {
+      "name": "Computing",
+      "icon_class": "fa-solid fa-laptop"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 9,
+    "fields": {
+      "name": "Gaming",
+      "icon_class": "fa-solid fa-gamepad"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 10,
+    "fields": {
+      "name": "Supermarket",
+      "icon_class": "fa-solid fa-basket-shopping"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 11,
+    "fields": {
+      "name": "Baby Products",
+      "icon_class": "fa-solid fa-baby"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 12,
+    "fields": {
+      "name": "Other categories",
+      "icon_class": "fa-solid fa-ellipsis"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 13,
+    "fields": {
+      "name": "TVs  & Audio",
+      "icon_class": "fa-solid fa-box"
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 1,
+    "fields": {
+      "category": 4,
+      "name": "AILYONS Electric Kettle Water Heater & Boiler Jug",
+      "price": "490.00",
+      "image": "products/kettle_ailyons.jpg",
+      "stock": 23,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 2,
+    "fields": {
+      "category": 8,
+      "name": "HP ELITEBOOK 830 G6,INTEL CORE I5 8TH GEN 8GB RAM 256GB SSD NON-TOUCH (6 Months WRTY)",
+      "price": "28400.00",
+      "image": "products/hp_laptop.jpg",
+      "stock": 36,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 3,
+    "fields": {
+      "category": 8,
+      "name": "Lenovo --Lenovo Thinkpad X13 Yoga x360 core 15 16GB RAM 512GB SSD 10th generation Quad core 13.3 Inches FHD non Touch windows 11 pro, HD Camera, HDMI, USB Type C, Stylus Pen convertible 2 in 1 laptop +Mouse",
+      "price": "42999.00",
+      "image": "products/lenovo_laptop.jpg",
+      "stock": 45,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 4,
+    "fields": {
+      "category": 4,
+      "name": "VON VART-19DHS Double Door Fridge 136L - Silver (1YR WRTY)",
+      "price": "24499.00",
+      "image": "products/von_fridge_136L.jpg",
+      "stock": 60,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 5,
+    "fields": {
+      "category": 13,
+      "name": "Vitron HTC4300QFS 43\" QLED TV Bluetooth Enabled Full HD Frameless Smart Android TT, Wi-Fi Connectivity, Inbuilt Decoder, Netflix, Youtube, App Store + 6 Free Accessories (1YR WRTY)",
+      "price": "19395.00",
+      "image": "products/vitron_43_inches.jpg",
+      "stock": 72,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 6,
+    "fields": {
+      "category": null,
+      "name": "Vitron V527 - 2.1 CH Multimedia Speaker, BT/USB/SD/FM - 9000W (1YR WRTY)",
+      "price": "5490.00",
+      "image": "products/vitron_woofer.jpg",
+      "stock": 89,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 7,
+    "fields": {
+      "category": 13,
+      "name": "Hisense 32\" Inch Frameless FHD SMART TV,Netflix,WIFI,INBUILT DECODER+TV GUARD+BRACKET",
+      "price": "14599.00",
+      "image": "products/hisense_32_inches.jpg",
+      "stock": 67,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 8,
+    "fields": {
+      "category": 2,
+      "name": "Tecno CAMON 40 PRO,6.78\", Up to 16GB RAM + 256GB, 5200mAh - Black + FREE GIFTS",
+      "price": "34795.00",
+      "image": "products/camon_40.jpg",
+      "stock": 48,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 9,
+    "fields": {
+      "category": 6,
+      "name": "5FT Stylish Modern Wooden TV Stands For Up To 75'' TV",
+      "price": "6450.00",
+      "image": "products/tv_stand.jpg",
+      "stock": 42,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 10,
+    "fields": {
+      "category": 13,
+      "name": "Vitron V51SB- 2.1ch Soundbar System with Bluetooth, Black (1YR WRTY)",
+      "price": "4599.00",
+      "image": "products/woofer.jpg",
+      "stock": 25,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 11,
+    "fields": {
+      "category": 2,
+      "name": "Share thredbeat A2 Tablet, Dual SIM, 10.1-inch , 8(4+4)GB RAM/128GB ROM, Android 14, 6000 MAh Battery,Gray",
+      "price": "11505.00",
+      "image": "products/tablet.jpg",
+      "stock": 83,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 12,
+    "fields": {
+      "category": 6,
+      "name": "Istanbul 2 Modern TV Stand With LED Bulb - White & Black",
+      "price": "4539.00",
+      "image": "products/led_tv_stand.jpg",
+      "stock": 53,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 13,
+    "fields": {
+      "category": 4,
+      "name": "Em Blender 2 In 1 Grinding Machine With Durable Motor 1.5L, Black BD02",
+      "price": "1449.00",
+      "image": "products/blender.jpg",
+      "stock": 37,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 14,
+    "fields": {
+      "category": 6,
+      "name": "Stylish Mordern Coffee Table",
+      "price": "12000.00",
+      "image": "products/coffee_table.jpg",
+      "stock": 37,
+      "description": ""
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 15,
+    "fields": {
+      "category": 7,
+      "name": "Machislet Dresses For The Slim Ladies Women's Fashion Long Sleeve Loose Dreeses Ladies Dresses",
+      "price": "749.00",
+      "image": "products/1.jpg",
+      "stock": 17,
+      "description": ""
+    }
+  }
+]
