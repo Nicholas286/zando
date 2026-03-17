@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
+{% load cart_extras %}
 
 {% block content %}
 <div class="row">
@@ -71,6 +72,16 @@
                         <h6 class="card-title text-truncate small mb-1 text-dark">{{ product.name }}</h6>
                         <p class="fw-bold mb-2 text-primary">KSh {{ product.price|floatformat:"-2"|intcomma }}</p>
 
+                        {% if product.stock <= 0 %}
+                            <div class="small fw-bold text-danger mb-1">Out of stock</div>
+                        {% elif product.stock <= 10 %}
+                            <div class="small fw-bold text-danger mb-1"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ product.stock }} unit{{ product.stock|pluralize }} left</div>
+                        {% elif product.stock <= 20 %}
+                            <div class="small fw-bold text-warning mb-1"><i class="fa-solid fa-circle-exclamation me-1"></i>Few units left</div>
+                        {% else %}
+                            <div class="small fw-bold text-success mb-1">In stock</div>
+                        {% endif %}
+
                         <div class="mb-2 border-top pt-2 bg-light rounded p-1">
                             <p class="small text-muted mb-1 description-text">
                                 {{ product.description }}
@@ -78,9 +89,25 @@
                         </div>
 
                         <div class="mt-auto">
-                            <a href="{% url 'products:add_to_cart' product.id %}" class="btn btn-warning btn-sm w-100 fw-bold shadow-sm">
-                                ADD TO CART
-                            </a>
+                            {% if product.stock > 0 %}
+                                {% with qty=cart_quantities|get_item:product.id %}
+                                {% if qty %}
+                                    <div class="d-flex align-items-center justify-content-between gap-2">
+                                        <button type="button" class="btn btn-primary btn-sm fw-bold px-3 js-cart-dec" data-product-id="{{ product.id }}">−</button>
+                                        <div class="fw-bold js-cart-qty" data-product-id="{{ product.id }}">{{ qty }}</div>
+                                        <button type="button" class="btn btn-primary btn-sm fw-bold px-3 js-cart-inc" data-product-id="{{ product.id }}">+</button>
+                                    </div>
+                                {% else %}
+                                    <button type="button" class="btn btn-primary btn-sm w-100 fw-bold shadow-sm js-cart-inc" data-product-id="{{ product.id }}">
+                                        ADD TO CART
+                                    </button>
+                                {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                <button class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm" disabled>
+                                    OUT OF STOCK
+                                </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -113,4 +140,62 @@
         {% include 'includes/filter_form.html' %}
     </div>
 </div>
+
+<script>
+  function getCsrfToken() {
+    const name = 'csrftoken=';
+    const parts = document.cookie.split(';');
+    for (let p of parts) {
+      p = p.trim();
+      if (p.startsWith(name)) return decodeURIComponent(p.substring(name.length));
+    }
+    return '';
+  }
+
+  function updateCartBadge(count) {
+    const badge = document.querySelector('.fa-shopping-cart')?.closest('a')?.querySelector('.badge');
+    if (badge && typeof count !== 'undefined') badge.textContent = String(count);
+  }
+
+  async function adjustCart(productId, action) {
+    const res = await fetch(`/products/api/cart/${productId}/${action}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCsrfToken(),
+        'X-Requested-With': 'XMLHttpRequest',
+      }
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      if (data && data.error) alert(data.error === 'Stock limit' ? `Only ${data.stock} unit(s) left.` : data.error);
+      return null;
+    }
+    updateCartBadge(data.global_cart_count);
+    return data;
+  }
+
+  function renderStepper(productId, qty) {
+    const qtyEl = document.querySelector(`.js-cart-qty[data-product-id="${productId}"]`);
+    if (qtyEl) qtyEl.textContent = String(qty);
+  }
+
+  document.addEventListener('click', async (e) => {
+    const inc = e.target.closest('.js-cart-inc');
+    const dec = e.target.closest('.js-cart-dec');
+    const btn = inc || dec;
+    if (!btn) return;
+    const productId = btn.getAttribute('data-product-id');
+    const action = inc ? 'inc' : 'dec';
+    const data = await adjustCart(productId, action);
+    if (!data) return;
+
+    // If we were on "ADD TO CART" button, reload to swap button->stepper.
+    const qtyEl = document.querySelector(`.js-cart-qty[data-product-id="${productId}"]`);
+    if (qtyEl) {
+      renderStepper(productId, data.quantity);
+    } else {
+      window.location.reload();
+    }
+  });
+</script>
 {% endblock %}

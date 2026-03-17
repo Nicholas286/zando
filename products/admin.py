@@ -70,7 +70,8 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
     def product_count(self, obj):
-        return obj.product_set.count()
+        # `Product.category` uses related_name='products'
+        return obj.products.count()
     product_count.short_description = 'Products'
 
 # 2. Enhanced Product Admin
@@ -107,7 +108,26 @@ class OrderAdmin(ImportExportModelAdmin):
     search_fields = ('user__username', 'id', 'transaction_id')
     readonly_fields = ('id', 'created_at', 'transaction_id')
     inlines = [OrderItemInline]
-    actions = ['mark_as_processing', 'mark_as_paid', 'mark_as_shipped', 'mark_as_delivered', 'mark_as_cancelled', 'send_status_email']
+    actions = [
+        'mark_as_confirmed',
+        'mark_as_processing',
+        'mark_as_paid',
+        'mark_as_shipped',
+        'mark_as_ready_for_pickup',
+        'mark_as_delivered',
+        'mark_as_cancelled',
+        'send_status_email',
+    ]
+
+    def mark_as_confirmed(self, request, queryset):
+        updated = 0
+        for order in queryset:
+            if order.status != 'Confirmed':
+                order.status = 'Confirmed'
+                order.save(update_fields=['status'])
+                updated += 1
+        self.message_user(request, f"{updated} orders marked as Confirmed.")
+    mark_as_confirmed.short_description = "Mark selected orders as Confirmed"
 
     def order_actions(self, obj):
         return format_html(
@@ -117,28 +137,65 @@ class OrderAdmin(ImportExportModelAdmin):
     order_actions.short_description = 'Actions'
 
     def mark_as_processing(self, request, queryset):
-        queryset.update(status='Processing')
-        self.message_user(request, f"{queryset.count()} orders marked as Processing.")
+        updated = 0
+        for order in queryset:
+            if order.status != 'Processing':
+                order.status = 'Processing'
+                order.save(update_fields=['status'])
+                updated += 1
+        self.message_user(request, f"{updated} orders marked as Processing.")
     mark_as_processing.short_description = "Mark selected orders as Processing"
 
     def mark_as_paid(self, request, queryset):
-        queryset.update(status='Paid')
-        self.message_user(request, f"{queryset.count()} orders marked as Paid.")
+        updated = 0
+        for order in queryset:
+            if order.status != 'Paid':
+                order.status = 'Paid'
+                order.save(update_fields=['status'])
+                updated += 1
+        self.message_user(request, f"{updated} orders marked as Paid.")
     mark_as_paid.short_description = "Mark selected orders as Paid"
 
     def mark_as_shipped(self, request, queryset):
-        queryset.filter(status__in=['Paid', 'Processing']).update(status='Shipped')
-        self.message_user(request, f"{queryset.count()} orders marked as Shipped.")
+        updated = 0
+        # Allow shipping after confirm/processing/paid
+        for order in queryset.filter(status__in=['Confirmed', 'Paid', 'Processing']):
+            if order.status != 'Shipped':
+                order.status = 'Shipped'
+                order.save(update_fields=['status'])
+                updated += 1
+        self.message_user(request, f"{updated} orders marked as Shipped.")
     mark_as_shipped.short_description = "Mark selected orders as Shipped"
 
+    def mark_as_ready_for_pickup(self, request, queryset):
+        updated = 0
+        for order in queryset.filter(status__in=['Shipped', 'Processing', 'Paid']):
+            if order.status != 'Ready for Pickup':
+                order.status = 'Ready for Pickup'
+                order.save(update_fields=['status'])
+                updated += 1
+        self.message_user(request, f"{updated} orders marked as Ready for Pickup.")
+    mark_as_ready_for_pickup.short_description = "Mark selected orders as Ready for Pickup"
+
     def mark_as_delivered(self, request, queryset):
-        queryset.filter(status='Shipped').update(status='Delivered')
-        self.message_user(request, f"{queryset.count()} orders marked as Delivered.")
+        updated = 0
+        # Allow delivery after shipping or ready-for-pickup
+        for order in queryset.filter(status__in=['Shipped', 'Ready for Pickup']):
+            if order.status != 'Delivered':
+                order.status = 'Delivered'
+                order.save(update_fields=['status'])
+                updated += 1
+        self.message_user(request, f"{updated} orders marked as Delivered.")
     mark_as_delivered.short_description = "Mark selected orders as Delivered"
 
     def mark_as_cancelled(self, request, queryset):
-        queryset.update(status='Cancelled')
-        self.message_user(request, f"{queryset.count()} orders marked as Cancelled.")
+        updated = 0
+        for order in queryset:
+            if order.status != 'Cancelled':
+                order.status = 'Cancelled'
+                order.save(update_fields=['status'])
+                updated += 1
+        self.message_user(request, f"{updated} orders marked as Cancelled.")
     mark_as_cancelled.short_description = "Mark selected orders as Cancelled"
 
     def send_status_email(self, request, queryset):

@@ -63,7 +63,7 @@
                                         <div class="d-flex align-items-start">
                                             <input type="radio" name="selected_address" id="address_{{ address.id }}" 
                                                    value="{{ address.id }}" class="form-check-input mt-1" 
-                                                   {% if address.is_default %}checked{% endif %} required onchange="updateAddressDisplay()">
+                                                   {% if address.is_default or forloop.first %}checked{% endif %} required onchange="updateAddressDisplay()">
                                             <div class="ms-3 flex-grow-1">
                                                 <p class="fw-bold mb-1">{{ address.first_name }} {{ address.last_name }}</p>
                                                 <p class="text-muted small mb-1">{{ address.street }}</p>
@@ -117,7 +117,7 @@
                                 <div class="card border p-3 mb-3 delivery-card" style="cursor: pointer;">
                                     <div class="d-flex align-items-start">
                                         <input type="radio" name="delivery_method" id="delivery_standard" value="standard" 
-                                               class="form-check-input mt-1" checked required onchange="updateDeliveryDisplay()">
+                                               class="form-check-input mt-1" checked onchange="updateDeliveryDisplay()">
                                         <div class="ms-3 flex-grow-1">
                                             <label for="delivery_standard" class="fw-bold mb-2" style="cursor: pointer;">
                                                 <i class="fas fa-truck text-primary"></i> Standard Delivery
@@ -131,7 +131,7 @@
                                 <div class="card border p-3 delivery-card" style="cursor: pointer;">
                                     <div class="d-flex align-items-start">
                                         <input type="radio" name="delivery_method" id="delivery_express" value="express" 
-                                               class="form-check-input mt-1" required onchange="updateDeliveryDisplay()">
+                                               class="form-check-input mt-1" onchange="updateDeliveryDisplay()">
                                         <div class="ms-3 flex-grow-1">
                                             <label for="delivery_express" class="fw-bold mb-2" style="cursor: pointer;">
                                                 <i class="fas fa-shipping-fast text-primary"></i> Express Delivery
@@ -155,7 +155,7 @@
                                             </label>
                                             <p class="text-muted small mb-2">Enter your M-Pesa number to complete payment immediately.</p>
                                             <input type="text" name="phone_number" id="mpesaPhone" class="form-control form-control-sm" 
-                                                   placeholder="254 7XX XX XX XX" required>
+                                                   placeholder="254 7XX XX XX XX">
                                         </div>
                                     </div>
                                 </div>
@@ -211,11 +211,7 @@
 
                     
 
-                    <!-- Payment Button (Hidden) -->
-                    <div id="paymentSection" style="display: none;">
-                        <button type="submit" class="btn w-100 fw-bold py-3 mt-4" 
-                        </button>
-                    </div>
+                    <input type="hidden" name="action" id="checkoutAction" value="">
                 </form>
             </div>
 
@@ -231,7 +227,7 @@
                         <label for="coupon" class="form-label small fw-bold">Have a coupon?</label>
                         <div class="input-group input-group-sm">
                             <input type="text" class="form-control" name="coupon" id="coupon" placeholder="Enter code">
-                            <button class="btn btn-outline-primary" type="submit" form="checkoutForm">Apply</button>
+                            <button class="btn btn-outline-primary" type="submit" form="checkoutForm" onclick="setCheckoutAction('apply_coupon')">Apply</button>
                         </div>
                     </div>
 
@@ -261,9 +257,9 @@
                         <span class="fw-bold" style="font-size: 18px; color: #0066cc;" id="finalTotal">KSh {{ total_price|floatformat:"-2"|intcomma }}</span>
                     </div>
 
-                    <button type="button" class="btn w-100 fw-bold py-3" 
+                    <button type="submit" form="checkoutForm" class="btn w-100 fw-bold py-3"
                             style="background-color: #0066cc; color: white; border-radius: 6px; font-size: 16px;"
-                            onclick="proceedToPayment()">
+                            onclick="setCheckoutAction('place_order')">
                         Confirm order
                     </button>
 
@@ -394,16 +390,9 @@
         }
     }
 
-    function proceedToPayment() {
-        const addressSelected = document.querySelector('input[name="selected_address"]:checked');
-        if (!addressSelected) {
-            alert('Please select a delivery address');
-            return;
-        }
-        
-        // Show payment section and scroll to it
-        document.getElementById('paymentSection').style.display = 'block';
-        document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth' });
+    function setCheckoutAction(action) {
+        const actionInput = document.getElementById('checkoutAction');
+        if (actionInput) actionInput.value = action;
     }
 
     function saveAddressSelection() {
@@ -465,6 +454,30 @@
         togglePaymentFields();
         updateDeliveryDisplay();
         updatePaymentDisplay();
+
+        // Prevent "silent no-op" submits when required fields are hidden.
+        const form = document.getElementById('checkoutForm');
+        form.addEventListener('submit', function(e) {
+            const action = document.getElementById('checkoutAction')?.value || '';
+            if (action !== 'place_order') return;
+
+            const addressSelected = document.querySelector('input[name="selected_address"]:checked');
+            if (!addressSelected) {
+                e.preventDefault();
+                alert('Please select a delivery address');
+                document.getElementById('addressSelection').style.display = 'block';
+                return;
+            }
+
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
+            const mpesaPhone = document.getElementById('mpesaPhone');
+            if (paymentMethod === 'mpesa' && (!mpesaPhone || !mpesaPhone.value.trim())) {
+                e.preventDefault();
+                alert('Please enter your M-Pesa phone number');
+                document.getElementById('deliverySelection').style.display = 'block';
+                mpesaPhone?.focus();
+            }
+        });
     });
 </script>
 {% endblock %}

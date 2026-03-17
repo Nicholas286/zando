@@ -11,12 +11,18 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
 from django_daraja.mpesa.core import MpesaClient
+from django.conf import settings
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 import os
+from django.utils import timezone
+from datetime import timedelta
+from django.db import transaction
 
 # Import all models from one place
 from .models import (
     Product, Category, Cart, CartItem, Order,
-    Wishlist, County, Town, Address, Review
+    Wishlist, County, Town, Address, Review, OrderNotification
 )
 # In products/views.py
 
@@ -94,35 +100,129 @@ def remove_from_wishlist(request, product_id):
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    if product.stock <= 0:
+        messages.error(request, f"Sorry, {product.name} is out of stock.")
+        return redirect(request.META.get('HTTP_REFERER', 'products:index'))
     if request.user.is_authenticated:
         cart = get_user_cart(request.user)
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
         if not created:
+            if cart_item.quantity + 1 > product.stock:
+                messages.error(request, f"Only {product.stock} unit(s) left for {product.name}.")
+                return redirect(request.META.get('HTTP_REFERER', 'products:view_cart'))
             cart_item.quantity += 1
             cart_item.save()
+        else:
+            # created with default quantity=1; ensure stock allows it
+            if cart_item.quantity > product.stock:
+                cart_item.delete()
+                messages.error(request, f"Only {product.stock} unit(s) left for {product.name}.")
+                return redirect(request.META.get('HTTP_REFERER', 'products:index'))
     else:
         session_cart = request.session.get('cart', {})
         key = str(product_id)
-        session_cart[key] = session_cart.get(key, 0) + 1
+        current_qty = int(session_cart.get(key, 0) or 0)
+        if current_qty + 1 > product.stock:
+            messages.error(request, f"Only {product.stock} unit(s) left for {product.name}.")
+            return redirect(request.META.get('HTTP_REFERER', 'products:view_cart'))
+        session_cart[key] = current_qty + 1
         request.session['cart'] = session_cart
         request.session.modified = True
     messages.success(request, f"{product.name} added!")
     return redirect(request.META.get('HTTP_REFERER', 'products:view_cart'))
 
 def increase_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
     if request.user.is_authenticated:
         cart = get_user_cart(request.user)
         item = get_object_or_404(CartItem, cart=cart, product_id=product_id)
+        if item.quantity + 1 > product.stock:
+            messages.error(request, f"Only {product.stock} unit(s) left for {product.name}.")
+            return redirect('products:view_cart')
         item.quantity += 1
         item.save()
     else:
         session_cart = request.session.get('cart', {})
         key = str(product_id)
         if key in session_cart:
-            session_cart[key] += 1
+            current_qty = int(session_cart.get(key, 0) or 0)
+            if current_qty + 1 > product.stock:
+                messages.error(request, f"Only {product.stock} unit(s) left for {product.name}.")
+                return redirect('products:view_cart')
+            session_cart[key] = current_qty + 1
             request.session['cart'] = session_cart
             request.session.modified = True
     return redirect('products:view_cart')
+
+
+def cart_adjust_api(request, product_id, action):
+    """
+    Adjust cart quantity for a product via JSON (inc/dec).
+    Used by +/- steppers on listing/detail pages.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    product = get_object_or_404(Product, id=product_id)
+    if action not in {'inc', 'dec'}:
+        return JsonResponse({'error': 'Invalid action'}, status=400)
+
+    if request.user.is_authenticated:
+        cart = get_user_cart(request.user)
+        cart_item = CartItem.objects.filter(cart=cart, product=product).first()
+
+        current_qty = cart_item.quantity if cart_item else 0
+
+        if action == 'inc':
+            if product.stock <= 0:
+                return JsonResponse({'error': 'Out of stock', 'quantity': current_qty, 'stock': product.stock}, status=400)
+            if current_qty + 1 > product.stock:
+                return JsonResponse({'error': 'Stock limit', 'quantity': current_qty, 'stock': product.stock}, status=400)
+            if cart_item:
+                cart_item.quantity += 1
+                cart_item.save(update_fields=['quantity'])
+            else:
+                cart_item = CartItem.objects.create(cart=cart, product=product, quantity=1)
+
+        else:  # dec
+            if not cart_item:
+                current_qty = 0
+            elif cart_item.quantity <= 1:
+                cart_item.delete()
+                current_qty = 0
+            else:
+                cart_item.quantity -= 1
+                cart_item.save(update_fields=['quantity'])
+                current_qty = cart_item.quantity
+
+        # compute global count
+        global_count = sum(i.quantity for i in cart.items.all())
+        return JsonResponse({'quantity': current_qty, 'global_cart_count': global_count, 'stock': product.stock})
+
+    # Session cart for anonymous users
+    session_cart = request.session.get('cart', {}) or {}
+    key = str(product_id)
+    current_qty = int(session_cart.get(key, 0) or 0)
+
+    if action == 'inc':
+        if product.stock <= 0:
+            return JsonResponse({'error': 'Out of stock', 'quantity': current_qty, 'stock': product.stock}, status=400)
+        if current_qty + 1 > product.stock:
+            return JsonResponse({'error': 'Stock limit', 'quantity': current_qty, 'stock': product.stock}, status=400)
+        session_cart[key] = current_qty + 1
+        current_qty = session_cart[key]
+    else:
+        if current_qty <= 1:
+            session_cart.pop(key, None)
+            current_qty = 0
+        else:
+            session_cart[key] = current_qty - 1
+            current_qty = session_cart[key]
+
+    request.session['cart'] = session_cart
+    request.session.modified = True
+    global_count = sum(int(qty) for qty in session_cart.values())
+    return JsonResponse({'quantity': current_qty, 'global_cart_count': global_count, 'stock': product.stock})
 
 def decrease_cart(request, product_id):
     if request.user.is_authenticated:
@@ -258,30 +358,45 @@ def checkout(request):
     total_price = cart.total_price
     coupon_code = None
     discount = 0
-    if request.method == 'POST':
-        submitted_coupon = request.POST.get('coupon')
+
+    action = (request.POST.get('action') or '').strip() if request.method == 'POST' else ''
+
+    # Handle coupon application without placing an order
+    if request.method == 'POST' and action == 'apply_coupon':
+        submitted_coupon = (request.POST.get('coupon') or '').strip()
         if submitted_coupon:
             coupon_obj = Coupon.objects.filter(code__iexact=submitted_coupon, active=True).first()
             if coupon_obj:
-                from django.utils import timezone
                 now = timezone.now()
                 if (not coupon_obj.starts_at or coupon_obj.starts_at <= now) and (not coupon_obj.ends_at or coupon_obj.ends_at >= now) and total_price >= coupon_obj.min_total:
                     discount = coupon_obj.compute_discount(total_price)
                     coupon_code = coupon_obj.code
+                    messages.success(request, f"Coupon {coupon_code} applied.")
                 else:
                     messages.warning(request, "This coupon is not valid for your order.")
             else:
                 messages.warning(request, "Invalid coupon code.")
+        else:
+            messages.warning(request, "Enter a coupon code to apply.")
     
     # Get all user addresses for selection
     addresses = Address.objects.filter(user=request.user)
     default_address = addresses.filter(is_default=True).first()
 
-    if request.method == 'POST':
+    def add_business_days(start_date, days):
+        d = start_date
+        remaining = int(days)
+        while remaining > 0:
+            d = d + timedelta(days=1)
+            if d.weekday() < 5:  # Mon-Fri
+                remaining -= 1
+        return d
+
+    if request.method == 'POST' and action == 'place_order':
         payment_method = request.POST.get('payment_method')
         phone = request.POST.get('phone_number')
         selected_address_id = request.POST.get('selected_address')
-        delivery_method = request.POST.get('delivery_method', 'standard')
+        delivery_method = request.POST.get('delivery_method', 'standard') or 'standard'
 
         # Get the selected address
         try:
@@ -303,26 +418,77 @@ def checkout(request):
         else:
             order_phone = selected_address.phone
 
-        # Create the order
-        order = Order.objects.create(
-            user=request.user,
-            total_price=final_total,
-            phone_number=order_phone,
-            payment_method='M-Pesa' if payment_method == 'mpesa' else 'Pay on Delivery',
-            status='Pending',
-            address=selected_address,
-            coupon_code=coupon_code,
-            discount_amount=discount
-        )
+        # Estimate delivery dates (business days)
+        today = timezone.localdate()
+        if delivery_method == 'express':
+            est_start = add_business_days(today, 1)
+            est_end = est_start
+        else:
+            # standard / pickup defaults
+            est_start = add_business_days(today, 2)
+            est_end = add_business_days(today, 3)
 
-        # Create OrderItems
-        for item in items:
-            OrderItem.objects.create(
-                order=order,
-                product=item.product,
-                quantity=item.quantity,
-                price=item.product.price  # capture price at purchase time
-            )
+        try:
+            with transaction.atomic():
+                # Create the order
+                order = Order.objects.create(
+                user=request.user,
+                total_price=final_total,
+                phone_number=order_phone,
+                payment_method='M-Pesa' if payment_method == 'mpesa' else 'Pay on Delivery',
+                status='Pending',
+                delivery_method=delivery_method,
+                estimated_delivery_start=est_start,
+                estimated_delivery_end=est_end,
+                address=selected_address,
+                coupon_code=coupon_code,
+                discount_amount=discount
+                )
+
+                # Create OrderItems + decrement stock (locks rows to prevent oversell)
+                for item in items.select_related('product'):
+                    product = Product.objects.select_for_update().get(pk=item.product_id)
+                    if product.stock < item.quantity:
+                        messages.error(request, f"Not enough stock for {product.name}. Only {product.stock} left.")
+                        raise ValueError("Insufficient stock")
+
+                    OrderItem.objects.create(
+                        order=order,
+                        product=product,
+                        quantity=item.quantity,
+                        price=product.price  # capture price at purchase time
+                    )
+                    product.stock -= int(item.quantity)
+                    product.save(update_fields=['stock'])
+        except ValueError:
+            return redirect('products:checkout')
+
+        # Send order confirmation email (HTML + plain text). Do not block checkout if email fails.
+        try:
+            if request.user.email:
+                subject = f'Order Confirmation - Zando #{order.id}'
+                message = (
+                    f'Hi {request.user.username}, thank you for shopping with Zando! '
+                    f'Your order #{order.id} has been received.'
+                )
+                recipient_list = [request.user.email]
+                html_message = render_to_string('emails/order_confirm.html', {
+                    'username': request.user.username,
+                    'order': order,
+                    'items': order.items.select_related('product').all(),
+                })
+                send_mail(
+                    subject,
+                    message,
+                    getattr(settings, 'DEFAULT_FROM_EMAIL', 'from@zando.com'),
+                    recipient_list,
+                    html_message=html_message,
+                )
+            else:
+                messages.warning(request, "Order placed, but no email is saved on your account to send a confirmation.")
+        except Exception:
+            # Avoid breaking checkout flow; email errors should not block order placement.
+            messages.warning(request, "Order placed, but we couldn't send the confirmation email. Check email settings.")
 
         # 1. Handle M-Pesa
         if payment_method == 'mpesa':
@@ -342,7 +508,13 @@ def checkout(request):
                 order.save()
                 messages.success(request, "M-Pesa payment initiated. Please complete the payment on your phone.")
             else:
-                order.delete()  # Delete the order if STK push failed
+                # Delete the order if STK push failed (stock was already decremented)
+                # Restore stock before deleting.
+                for oi in order.items.select_related('product').all():
+                    p = oi.product
+                    p.stock += int(oi.quantity)
+                    p.save(update_fields=['stock'])
+                order.delete()
                 messages.error(request, "Failed to initiate M-Pesa payment. Please try again.")
                 return redirect('products:checkout')
 
@@ -466,7 +638,6 @@ def submit_review(request, product_id):
 
 def vouchers(request):
     from .models import Coupon
-    from django.utils import timezone
     now = timezone.now()
     coupons = Coupon.objects.filter(active=True).all()
     visible = []
@@ -477,9 +648,27 @@ def vouchers(request):
 
 @login_required
 def inbox(request):
-    # Placeholder inbox view
-    messages.info(request, "No new messages.")
-    return render(request, 'inbox.html', {})
+    notifications = OrderNotification.objects.filter(user=request.user).select_related('order')[:50]
+    return render(request, 'inbox.html', {'notifications': notifications})
+
+
+@login_required
+def inbox_detail(request, notification_id):
+    n = get_object_or_404(
+        OrderNotification.objects.select_related('order').prefetch_related('order__items__product'),
+        id=notification_id,
+        user=request.user,
+    )
+    if not n.is_read:
+        n.is_read = True
+        n.save(update_fields=['is_read'])
+
+    order = n.order
+    return render(request, 'inbox_detail.html', {
+        'notification': n,
+        'order': order,
+        'items': order.items.select_related('product').all(),
+    })
 
 
 from django.shortcuts import render, redirect

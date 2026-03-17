@@ -19,6 +19,7 @@ urlpatterns = [
     path('cart/increase/<int:product_id>/', views.increase_cart, name='increase_cart'),
     path('cart/decrease/<int:product_id>/', views.decrease_cart, name='decrease_cart'),
     path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('api/cart/<int:product_id>/<str:action>/', views.cart_adjust_api, name='cart_adjust_api'),
 
     # --- Wishlist ---
     path('wishlist/', views.view_wishlist, name='view_wishlist'),
@@ -44,4 +45,5 @@ urlpatterns = [
     path('product/<int:product_id>/review/', views.submit_review, name='submit_review'),
     path('vouchers/', views.vouchers, name='vouchers'),
     path('inbox/', views.inbox, name='inbox'),
+    path('inbox/<int:notification_id>/', views.inbox_detail, name='inbox_detail'),
 ]

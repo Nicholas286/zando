@@ -100,7 +100,12 @@
                             <li><a class="dropdown-item d-flex align-items-center py-2" href="{% url 'products:my_orders' %}">
                                 <i class="fa-solid fa-box-archive me-2"></i> Orders</a></li>
                             <li><a class="dropdown-item d-flex align-items-center py-2" href="{% url 'products:inbox' %}">
-                                <i class="fa-regular fa-envelope me-2"></i> Inbox</a></li>
+                                <i class="fa-regular fa-envelope me-2"></i>
+                                Inbox
+                                {% if inbox_unread_count|default:0 %}
+                                    <span class="badge bg-danger ms-auto">{{ inbox_unread_count }}</span>
+                                {% endif %}
+                            </a></li>
                             <li><a class="dropdown-item d-flex align-items-center py-2" href="{% url 'products:view_wishlist' %}">
                                 <i class="fa-regular fa-heart me-2"></i> Wishlist</a></li>
                             <li><a class="dropdown-item d-flex align-items-center py-2" href="{% url 'products:vouchers' %}">

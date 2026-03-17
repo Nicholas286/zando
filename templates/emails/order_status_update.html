@@ -1,0 +1,15 @@
+<div style="font-family: Arial, sans-serif; border: 1px solid #ddd; padding: 20px;">
+  <h2 style="color: #160ca4; margin-top: 0;">Zando Online Shopping</h2>
+  <p>Hello <strong>{{ username }}</strong>,</p>
+  <p><strong>{{ message }}</strong></p>
+  {% if order and order.estimated_delivery_start and order.estimated_delivery_end %}
+    <p style="margin-top: 10px; color: #333;">
+      <strong>Estimated delivery:</strong>
+      {{ order.estimated_delivery_start|date:"d M Y" }}
+      {% if order.estimated_delivery_end != order.estimated_delivery_start %}
+        - {{ order.estimated_delivery_end|date:"d M Y" }}
+      {% endif %}
+    </p>
+  {% endif %}
+  <p style="color: #666; margin-bottom: 0;">Thank you for shopping with Zando.</p>
+</div>

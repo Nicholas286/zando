@@ -1,0 +1,61 @@
+<div style="font-family: Arial, sans-serif; border: 1px solid #ddd; padding: 20px; max-width: 640px;">
+  <h2 style="color: #160ca4; margin-top: 0; margin-bottom: 8px;">Zando Online Shopping</h2>
+  <p style="margin-top: 0; color: #555;">Order confirmation</p>
+
+  <p>Hello <strong>{{ username }}</strong>,</p>
+  <p style="margin-bottom: 6px;">Thank you for shopping with Zando. Your order has been received!</p>
+
+  <div style="background: #f6f8ff; border: 1px solid #e3e8ff; padding: 12px; border-radius: 8px; margin: 14px 0;">
+    <div style="font-size: 14px; color: #333;">
+      <div><strong>Order #</strong> {{ order.id }}</div>
+      <div><strong>Status</strong> {{ order.status }}</div>
+      <div><strong>Total</strong> KSh {{ order.total_price }}</div>
+      {% if order.estimated_delivery_start and order.estimated_delivery_end %}
+        <div>
+          <strong>Estimated delivery</strong>
+          {{ order.estimated_delivery_start|date:"d M Y" }}
+          {% if order.estimated_delivery_end != order.estimated_delivery_start %}
+            - {{ order.estimated_delivery_end|date:"d M Y" }}
+          {% endif %}
+        </div>
+      {% endif %}
+      {% if order.address %}
+        <div><strong>Delivery to</strong> {{ order.address.street }}, {{ order.address.town }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <h3 style="margin: 16px 0 8px; font-size: 16px; color: #222;">Items</h3>
+  <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+    <thead>
+      <tr>
+        <th align="left" style="border-bottom: 1px solid #eee; padding: 8px 0;">Item</th>
+        <th align="right" style="border-bottom: 1px solid #eee; padding: 8px 0;">Qty</th>
+        <th align="right" style="border-bottom: 1px solid #eee; padding: 8px 0;">Price</th>
+        <th align="right" style="border-bottom: 1px solid #eee; padding: 8px 0;">Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+        <tr>
+          <td style="padding: 8px 0; border-bottom: 1px solid #f2f2f2;">{{ item.product.name }}</td>
+          <td align="right" style="padding: 8px 0; border-bottom: 1px solid #f2f2f2;">{{ item.quantity }}</td>
+          <td align="right" style="padding: 8px 0; border-bottom: 1px solid #f2f2f2;">KSh {{ item.price }}</td>
+          <td align="right" style="padding: 8px 0; border-bottom: 1px solid #f2f2f2;">KSh {{ item.subtotal }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" style="padding: 10px 0; color: #666;">No items found for this order.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div style="text-align: right; margin-top: 12px;">
+    <div style="font-size: 16px;"><strong>Total: KSh {{ order.total_price }}</strong></div>
+  </div>
+
+  <p style="margin-top: 16px; color: #666; font-size: 12px;">
+    If you have any questions, reply to this email.
+  </p>
+</div>

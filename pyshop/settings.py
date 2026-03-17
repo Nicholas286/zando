@@ -10,8 +10,8 @@ IS_RENDER = 'RENDER' in os.environ
 # 1. Use Environment Variables for sensitive data
 SECRET_KEY = os.environ.get('SECRET_KEY', 'a-safe-fallback-for-local-only')
 
-# 2. DEBUG should only be True if you explicitly set it to 'True'
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+# 2. DEBUG defaults to True locally, False on Render (can be overridden by env var)
+DEBUG = os.environ.get('DEBUG', 'True' if not IS_RENDER else 'False') == 'True'
 
 # 3. Allowed hosts
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'zando-online-shopping.onrender.com', '.onrender.com', '.vercel.app']
@@ -54,7 +54,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-'products.context_processors.cart_contents',
+                'products.context_processors.cart_contents',
+                'products.context_processors.inbox_unread_count',
+                'products.context_processors.cart_quantities',
             ],
         },
     },
@@ -108,13 +110,22 @@ ROOT_URLCONF = 'pyshop.urls'
 WSGI_APPLICATION = 'pyshop.wsgi.application'
 
 # Email settings for order notifications
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'admin@zando.com')
+
+# Use SMTP only when credentials are configured; otherwise print emails to console locally.
+if IS_RENDER or (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
+# Only force Secure cookies on Render/HTTPS deployments.
+# When running locally over http://, Secure cookies break CSRF validation.
+SESSION_COOKIE_SECURE = IS_RENDER
+CSRF_COOKIE_SECURE = IS_RENDER
+
+# SMTP (Gmail) defaults; keep credentials in env vars (EMAIL_HOST_USER / EMAIL_HOST_PASSWORD)

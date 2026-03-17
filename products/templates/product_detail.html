@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
+{% load cart_extras %}
 {% block head_extra %}
 <meta name="description" content="{{ product.name }} - {{ product.description|truncatewords:20 }}">
 <script type="application/ld+json">
@@ -49,15 +50,40 @@
                 <span class="badge bg-warning text-dark small" style="width: fit-content;">-15%</span>
 
                 <hr>
+                {% if product.stock <= 0 %}
+                    <div class="fw-bold text-danger mb-2">Out of stock</div>
+                {% elif product.stock <= 10 %}
+                    <div class="fw-bold text-danger mb-2"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ product.stock }} unit{{ product.stock|pluralize }} left</div>
+                {% elif product.stock <= 20 %}
+                    <div class="fw-bold text-warning mb-2"><i class="fa-solid fa-circle-exclamation me-1"></i>Few units left</div>
+                {% else %}
+                    <div class="fw-bold text-success mb-2">In stock</div>
+                {% endif %}
                 <div class="mt-3">
                     <p class="small fw-bold mb-1">PROMOTIONS</p>
                     <p class="small text-muted mb-0"><i class="fas fa-shield-alt text-success me-2"></i> 1 Year Warranty included</p>
                 </div>
 
                 <div class="d-grid mt-auto pt-4">
-                    <a href="{% url 'products:add_to_cart' product.id %}" class="btn btn-pro btn-lg shadow-sm py-3 fw-bold">
-                        <i class="fas fa-cart-plus me-2"></i> ADD TO CART
-                    </a>
+                    {% if product.stock > 0 %}
+                        {% with qty=cart_quantities|get_item:product.id %}
+                        {% if qty %}
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <button type="button" class="btn btn-primary btn-lg fw-bold px-4 js-cart-dec" data-product-id="{{ product.id }}">−</button>
+                                <div class="fw-bold fs-5 js-cart-qty" data-product-id="{{ product.id }}">{{ qty }}</div>
+                                <button type="button" class="btn btn-primary btn-lg fw-bold px-4 js-cart-inc" data-product-id="{{ product.id }}">+</button>
+                            </div>
+                        {% else %}
+                            <button type="button" class="btn btn-primary btn-lg shadow-sm py-3 fw-bold js-cart-inc" data-product-id="{{ product.id }}">
+                                <i class="fas fa-cart-plus me-2"></i> ADD TO CART
+                            </button>
+                        {% endif %}
+                        {% endwith %}
+                    {% else %}
+                        <button class="btn btn-secondary btn-lg shadow-sm py-3 fw-bold" disabled>
+                            OUT OF STOCK
+                        </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -189,5 +215,55 @@
             document.querySelector('.img-fluid.rounded').src = this.src;
         });
     });
+</script>
+<script>
+  function getCsrfToken() {
+    const name = 'csrftoken=';
+    const parts = document.cookie.split(';');
+    for (let p of parts) {
+      p = p.trim();
+      if (p.startsWith(name)) return decodeURIComponent(p.substring(name.length));
+    }
+    return '';
+  }
+
+  function updateCartBadge(count) {
+    const badge = document.querySelector('.fa-shopping-cart')?.closest('a')?.querySelector('.badge');
+    if (badge && typeof count !== 'undefined') badge.textContent = String(count);
+  }
+
+  async function adjustCart(productId, action) {
+    const res = await fetch(`/products/api/cart/${productId}/${action}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCsrfToken(),
+        'X-Requested-With': 'XMLHttpRequest',
+      }
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      if (data && data.error) alert(data.error === 'Stock limit' ? `Only ${data.stock} unit(s) left.` : data.error);
+      return null;
+    }
+    updateCartBadge(data.global_cart_count);
+    return data;
+  }
+
+  document.addEventListener('click', async (e) => {
+    const inc = e.target.closest('.js-cart-inc');
+    const dec = e.target.closest('.js-cart-dec');
+    const btn = inc || dec;
+    if (!btn) return;
+    const productId = btn.getAttribute('data-product-id');
+    const action = inc ? 'inc' : 'dec';
+    const data = await adjustCart(productId, action);
+    if (!data) return;
+    const qtyEl = document.querySelector(`.js-cart-qty[data-product-id="${productId}"]`);
+    if (qtyEl) {
+      qtyEl.textContent = String(data.quantity);
+    } else {
+      window.location.reload();
+    }
+  });
 </script>
 {% endblock %}

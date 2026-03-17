@@ -8,6 +8,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from products.sitemaps import ProductSitemap, CategorySitemap
 from django.views.generic import TemplateView
+from django.views.static import serve as static_serve
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +26,8 @@ urlpatterns = [
 
 # Serve media files locally (even if DEBUG is False), but not on Render
 if settings.DEBUG or not getattr(settings, 'IS_RENDER', False):
+    # Using both `static()` helper and an explicit path to avoid any resolver issues
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += [
+        path('media/<path:path>', static_serve, {'document_root': settings.MEDIA_ROOT}),
+    ]

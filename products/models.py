@@ -105,11 +105,19 @@ class Address(models.Model):
 
 # 7. ORDER
 class Order(models.Model):
+    DELIVERY_METHOD_CHOICES = [
+        ('standard', 'Standard'),
+        ('express', 'Express'),
+        ('pickup', 'Pick-up Station'),
+    ]
+
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
+        ('Confirmed', 'Confirmed'),
         ('Processing', 'Processing'),
         ('Paid', 'Paid'),
         ('Shipped', 'Shipped'),
+        ('Ready for Pickup', 'Ready for Pickup'),
         ('Delivered', 'Delivered'),
         ('Cancelled', 'Cancelled'),
     ]
@@ -119,8 +127,12 @@ class Order(models.Model):
     phone_number = models.CharField(max_length=15)
     transaction_id = models.CharField(max_length=100, null=True, blank=True)
     payment_method = models.CharField(max_length=50, default='M-Pesa')
+    delivery_method = models.CharField(max_length=20, choices=DELIVERY_METHOD_CHOICES, default='standard')
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
+    estimated_delivery_start = models.DateField(null=True, blank=True)
+    estimated_delivery_end = models.DateField(null=True, blank=True)
+    delivered_at = models.DateTimeField(null=True, blank=True)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True)
     coupon_code = models.CharField(max_length=50, blank=True, null=True)
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -152,4 +164,18 @@ class Review(models.Model):
     def __str__(self):
         return f"Review {self.rating} for {self.product.name} by {self.user.username}"
 
+
+class OrderNotification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order_notifications')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='notifications')
+    status = models.CharField(max_length=50)
+    message = models.CharField(max_length=255)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Notification for Order {self.order_id} - {self.status}"
 
