@@ -4,17 +4,21 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Detect if we're running on Render
+# Detect if we're running on Render / PythonAnywhere
 IS_RENDER = 'RENDER' in os.environ
+PYTHONANYWHERE_DOMAIN = os.environ.get('PYTHONANYWHERE_DOMAIN') or os.environ.get('PYTHONANYWHERE_SITE')
+IS_PYTHONANYWHERE = bool(PYTHONANYWHERE_DOMAIN) or ('PYTHONANYWHERE' in os.environ)
 
 # 1. Use Environment Variables for sensitive data
 SECRET_KEY = os.environ.get('SECRET_KEY', 'a-safe-fallback-for-local-only')
 
-# 2. DEBUG defaults to True locally, False on Render (can be overridden by env var)
-DEBUG = os.environ.get('DEBUG', 'True' if not IS_RENDER else 'False') == 'True'
+# 2. DEBUG defaults to True locally, False on Render/PythonAnywhere (override via env var)
+DEBUG = os.environ.get('DEBUG', 'True' if not (IS_RENDER or IS_PYTHONANYWHERE) else 'False') == 'True'
 
 # 3. Allowed hosts
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'zando-online-shopping.onrender.com', '.onrender.com', '.vercel.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'zando-online-shopping.onrender.com', '.onrender.com', '.vercel.app', '.pythonanywhere.com']
+if PYTHONANYWHERE_DOMAIN:
+    ALLOWED_HOSTS.append(PYTHONANYWHERE_DOMAIN)
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -99,7 +103,7 @@ MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET')
 MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE')
 MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY')
 
-CSRF_TRUSTED_ORIGINS = ['https://zando-online-shopping.onrender.com', 'https://*.onrender.com', 'https://*.vercel.app']
+CSRF_TRUSTED_ORIGINS = ['https://zando-online-shopping.onrender.com', 'https://*.onrender.com', 'https://*.vercel.app', 'https://*.pythonanywhere.com']
 
 LOGIN_REDIRECT_URL = 'products:index'
 LOGOUT_REDIRECT_URL = 'products:index'
@@ -123,9 +127,9 @@ if IS_RENDER or (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# Only force Secure cookies on Render/HTTPS deployments.
+# Only force Secure cookies on Render/PythonAnywhere (HTTPS deployments).
 # When running locally over http://, Secure cookies break CSRF validation.
-SESSION_COOKIE_SECURE = IS_RENDER
-CSRF_COOKIE_SECURE = IS_RENDER
+SESSION_COOKIE_SECURE = IS_RENDER or IS_PYTHONANYWHERE
+CSRF_COOKIE_SECURE = IS_RENDER or IS_PYTHONANYWHERE
 
 # SMTP (Gmail) defaults; keep credentials in env vars (EMAIL_HOST_USER / EMAIL_HOST_PASSWORD)
