@@ -1,213 +1,79 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% block content %}
-<div class="container" style="padding-top: 2rem;">
-    <!-- CART HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold">Cart ({{ total_quantity|default:"0" }})</h4>
-    </div>
-    {% if not user.is_authenticated %}
-    <div class="alert alert-info border-0 shadow-sm d-flex justify-content-between align-items-center">
-        <div>
-            <strong>Checkout requires an account.</strong>
-            You can add and review items now. Login or create an account to complete your order.
-        </div>
-        <div class="d-flex gap-2">
-            <a href="{% url 'products:login' %}?next={% url 'products:checkout' %}" class="btn btn-primary btn-sm fw-bold">Login</a>
-            <a href="{% url 'products:register' %}?next={% url 'products:checkout' %}" class="btn btn-outline-primary btn-sm fw-bold">Register</a>
-        </div>
-    </div>
-    {% endif %}
+<style>
+    :root { --brand-blue: #004b91; --light-blue: #e6f0ff; }
+    .btn-checkout { background-color: var(--brand-blue); color: white; border: none; font-weight: bold; }
+    .btn-checkout:hover { background-color: #003366; color: white; }
+    .step-active { color: var(--brand-blue); font-weight: bold; border-bottom: 3px solid var(--brand-blue); }
+    .cart-card { border: none; border-radius: 8px; transition: 0.2s; }
+</style>
 
-    <div class="row">
-        <!-- MAIN CART SECTION -->
+<div class="container" style="padding-top: 2rem; padding-bottom: 5rem;">
+    <!-- Jumia Style Stepper -->
+    <div class="row mb-5 text-center">
+        <div class="col-4 step-active pb-2">1. CART</div>
+        <div class="col-4 text-muted pb-2">2. CHECKOUT</div>
+        <div class="col-4 text-muted pb-2">3. PAYMENT</div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Main Cart Section -->
         <div class="col-lg-8">
-            <div class="card border-0 shadow-sm p-4">
+            <div class="card cart-card shadow-sm p-4">
+                <h5 class="fw-bold mb-4">Cart ({{ total_quantity|default:"0" }})</h5>
+                
                 {% for item in cart_items %}
-                <div class="row align-items-center mb-4 pb-4 border-bottom" style="border-bottom: 1px solid #e8e8e8;">
-                    <!-- Product Image -->
-                    <div class="col-3">
-                        <div class="position-relative">
-                            <img src="{% if item.product.image %}{{ item.product.image.url }}{% endif %}" loading="lazy"
-                                 class="img-fluid rounded" 
-                                 style="max-height: 120px; object-fit: cover; width: 100%;">
-                            <span class="badge bg-danger position-absolute top-0 start-0">Sale</span>
+                <div class="row align-items-center mb-4 pb-4 border-bottom">
+                    <div class="col-3 col-md-2">
+                        <img src="{% if item.product.image %}{{ item.product.image.url }}{% endif %}" class="img-fluid rounded border">
+                    </div>
+                    <div class="col-6 col-md-7">
+                        <h6 class="fw-bold mb-1">{{ item.product.name }}</h6>
+                        <p class="text-muted small mb-0">Seller: ZANDO Official Store</p>
+                        <p class="text-success small fw-bold">In Stock</p>
+                        
+                        <div class="d-flex align-items-center mt-2">
+                            <a href="{% url 'products:remove_from_cart' item.product.id %}" class="text-danger small text-decoration-none me-3">
+                                <i class="fas fa-trash me-1"></i> REMOVE
+                            </a>
                         </div>
                     </div>
-
-                    <!-- Product Details -->
-                    <div class="col-4">
-                        <h6 class="fw-bold mb-2 text-dark">{{ item.product.name }}</h6>
-                        <p class="text-muted small mb-1">In Stock</p>
-                        <p class="text-muted small">Seller: ZANDO Shop</p>
-                    </div>
-
-                    <!-- Price Section -->
-                    <div class="col-2 text-end">
-                        <p class="fw-bold text-primary mb-1" style="font-size: 18px;">KSh {{ item.subtotal|floatformat:"-2"|intcomma }}</p>
-                        <p class="text-muted text-decoration-line-through small mb-0">KSh {{ item.product.price|add:item.product.price|floatformat:"-2"|intcomma }}</p>
-                        <p class="text-danger small fw-bold mb-0">-30%</p>
-                    </div>
-
-                    <!-- Quantity Controls -->
-                    <div class="col-3 d-flex align-items-center justify-content-end gap-2">
-                        <button class="btn btn-sm border border-secondary rounded" 
-                                onclick="location.href='{% url 'products:decrease_cart' item.product.id %}';"
-                                style="width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center;">
-                            −
-                        </button>
-                        <input type="text" value="{{ item.quantity }}" class="form-control text-center" 
-                               style="width: 50px; border: 1px solid #ddd;" readonly>
-                        <button class="btn btn-sm border border-secondary rounded" 
-                                onclick="location.href='{% url 'products:increase_cart' item.product.id %}';"
-                                style="width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center;">
-                            +
-                        </button>
-                        <span class="text-danger small fw-bold ms-2" style="cursor: pointer;">
-                            <a href="{% url 'products:remove_from_cart' item.product.id %}"
-                               style="text-decoration: none; color: inherit;"
-                               onclick="return confirm('Remove this item?');">
-                               <i class="fas fa-trash"></i>
-                            </a>
-                        </span>
+                    <div class="col-3 col-md-3 text-end">
+                        <p class="fw-bold mb-0" style="font-size: 1.1rem;">KSh {{ item.subtotal|floatformat:"0"|intcomma }}</p>
+                        <div class="d-flex align-items-center justify-content-end mt-2 gap-2">
+                            <a href="{% url 'products:decrease_cart' item.product.id %}" class="btn btn-sm btn-outline-secondary px-2">-</a>
+                            <span class="fw-bold px-2">{{ item.quantity }}</span>
+                            <a href="{% url 'products:increase_cart' item.product.id %}" class="btn btn-sm btn-outline-secondary px-2">+</a>
+                        </div>
                     </div>
                 </div>
                 {% empty %}
                 <div class="text-center py-5">
-                    <i class="fas fa-shopping-basket fa-3x text-muted mb-3"></i>
-                    <h5>Your cart is empty</h5>
-                    <a href="{% url 'products:index' %}" class="btn btn-primary mt-3">Start Shopping</a>
+                    <i class="fas fa-shopping-cart fa-3x text-light mb-3"></i>
+                    <h5 class="text-muted">Your cart is currently empty</h5>
+                    <a href="{% url 'products:index' %}" class="btn btn-checkout mt-3 px-4">START SHOPPING</a>
                 </div>
                 {% endfor %}
             </div>
         </div>
 
-        <!-- CART SUMMARY SIDEBAR -->
+        <!-- Sidebar Summary -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm p-4 sticky-top" style="top: var(--page-top-offset, 84px); z-index: 100;">
-                <h6 class="fw-bold mb-4 border-bottom pb-3">CART SUMMARY</h6>
-                
+            <div class="card cart-card shadow-sm p-4 sticky-top" style="top: 100px;">
+                <h6 class="fw-bold mb-4 border-bottom pb-2">CART SUMMARY</h6>
                 <div class="d-flex justify-content-between mb-3">
                     <span class="text-muted">Subtotal</span>
-                    <span class="fw-bold" style="font-size: 18px; color: #ff6b35;">KSh {{ total_price|floatformat:"-2"|intcomma }}</span>
+                    <span class="fw-bold">KSh {{ total_price|floatformat:"0"|intcomma }}</span>
                 </div>
-
-                <div class="d-flex justify-content-between mb-4 pb-3 border-bottom">
-                    <span class="text-muted">Delivery</span>
-                    <span class="text-success fw-bold">FREE</span>
-                </div>
-
-                <div class="d-flex justify-content-between mb-4">
-                    <span class="fw-bold">Total</span>
-                    <span class="fw-bold" style="font-size: 20px; color: #ff6b35;">KSh {{ total_price|floatformat:"-2"|intcomma }}</span>
-                </div>
-
-                <a href="{% url 'products:checkout' %}" class="btn w-100 fw-bold py-3 mb-3" 
-                   style="background-color: #ff6b35; color: white; border-radius: 6px;">
-                    CHECKOUT (KSh {{ total_price|floatformat:"-2"|intcomma }})
+                <p class="small text-muted mb-4">Cart totals do not include delivery fees yet.</p>
+                
+                <a href="{% url 'products:checkout' %}" class="btn btn-checkout w-100 py-3 mb-3 shadow-sm">
+                    CHECKOUT (KSh {{ total_price|floatformat:"0"|intcomma }})
                 </a>
-
-                <a href="{% url 'products:index' %}" class="btn btn-outline-secondary w-100 fw-bold py-2">
-                    Continue Shopping
-                </a>
+                <a href="{% url 'products:index' %}" class="btn btn-outline-primary w-100 py-2 border-0">CONTINUE SHOPPING</a>
             </div>
         </div>
     </div>
-
-    <!-- WISHLIST SECTION -->
-    {% if wishlist_items %}
-    <div class="mt-5 mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold">Wishlist ({{ wishlist_items|length }})</h5>
-            <a href="{% url 'products:view_wishlist' %}" class="text-primary small fw-bold">See All ></a>
-        </div>
-
-        <div class="row g-3">
-            {% for item in wishlist_items %}
-            <div class="col-md-4 col-lg-3">
-                <div class="card border-0 shadow-sm position-relative h-100">
-                    <div class="position-relative overflow-hidden" style="height: 180px;">
-                        <img src="{% if item.product.image %}{{ item.product.image.url }}{% endif %}" 
-                             class="card-img-top" 
-                             style="height: 100%; object-fit: cover;">
-                        <span class="badge bg-danger position-absolute top-2 start-2">-30%</span>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-title text-truncate small">{{ item.product.name }}</h6>
-                        <p class="fw-bold text-primary mb-2">KSh {{ item.product.price|floatformat:"-2"|intcomma }}</p>
-                        <small class="text-muted d-block mb-3">In Stock</small>
-                        <div class="d-grid gap-2">
-                            <a href="{% url 'products:add_to_cart' item.product.id %}" 
-                               class="btn btn-sm btn-warning fw-bold">Add to Cart</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- RECENTLY VIEWED SECTION -->
-    {% if recently_viewed %}
-    <div class="mt-5 mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold">Recently Viewed</h5>
-            <a href="{% url 'products:index' %}" class="text-primary small fw-bold">See All ></a>
-        </div>
-
-        <div class="row g-3">
-            {% for product in recently_viewed %}
-            <div class="col-md-4 col-lg-3">
-                <div class="card border-0 shadow-sm position-relative h-100">
-                    <div class="position-relative overflow-hidden" style="height: 180px;">
-                        <img src="{% if product.image %}{{ product.image.url }}{% endif %}" 
-                             class="card-img-top" 
-                             style="height: 100%; object-fit: cover;">
-                        <span class="badge bg-danger position-absolute top-2 start-2">-30%</span>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-title text-truncate small">{{ product.name }}</h6>
-                        <p class="fw-bold text-primary mb-2">KSh {{ product.price|floatformat:"-2"|intcomma }}</p>
-                        <small class="text-muted d-block mb-3">In Stock</small>
-                        <div class="d-grid gap-2">
-                            <a href="{% url 'products:add_to_cart' product.id %}" 
-                               class="btn btn-sm btn-warning fw-bold">Add to Cart</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
 </div>
-
-<style>
-    .sticky-top {
-        position: sticky;
-        top: 20px;
-        z-index: 10;
-    }
-    
-    .card {
-        border-radius: 8px;
-        transition: transform 0.2s;
-    }
-    
-    .card:hover {
-        transform: translateY(-2px);
-    }
-    
-    .btn-warning {
-        background-color: #ff6b35;
-        border-color: #ff6b35;
-        color: white;
-    }
-    
-    .btn-warning:hover {
-        background-color: #ff5a1f;
-        border-color: #ff5a1f;
-    }
-</style>
 {% endblock %}

@@ -1,302 +1,203 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.urls import reverse
-from import_export import resources
+from django.db.models import Sum
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from import_export.admin import ImportExportModelAdmin
 from auditlog.models import LogEntry
 from auditlog.admin import LogEntryAdmin
-from django.db.models import Sum, Count
-from django.shortcuts import render
+
 from .models import (
     Product, Category, Order, OrderItem, Wishlist,
-    County, Town, Address, Cart, CartItem, Coupon, Review
+    County, Town, Address, Cart, CartItem, Coupon, Review,
+    OrderNotification, OrderTracking 
 )
 
-# Import auth models for user/group management
-from django.contrib.auth.models import User, Group
-from django.contrib.auth.admin import UserAdmin, GroupAdmin
-
-from auditlog.registry import auditlog
-
-# Override default admin site index
+# ----------------------------------------------------------------      
+# 1. CUSTOM ADMIN SITE (DASHBOARD)
+# ----------------------------------------------------------------
 class CustomAdminSite(admin.AdminSite):
-    site_header = "Zando Administration"
+    site_header = "ZANDO LOGISTICS PORTAL"
     site_title = "Zando Admin"
-    index_title = "Dashboard"
+    index_title = "Business Intelligence Dashboard"
 
     def each_context(self, request):
         context = super().each_context(request)
+        revenue_statuses = ['Confirmed', 'Processing', 'Paid', 'Shipped', 'Ready for Pickup', 'Delivered']
+        all_orders = Order.objects.all()
+        revenue_val = all_orders.filter(status__in=revenue_statuses).aggregate(total=Sum('total_price'))['total'] or 0
         
-        # Add custom dashboard data
-        total_orders = Order.objects.count()
-        total_revenue = Order.objects.filter(status__in=['Paid', 'Shipped', 'Delivered']).aggregate(Sum('total_price'))['total_price__sum'] or 0
-        pending_orders = Order.objects.filter(status__in=['Pending', 'Processing']).count()
-        recent_orders = Order.objects.order_by('-created_at')[:10]
-
         context.update({
-            'total_orders': total_orders,
-            'total_revenue': total_revenue,
-            'pending_orders': pending_orders,
-            'recent_orders': recent_orders,
+            'total_orders': all_orders.count(),
+            'total_revenue': f"{int(revenue_val):,}", 
+            'pending_orders': all_orders.filter(status__in=['Pending', 'Processing']).count(),
+            'recent_orders': all_orders.order_by('-created_at')[:8],
         })
-        
         return context
 
-# Replace the default admin site
 admin.site = CustomAdminSite()
 
-# Register audit log
-admin.site.register(LogEntry, LogEntryAdmin)
-
-# Register built-in auth models on the custom site
-admin.site.register(User, UserAdmin)
-admin.site.register(Group, GroupAdmin)
-
-# Import-Export Resources
-class ProductResource(resources.ModelResource):
-    class Meta:
-        model = Product
-        fields = ('id', 'name', 'price', 'category__name', 'stock', 'description')
-
-class OrderResource(resources.ModelResource):
-    class Meta:
-        model = Order
-        fields = ('id', 'user__username', 'total_price', 'status', 'payment_method', 'created_at', 'phone_number')
-
-# 1. Enhanced Category Admin
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'icon_class', 'product_count')
-    search_fields = ('name',)
-
-    def product_count(self, obj):
-        # `Product.category` uses related_name='products'
-        return obj.products.count()
-    product_count.short_description = 'Products'
-
-# 2. Enhanced Product Admin
-@admin.register(Product)
-class ProductAdmin(ImportExportModelAdmin):
-    resource_class = ProductResource
-    list_display = ('name', 'price', 'category', 'stock', 'is_available')
-    list_filter = ('category', 'stock')
-    search_fields = ('name', 'description')
-    list_editable = ('stock', 'price')
-    ordering = ('name',)
-
-    def is_available(self, obj):
-        return obj.stock > 0
-    is_available.boolean = True
-
-# 3. OrderItem Inline for Order
+# ----------------------------------------------------------------      
+# 2. INLINES
+# ----------------------------------------------------------------
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
-    readonly_fields = ('product', 'quantity', 'price', 'total')
+    fields = ('product_image', 'product', 'quantity', 'price', 'subtotal_display')
+    readonly_fields = ('product_image', 'subtotal_display', 'price', 'product')
     can_delete = False
     extra = 0
 
-    def total(self, obj):
-        return obj.quantity * obj.price
-    total.short_description = 'Total'
+    def product_image(self, obj):
+        if obj and obj.product and obj.product.image:
+            return format_html('<img src="{}" width="40" height="40" style="border-radius:4px; object-fit:cover;"/>', obj.product.image.url)
+        return "No Image"
 
-# 4. Enhanced Order Admin
-@admin.register(Order)
+    def subtotal_display(self, obj):
+        if obj and obj.quantity is not None and obj.price is not None:
+            return format_html("<span style='color:#000; font-weight:bold;'>Ksh {:,.0f}</span>", obj.quantity * obj.price)
+        return "Ksh 0"
+
+# ----------------------------------------------------------------      
+# 3. ORDER ADMIN (FIXED FOR DOUBLE MESSAGES & BULK ACTIONS)
+# ----------------------------------------------------------------
 class OrderAdmin(ImportExportModelAdmin):
-    resource_class = OrderResource
-    list_display = ('id', 'user', 'total_price', 'discount_amount', 'coupon_code', 'status', 'payment_method', 'created_at', 'order_actions')
+    list_display = ('id', 'user', 'colored_status', 'total_price_formatted', 'created_at', 'order_actions')
     list_filter = ('status', 'payment_method', 'created_at')
-    search_fields = ('user__username', 'id', 'transaction_id')
-    readonly_fields = ('id', 'created_at', 'transaction_id')
+    search_fields = ('id', 'user__username', 'phone_number')
     inlines = [OrderItemInline]
-    actions = [
-        'mark_as_confirmed',
-        'mark_as_processing',
-        'mark_as_paid',
-        'mark_as_shipped',
-        'mark_as_ready_for_pickup',
-        'mark_as_delivered',
-        'mark_as_cancelled',
-        'send_status_email',
-    ]
+    
+    # Bulk actions dropdown at the top of the list
+    actions = ['bulk_confirm', 'bulk_processing', 'bulk_shipped', 'bulk_ready', 'bulk_delivered']
 
-    def mark_as_confirmed(self, request, queryset):
-        updated = 0
+    fieldsets = (
+        ('ORDER TRACKING', {'fields': ('status_timeline', 'status', ('payment_method', 'transaction_id'))}),
+        ('CUSTOMER DETAILS', {'fields': (('user', 'phone_number'), 'customer_email')}),
+        ('SHIPPING LOCATION', {'fields': ('delivery_method', 'full_address_card')}),
+        ('BILLING SUMMARY', {'fields': (('total_price', 'discount_amount'), 'coupon_code')}),
+    )
+
+    readonly_fields = ('status_timeline', 'customer_email', 'full_address_card', 'user')
+
+    # --- THE HELPER: Handles Tracking & Notifications ONLY ---
+    def create_status_records(self, order, new_status):
+        """Creates history and notification record without double-saving the order."""
+        msg_map = {
+            'Confirmed': 'Order confirmed. We are getting it ready.',
+            'Processing': 'Items are being packed at our warehouse.',
+            'Shipped': 'Package dispatched! On the way to you.',
+            'Ready for Pickup': 'Package is ready at your pickup station.',
+            'Delivered': 'Successfully delivered. Enjoy your purchase!',
+            'Cancelled': 'Order has been cancelled.',
+        }
+        msg = msg_map.get(new_status, f"Order status updated to {new_status}")
+
+        # Add to Timeline History
+        OrderTracking.objects.create(order=order, status=new_status, message=msg)
+
+        # Add to App Inbox
+        OrderNotification.objects.create(user=order.user, order=order, status=new_status, message=msg)
+
+    # --- SINGLE ORDER SAVE (When editing one page) ---
+    def save_model(self, request, obj, form, change):
+        if change:
+            # Check if status changed compared to the database
+            old_status = Order.objects.get(pk=obj.pk).status
+            if old_status != obj.status:
+                self.create_status_records(obj, obj.status)
+        super().save_model(request, obj, form, change)
+
+    # --- BULK ACTIONS (When selecting multiple checkboxes) ---
+    def bulk_confirm(self, request, queryset):
         for order in queryset:
-            if order.status != 'Confirmed':
-                order.status = 'Confirmed'
-                order.save(update_fields=['status'])
-                updated += 1
-        self.message_user(request, f"{updated} orders marked as Confirmed.")
-    mark_as_confirmed.short_description = "Mark selected orders as Confirmed"
+            self.create_status_records(order, 'Confirmed')
+        queryset.update(status='Confirmed')
+    bulk_confirm.short_description = "⭐ Mark as Confirmed"
+
+    def bulk_processing(self, request, queryset):
+        for order in queryset:
+            self.create_status_records(order, 'Processing')
+        queryset.update(status='Processing')
+    bulk_processing.short_description = "📦 Mark as Processing"
+
+    def bulk_shipped(self, request, queryset):
+        for order in queryset:
+            self.create_status_records(order, 'Shipped')
+        queryset.update(status='Shipped')
+    bulk_shipped.short_description = "🚚 Mark as Shipped"
+
+    def bulk_ready(self, request, queryset):
+        for order in queryset:
+            self.create_status_records(order, 'Ready for Pickup')
+        queryset.update(status='Ready for Pickup')
+    bulk_ready.short_description = "📍 Mark as Ready for Pickup"
+
+    def bulk_delivered(self, request, queryset):
+        for order in queryset:
+            self.create_status_records(order, 'Delivered')
+        queryset.update(status='Delivered')
+    bulk_delivered.short_description = "✅ Mark as Delivered"
+
+    # --- UI HELPERS ---
+    def status_timeline(self, obj):
+        steps = ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Ready for Pickup', 'Delivered']
+        current_status = obj.status if obj.status in steps else 'Pending'
+        try: current_index = steps.index(current_status)
+        except ValueError: current_index = 0
+        html = '<div style="display: flex; align-items: center; width: 100%; max-width: 800px; padding: 30px 10px; background: #fff; border-radius: 8px; border: 1px solid #ccc; overflow-x: auto;">'
+        for i, step in enumerate(steps):
+            color = "#28a745" if i <= current_index else "#ddd"
+            text_color = "#333" if i <= current_index else "#999"
+            html += f'''<div style="flex: 1; text-align: center; position: relative; min-width: 85px;">
+                        <div style="width: 16px; height: 16px; background: {color}; border-radius: 50%; margin: 0 auto; border: 2px solid #fff; box-shadow: 0 0 0 1px {color};"></div>
+                        <div style="font-size: 8px; color: {text_color}; margin-top: 8px; font-weight: bold; white-space: nowrap; text-transform: uppercase;">{step}</div>
+                    </div>'''
+            if i < len(steps) - 1:
+                line_color = "#28a745" if i < current_index else "#ddd"
+                html += f'<div style="flex: 1; height: 3px; background: {line_color}; margin-top: -22px; min-width: 15px;"></div>'
+        html += '</div>'
+        return mark_safe(html)
+
+    def full_address_card(self, obj):
+        if obj.address:
+            a = obj.address
+            return format_html('<div style="background: #ffffff; padding: 15px; border: 1px solid #ccc; border-left: 6px solid #ffa500; border-radius: 4px; color: #000 !important; line-height: 1.8;">'
+                               '<span style="color: #000;"><strong>Recipient:</strong> {} {}</span><br>'
+                               '<span style="color: #000;"><strong>Street:</strong> {}</span><br>'
+                               '<span style="color: #000;"><strong>Location:</strong> {}, {}</span><br>'
+                               '<span style="color: #000;"><strong>Phone:</strong> {}</span></div>',
+                               a.first_name, a.last_name, a.street, a.town.name, a.town.county.name, a.phone)
+        return "No shipping address linked."
+
+    def customer_email(self, obj): return obj.user.email
+
+    def colored_status(self, obj):
+        colors = {'Pending': '#6c757d', 'Confirmed': '#007bff', 'Processing': '#17a2b8', 'Ready for Pickup': '#ffa500', 'Delivered': '#198754', 'Cancelled': '#dc3545', 'Shipped': '#6f42c1'}
+        color = colors.get(obj.status, '#333')
+        return format_html('<span style="background:{}; color:white; padding:4px 12px; border-radius:20px; font-size:10px; font-weight:bold;">{}</span>', color, obj.status)
+
+    def total_price_formatted(self, obj): return f"Ksh {int(obj.total_price):,}"
 
     def order_actions(self, obj):
-        return format_html(
-            '<a class="button" href="{}">View Details</a>',
-            reverse('admin:products_order_change', args=[obj.pk])
-        )
-    order_actions.short_description = 'Actions'
+        url = reverse('admin:products_order_change', args=[obj.pk])
+        return format_html('<a class="button" style="background:#ffa500; color:white; border:none; padding: 4px 12px; font-weight: bold;" href="{}">MANAGE</a>', url)
 
-    def mark_as_processing(self, request, queryset):
-        updated = 0
-        for order in queryset:
-            if order.status != 'Processing':
-                order.status = 'Processing'
-                order.save(update_fields=['status'])
-                updated += 1
-        self.message_user(request, f"{updated} orders marked as Processing.")
-    mark_as_processing.short_description = "Mark selected orders as Processing"
+# ----------------------------------------------------------------      
+# 4. REGISTRATION
+# ----------------------------------------------------------------
+class ProductAdmin(ImportExportModelAdmin):
+    list_display = ('name', 'category', 'price_display', 'colored_stock')
+    def price_display(self, obj): return f"Ksh {int(obj.price):,}"
+    def colored_stock(self, obj):
+        color = "#d9534f" if obj.stock < 5 else "#5cb85c"
+        return format_html('<b style="color:{}">{} in stock</b>', color, obj.stock)
 
-    def mark_as_paid(self, request, queryset):
-        updated = 0
-        for order in queryset:
-            if order.status != 'Paid':
-                order.status = 'Paid'
-                order.save(update_fields=['status'])
-                updated += 1
-        self.message_user(request, f"{updated} orders marked as Paid.")
-    mark_as_paid.short_description = "Mark selected orders as Paid"
-
-    def mark_as_shipped(self, request, queryset):
-        updated = 0
-        # Allow shipping after confirm/processing/paid
-        for order in queryset.filter(status__in=['Confirmed', 'Paid', 'Processing']):
-            if order.status != 'Shipped':
-                order.status = 'Shipped'
-                order.save(update_fields=['status'])
-                updated += 1
-        self.message_user(request, f"{updated} orders marked as Shipped.")
-    mark_as_shipped.short_description = "Mark selected orders as Shipped"
-
-    def mark_as_ready_for_pickup(self, request, queryset):
-        updated = 0
-        for order in queryset.filter(status__in=['Shipped', 'Processing', 'Paid']):
-            if order.status != 'Ready for Pickup':
-                order.status = 'Ready for Pickup'
-                order.save(update_fields=['status'])
-                updated += 1
-        self.message_user(request, f"{updated} orders marked as Ready for Pickup.")
-    mark_as_ready_for_pickup.short_description = "Mark selected orders as Ready for Pickup"
-
-    def mark_as_delivered(self, request, queryset):
-        updated = 0
-        # Allow delivery after shipping or ready-for-pickup
-        for order in queryset.filter(status__in=['Shipped', 'Ready for Pickup']):
-            if order.status != 'Delivered':
-                order.status = 'Delivered'
-                order.save(update_fields=['status'])
-                updated += 1
-        self.message_user(request, f"{updated} orders marked as Delivered.")
-    mark_as_delivered.short_description = "Mark selected orders as Delivered"
-
-    def mark_as_cancelled(self, request, queryset):
-        updated = 0
-        for order in queryset:
-            if order.status != 'Cancelled':
-                order.status = 'Cancelled'
-                order.save(update_fields=['status'])
-                updated += 1
-        self.message_user(request, f"{updated} orders marked as Cancelled.")
-    mark_as_cancelled.short_description = "Mark selected orders as Cancelled"
-
-    def send_status_email(self, request, queryset):
-        from django.core.mail import send_mail
-        import os
-
-        for order in queryset:
-            subject = f'Order {order.id} Status Update'
-            message = f'Your order status has been updated to: {order.status}'
-            from_email = os.environ.get('EMAIL_HOST_USER', 'admin@zando.com')
-            recipient_list = [order.user.email]
-            try:
-                send_mail(subject, message, from_email, recipient_list)
-                self.message_user(request, f"Email sent to {order.user.username} for order {order.id}")
-            except Exception as e:
-                self.message_user(request, f"Failed to send email for order {order.id}: {str(e)}", level='error')
-    send_status_email.short_description = "Send status update email to customers"
-
-# 5. Location Models
-@admin.register(County)
-class CountyAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    search_fields = ('name',)
-
-@admin.register(Town)
-class TownAdmin(admin.ModelAdmin):
-    list_display = ('name', 'county')
-    list_filter = ('county',)
-    search_fields = ('name',)
-
-# 6. Address Admin
-@admin.register(Address)
-class AddressAdmin(admin.ModelAdmin):
-    list_display = ('user', 'street', 'town', 'phone', 'is_default')
-    list_filter = ('is_default', 'town__county')
-    search_fields = ('user__username', 'street', 'phone')
-
-# 7. Cart and CartItem
-@admin.register(Cart)
-class CartAdmin(admin.ModelAdmin):
-    list_display = ('user', 'created_at', 'item_count', 'total_price')
-    search_fields = ('user__username',)
-
-    def item_count(self, obj):
-        return obj.items.count()
-    item_count.short_description = 'Items'
-
-    def total_price(self, obj):
-        return sum(item.product.price * item.quantity for item in obj.items.all())
-    total_price.short_description = 'Total'
-
-class CartItemInline(admin.TabularInline):
-    model = CartItem
-    readonly_fields = ('product', 'quantity')
-    can_delete = True
-    extra = 0
-
-@admin.register(CartItem)
-class CartItemAdmin(admin.ModelAdmin):
-    list_display = ('cart', 'product', 'quantity', 'total')
-    list_filter = ('cart__user',)
-
-    def total(self, obj):
-        return obj.product.price * obj.quantity
-    total.short_description = 'Total'
-
-# 8. Wishlist
-@admin.register(Wishlist)
-class WishlistAdmin(admin.ModelAdmin):
-    list_display = ('user', 'product', 'created_at')
-    list_filter = ('created_at',)
-    search_fields = ('user__username', 'product__name')
-
-# Register models for audit logging
-auditlog.register(Product)
-auditlog.register(Category)
-auditlog.register(Order)
-auditlog.register(OrderItem)
-auditlog.register(Wishlist)
-auditlog.register(Address)
-auditlog.register(Cart)
-auditlog.register(CartItem)
-
-# Register all models with the custom admin site
-admin.site.register(Category, CategoryAdmin)
-admin.site.register(Product, ProductAdmin)
+admin.site.register(User, UserAdmin)
+admin.site.register(Group, GroupAdmin)
+admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(Order, OrderAdmin)
-admin.site.register(Wishlist, WishlistAdmin)
-admin.site.register(Address, AddressAdmin)
-admin.site.register(Cart, CartAdmin)
-admin.site.register(CartItem, CartItemAdmin)
-admin.site.register(County, CountyAdmin)
-admin.site.register(Town, TownAdmin)
-@admin.register(Coupon)
-class CouponAdmin(admin.ModelAdmin):
-    list_display = ('code', 'discount_percent', 'discount_amount', 'min_total', 'active', 'starts_at', 'ends_at')
-    list_filter = ('active',)
-    search_fields = ('code', 'description')
-
-@admin.register(Review)
-class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('product', 'user', 'rating', 'created_at')
-    list_filter = ('rating', 'created_at')
-    search_fields = ('product__name', 'user__username', 'comment')
+admin.site.register(Product, ProductAdmin)
+admin.site.register(Category); admin.site.register(Address); admin.site.register(Town)
+admin.site.register(County); admin.site.register(Wishlist); admin.site.register(Cart)
+admin.site.register(Coupon); admin.site.register(Review); admin.site.register(OrderTracking)

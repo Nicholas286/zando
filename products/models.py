@@ -179,3 +179,16 @@ class OrderNotification(models.Model):
     def __str__(self):
         return f"Notification for Order {self.order_id} - {self.status}"
 
+
+# Add this to the end of products/models.py
+class OrderTracking(models.Model):
+    order = models.ForeignKey(Order, related_name='tracking_steps', on_delete=models.CASCADE)
+    status = models.CharField(max_length=50)
+    message = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"Tracking for Order {self.order.id} - {self.status}"

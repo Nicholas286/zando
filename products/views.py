@@ -67,9 +67,54 @@ def my_orders(request):
 
 @login_required
 def order_detail(request, order_id):
-    """Displays detailed information for a specific order."""
-    order = get_object_or_404(Order, id=order_id, user=request.user)
-    return render(request, 'order_detail.html', {'order': order})
+    """Displays detailed information and a Jumia-style tracking timeline."""
+    # We use prefetch_related to get items and tracking steps in one go
+    order = get_object_or_404(
+        Order.objects.prefetch_related('items__product', 'tracking_steps'), 
+        id=order_id, 
+        user=request.user
+    )
+    
+    # 1. Define the master sequence of steps
+    steps = ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Ready for Pickup', 'Delivered']
+    
+    # 2. Get statuses that have actually happened (from tracking history)
+    history = order.tracking_steps.all()
+    completed_statuses = {step.status for step in history}
+    # Ensure current status is also marked as completed
+    completed_statuses.add(order.status)
+    
+    # 3. Build the timeline data
+    tracking_timeline = []
+    for step_name in steps:
+        # Check if this step is finished
+        is_done = step_name in completed_statuses
+        # Is this the exact current stage?
+        is_current = (step_name == order.status)
+        
+        # Try to find the date this step happened
+        timestamp = history.filter(status=step_name).first()
+        
+        tracking_timeline.append({
+            'name': step_name,
+            'is_done': is_done,
+            'is_current': is_current,
+            'date': timestamp.created_at if timestamp else None
+        })
+    
+    # 4. Calculate progress percentage for the UI bar
+    try:
+        current_idx = steps.index(order.status)
+        progress_percent = (current_idx / (len(steps) - 1)) * 100
+    except ValueError:
+        progress_percent = 0
+
+    return render(request, 'order_detail.html', {
+        'order': order,
+        'timeline': tracking_timeline,
+        'progress_percent': progress_percent,
+        'items': order.items.all()
+    })
 
 
 # --- WISHLIST VIEWS ---
