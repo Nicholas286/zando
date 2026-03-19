@@ -1,27 +1,76 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% load cart_extras %}
+
 {% block head_extra %}
 <meta name="description" content="{{ product.name }} - {{ product.description|truncatewords:20 }}">
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "Product", "name": "{{ product.name|escapejs }}", "image": ["{% if product.image %}{{ product.image.url }}{% endif %}"], "description": "{{ product.description|default:''|escapejs }}", "offers": {"@type": "Offer", "priceCurrency": "KES", "price": "{{ product.price }}", "availability": "https://schema.org/InStock"}}
+{"@context": "https://schema.org", "@type": "Product", "name": "{{ product.name|escapejs }}", "image": ["{% if product.image %}{{ product.image.url }}{% endif %}"], "description": "{{ product.description|default:''|escapejs }}", "offers": {"@type": "Offer", "priceCurrency": "KES", "price": "{{ product.get_current_price }}", "availability": "https://schema.org/InStock"}}
 </script>
+
+<style>
+    .x-small { font-size: 0.75rem; }
+    .text-pro { color: #0d6efd; }
+    .bg-success-light { background-color: #e8f5e9; }
+    
+    /* Hover Zoom Effect */
+    .img-zoom-container {
+        overflow: hidden;
+        border-radius: 8px;
+        cursor: zoom-in;
+        background-color: #fff;
+    }
+    #main-image {
+        transition: transform 0.4s ease;
+        max-height: 400px;
+        width: 100%;
+        object-fit: contain;
+    }
+    .img-zoom-container:hover #main-image {
+        transform: scale(1.2);
+    }
+
+    /* Gallery Thumbnails */
+    .gallery-thumb {
+        width: 65px;
+        height: 65px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: 0.2s;
+        border: 2px solid transparent;
+    }
+    .gallery-thumb:hover { border-color: #0d6efd; }
+    .gallery-thumb.active { border-color: #0d6efd !important; }
+
+    /* Modal Big Picture */
+    .modal-content { background: transparent; border: none; }
+    .modal-body img { border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    
+    .variant-btn { min-width: 60px; }
+    .card { transition: transform 0.2s; }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="container" style="padding-top: 2rem;">
-    <div class="row g-3">
+    <div class="row g-4">
+        <!-- 1. PRODUCT IMAGES / GALLERY -->
         <div class="col-lg-4 col-md-5">
             <div class="card border-0 shadow-sm p-3 h-100">
-                <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}" loading="lazy">
+                <div class="img-zoom-container mb-3 text-center" data-bs-toggle="modal" data-bs-target="#bigPictureModal">
+                    <img id="main-image" src="{{ product.image.url }}" alt="{{ product.name }}">
+                </div>
 
-                <div class="mt-3 d-flex gap-2">
-                    <img src="{{ product.image.url }}" class="img-thumbnail border-primary" style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;" loading="lazy">
+                <div class="d-flex gap-2 overflow-auto pb-2">
+                    <img src="{{ product.image.url }}" class="img-thumbnail gallery-thumb active" onclick="updateImage(this.src, this)">
+                    {% for item in gallery %}
+                    <img src="{{ item.image.url }}" class="img-thumbnail gallery-thumb" onclick="updateImage(this.src, this)">
+                    {% endfor %}
                 </div>
 
                 <hr>
                 <div class="share-links">
-                    <p class="small fw-bold mb-1">SHARE THIS PRODUCT</p>
+                    <p class="small fw-bold mb-1 text-uppercase">Share this product</p>
                     <a href="#" class="text-dark me-2"><i class="fab fa-facebook"></i></a>
                     <a href="#" class="text-dark me-2"><i class="fab fa-twitter"></i></a>
                     <a href="#" class="text-dark"><i class="fab fa-whatsapp"></i></a>
@@ -29,39 +78,84 @@
             </div>
         </div>
 
+        <!-- 2. PRODUCT INFO & VARIANTS -->
         <div class="col-lg-5 col-md-7">
             <div class="card border-0 shadow-sm p-4 h-100">
-                <div class="d-flex justify-content-between">
-                    <span class="badge bg-primary mb-2">Official Store</span>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <span class="badge bg-primary mb-2">Official Store</span>
+                        <h2 class="fw-bold fs-4">{{ product.name }}</h2>
+                    </div>
                     <i class="far fa-heart text-pro fs-5 cursor-pointer"></i>
                 </div>
-                <h2 class="fw-bold fs-4">{{ product.name }}</h2>
-                <p class="text-muted small mb-1">Brand: <a href="#" class="text-decoration-none text-pro">Zando Select</a></p>
-
-                <div class="bg-danger text-white p-2 rounded mb-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="fw-bold small"><i class="fas fa-bolt"></i> Flash Sales</span>
-                        <span class="small" id="timer">Loading timer...</span>
-                    </div>
+                
+                <div class="mb-2">
+                    <span class="text-warning">
+                        {% for i in "12345" %}
+                            <i class="fa{% if product.average_rating >= forloop.counter %}s{% else %}r{% endif %} fa-star"></i>
+                        {% endfor %}
+                    </span>
+                    <a href="#reviews" class="text-decoration-none small text-pro ms-2">({{ product.review_count }} Verified Reviews)</a>
                 </div>
 
-                <h3 class="fw-bold text-dark">KSh {{ product.price|floatformat:"-2"|intcomma }}</h3>
-                <p class="text-muted small text-decoration-line-through mb-0">KSh {{ product.price|add:"500"|floatformat:"-2"|intcomma }}</p>
-                <span class="badge bg-warning text-dark small" style="width: fit-content;">-15%</span>
+                <p class="text-muted small mb-3">Brand: <a href="#" class="text-decoration-none text-pro">Zando Select</a></p>
+
+                <!-- REAL DYNAMIC FLASH SALE BANNER -->
+                {% if product.flash_sale and product.flash_sale.is_currently_active %}
+                <div class="bg-danger text-white p-2 rounded mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold small"><i class="fas fa-bolt"></i> FLASH SALE</span>
+                        <!-- The data-endtime attribute passes the DB value to JavaScript -->
+                        <span class="small fw-bold" id="timer" data-endtime="{{ product.flash_sale.end_time|date:'Y/m/d H:i:s' }}">
+                            Loading timer...
+                        </span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- DYNAMIC PRICE SECTION -->
+                <div class="mb-1">
+                    {% if product.flash_sale and product.flash_sale.is_currently_active %}
+                        <h3 class="fw-bold text-danger mb-0">KSh {{ product.get_current_price|floatformat:"-2"|intcomma }}</h3>
+                        <div class="d-flex align-items-center gap-2">
+                            <p class="text-muted small mb-0 text-decoration-line-through">KSh {{ product.price|floatformat:"-2"|intcomma }}</p>
+                            <span class="badge bg-warning text-dark">-{{ product.get_discount_percentage }}%</span>
+                        </div>
+                    {% else %}
+                        <h3 class="fw-bold text-dark">KSh {{ product.price|floatformat:"-2"|intcomma }}</h3>
+                    {% endif %}
+                </div>
+
+                {% if variants %}
+                <hr>
+                <div class="mb-3">
+                    <p class="small fw-bold mb-2 text-uppercase">Select Variant</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for v in variants %}
+                        <button class="btn btn-sm btn-outline-secondary variant-btn">
+                            {{ v.size }}{% if v.color %} - {{ v.color }}{% endif %}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
 
                 <hr>
-                {% if product.stock <= 0 %}
-                    <div class="fw-bold text-danger mb-2">Out of stock</div>
-                {% elif product.stock <= 10 %}
-                    <div class="fw-bold text-danger mb-2"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ product.stock }} unit{{ product.stock|pluralize }} left</div>
-                {% elif product.stock <= 20 %}
-                    <div class="fw-bold text-warning mb-2"><i class="fa-solid fa-circle-exclamation me-1"></i>Few units left</div>
-                {% else %}
-                    <div class="fw-bold text-success mb-2">In stock</div>
-                {% endif %}
-                <div class="mt-3">
-                    <p class="small fw-bold mb-1">PROMOTIONS</p>
-                    <p class="small text-muted mb-0"><i class="fas fa-shield-alt text-success me-2"></i> 1 Year Warranty included</p>
+                <!-- STOCK LOGIC -->
+                <div class="mb-3">
+                    {% if product.stock <= 0 %}
+                        <div class="fw-bold text-danger"><i class="fa-solid fa-circle-xmark me-1"></i>Out of stock</div>
+                    {% elif product.stock < 10 %}
+                        <div class="fw-bold text-danger">
+                            <i class="fa-solid fa-bolt-lightning me-1"></i>Only {{ product.stock }} unit{{ product.stock|pluralize }} left - buy soon!
+                        </div>
+                    {% elif product.stock < 30 %}
+                        <div class="fw-bold" style="color: #f68b1e !important;">
+                            <i class="fa-solid fa-circle-exclamation me-1"></i>Few units left
+                        </div>
+                    {% else %}
+                        <div class="fw-bold text-success">In stock</div>
+                    {% endif %}
                 </div>
 
                 <div class="d-grid mt-auto pt-4">
@@ -80,14 +174,13 @@
                         {% endif %}
                         {% endwith %}
                     {% else %}
-                        <button class="btn btn-secondary btn-lg shadow-sm py-3 fw-bold" disabled>
-                            OUT OF STOCK
-                        </button>
+                        <button class="btn btn-secondary btn-lg shadow-sm py-3 fw-bold" disabled>OUT OF STOCK</button>
                     {% endif %}
                 </div>
             </div>
         </div>
 
+        <!-- 3. SIDEBAR (DELIVERY) -->
         <div class="col-lg-3 col-12">
             <div class="card border-0 shadow-sm p-3 mb-3">
                 <h6 class="fw-bold border-bottom pb-2">DELIVERY & RETURNS</h6>
@@ -95,10 +188,10 @@
                     <i class="fas fa-truck text-muted me-3 mt-1"></i>
                     <div>
                         <p class="mb-0 small fw-bold">Door Delivery</p>
-                        <p class="mb-0 x-small text-muted">Ready for delivery between 07 March and 10 March</p>
+                        <p class="mb-0 x-small text-muted">Ready for delivery within 2-4 days</p>
                     </div>
                 </div>
-                <div class="d-flex">
+                <div class="d-flex mb-3">
                     <i class="fas fa-undo text-muted me-3 mt-1"></i>
                     <div>
                         <p class="mb-0 small fw-bold">Return Policy</p>
@@ -106,7 +199,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="card border-0 shadow-sm p-3">
                 <h6 class="fw-bold border-bottom pb-2">SELLER INFORMATION</h6>
                 <p class="mb-1 small fw-bold">Zando Premium Store</p>
@@ -115,155 +207,149 @@
         </div>
     </div>
 
+    <!-- 4. RELATED PRODUCTS -->
     <div class="mt-5">
-        <h4 class="fw-bold mb-4">Related Products</h4>
-        <div class="row row-cols-2 row-cols-md-4 g-3">
+        <h4 class="fw-bold mb-4">You may also like</h4>
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-3">
             {% for related in related_products %}
             <div class="col">
                 <div class="card shadow-sm border-0 h-100">
                     <a href="{% url 'products:product_detail' related.id %}" class="text-decoration-none">
-                        <img src="{{ related.image.url }}" class="card-img-top p-3" alt="{{ related.name }}" style="height: 180px; object-fit: contain;" loading="lazy">
-                        <div class="card-body">
-                            <h6 class="card-title text-dark text-truncate">{{ related.name }}</h6>
-                            <p class="text-pro fw-bold mb-0">KSh {{ related.price|floatformat:"-2"|intcomma }}</p>
+                        <img src="{{ related.image.url }}" class="card-img-top p-3" alt="{{ related.name }}" style="height: 160px; object-fit: contain;">
+                        <div class="card-body p-2 text-center">
+                            <h6 class="card-title text-dark text-truncate small mb-1">{{ related.name }}</h6>
+                            <!-- Uses dynamic price helper so related products show flash prices if active -->
+                            <p class="text-pro fw-bold mb-0">KSh {{ related.get_current_price|intcomma }}</p>
                         </div>
                     </a>
                 </div>
             </div>
             {% empty %}
-            <p class="text-muted small">No related products found.</p>
+            <div class="col-12">
+                <p class="text-muted small">Looking for similar items? Check our newest arrivals.</p>
+            </div>
             {% endfor %}
         </div>
     </div>
 
-    <div class="mt-5">
+    <!-- 5. REVIEWS -->
+    <div class="mt-5" id="reviews">
         <h4 class="fw-bold mb-3">Customer Reviews</h4>
-        {% if reviews %}
-            {% for r in reviews %}
-            <div class="border rounded p-3 mb-2 bg-white">
-                <div class="d-flex justify-content-between">
-                    <strong>{{ r.user.username }}</strong>
-                    <span class="text-warning">{{ r.rating }}/5</span>
-                </div>
-                {% if r.comment %}<p class="mb-0 mt-1">{{ r.comment }}</p>{% endif %}
-                <small class="text-muted">{{ r.created_at|date:"M d, Y" }}</small>
+        <div class="row">
+            <div class="col-md-8">
+                {% if reviews %}
+                    {% for r in reviews %}
+                    <div class="border-bottom py-3 mb-2 bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-warning">
+                                    {% for i in "12345" %}
+                                        <i class="fa{% if r.rating >= forloop.counter %}s{% else %}r{% endif %} fa-star"></i>
+                                    {% endfor %}
+                                </span>
+                                <strong class="ms-2 small">{{ r.user.username }}</strong>
+                                <span class="badge bg-success-light text-success ms-2" style="font-size: 0.7rem;">
+                                    <i class="fas fa-check-circle"></i> Verified Purchase
+                                </span>
+                            </div>
+                            <small class="text-muted">{{ r.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <p class="mb-0 mt-2">{{ r.comment }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No reviews yet for this product.</p>
+                {% endif %}
             </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-muted">No reviews yet.</p>
-        {% endif %}
 
-        {% if user.is_authenticated %}
-        <form method="post" action="{% url 'products:submit_review' product.id %}" class="mt-3">
-            {% csrf_token %}
-            <div class="row g-2">
-                <div class="col-12 col-md-3">
-                    <select name="rating" class="form-select" required>
-                        <option value="">Rate</option>
-                        <option value="5">5 - Excellent</option>
-                        <option value="4">4 - Good</option>
-                        <option value="3">3 - Average</option>
-                        <option value="2">2 - Poor</option>
-                        <option value="1">1 - Bad</option>
-                    </select>
+            <div class="col-md-4">
+                {% if pending_item %}
+                <div class="card p-3 border-0 shadow-sm bg-light">
+                    <h6 class="fw-bold mb-3">Review this product</h6>
+                    <form method="post" action="{% url 'products:submit_review' pending_item.id %}">
+                        {% csrf_token %}
+                        <select name="rating" class="form-select mb-2" required>
+                            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                            <option value="3">⭐⭐⭐ (3/5)</option>
+                            <option value="2">⭐⭐ (2/5)</option>
+                            <option value="1">⭐ (1/5)</option>
+                        </select>
+                        <textarea name="comment" class="form-control mb-2" rows="3" placeholder="Write your review..."></textarea>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">Submit Review</button>
+                    </form>
                 </div>
-                <div class="col-12 col-md-7">
-                    <input type="text" name="comment" class="form-control" placeholder="Write a short review (optional)">
-                </div>
-                <div class="col-12 col-md-2 d-grid">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
+                {% endif %}
             </div>
-        </form>
-        {% else %}
-        <p class="text-muted mt-2">Please <a href="{% url 'products:login' %}?next={% url 'products:product_detail' product.id %}">login</a> to write a review.</p>
-        {% endif %}
+        </div>
     </div>
 </div>
 
-<style>
-    .x-small { font-size: 0.75rem; }
-    .text-pro { color: #0d6efd; }
-    .btn-pro { background-color: #f68b1e; color: white; border: none; }
-    .btn-pro:hover { background-color: #e67a0d; color: white; transition: 0.3s; }
-    .card { transition: transform 0.2s; }
-    .card:hover { transform: translateY(-5px); }
-</style>
+<!-- Modal for Big Picture -->
+<div class="modal fade" id="bigPictureModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-0 text-center">
+                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                <img id="modal-image" src="{{ product.image.url }}" class="img-fluid w-100">
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    const countDownDate = new Date().getTime() + (14 * 60 * 60 * 1000);
+    function updateImage(src, thumb) {
+        document.getElementById('main-image').src = src;
+        document.getElementById('modal-image').src = src;
+        document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+    }
 
-    const timer = setInterval(function() {
-        const now = new Date().getTime();
-        const distance = countDownDate - now;
+    // REAL DYNAMIC TIMER SCRIPT
+    const timerEl = document.getElementById('timer');
+    if (timerEl) {
+        // Read the endtime from the data-endtime attribute
+        const endTimeStr = timerEl.getAttribute('data-endtime');
+        const countDownDate = new Date(endTimeStr).getTime();
 
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
 
-        document.getElementById("timer").innerHTML = `Time Left: ${hours}h : ${minutes}m : ${seconds}s`;
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        if (distance < 0) {
-            clearInterval(timer);
-            document.getElementById("timer").innerHTML = "SALE EXPIRED";
-        }
-    }, 1000);
-</script>
-<script>
-    document.querySelectorAll('.img-thumbnail').forEach(item => {
-        item.addEventListener('click', function() {
-            document.querySelector('.img-fluid.rounded').src = this.src;
+            timerEl.innerHTML = `Ends in: ${hours}h ${minutes}m ${seconds}s`;
+
+            if (distance < 0) {
+                clearInterval(x);
+                timerEl.innerHTML = "FLASH SALE EXPIRED";
+                // Optionally reload to revert to normal price
+                setTimeout(() => { window.location.reload(); }, 2000);
+            }
+        }, 1000);
+    }
+
+    // AJAX Cart Logic
+    async function adjustCart(productId, action) {
+        const res = await fetch(`/products/api/cart/${productId}/${action}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
         });
+        const data = await res.json();
+        if (res.ok) {
+            const qtyEl = document.querySelector(`.js-cart-qty[data-product-id="${productId}"]`);
+            if (qtyEl) qtyEl.textContent = data.quantity;
+            else window.location.reload();
+        } else { alert(data.error); }
+    }
+
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.js-cart-inc, .js-cart-dec');
+        if (!btn) return;
+        const action = btn.classList.contains('js-cart-inc') ? 'inc' : 'dec';
+        adjustCart(btn.dataset.productId, action);
     });
-</script>
-<script>
-  function getCsrfToken() {
-    const name = 'csrftoken=';
-    const parts = document.cookie.split(';');
-    for (let p of parts) {
-      p = p.trim();
-      if (p.startsWith(name)) return decodeURIComponent(p.substring(name.length));
-    }
-    return '';
-  }
-
-  function updateCartBadge(count) {
-    const badge = document.querySelector('.fa-shopping-cart')?.closest('a')?.querySelector('.badge');
-    if (badge && typeof count !== 'undefined') badge.textContent = String(count);
-  }
-
-  async function adjustCart(productId, action) {
-    const res = await fetch(`/products/api/cart/${productId}/${action}/`, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': getCsrfToken(),
-        'X-Requested-With': 'XMLHttpRequest',
-      }
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      if (data && data.error) alert(data.error === 'Stock limit' ? `Only ${data.stock} unit(s) left.` : data.error);
-      return null;
-    }
-    updateCartBadge(data.global_cart_count);
-    return data;
-  }
-
-  document.addEventListener('click', async (e) => {
-    const inc = e.target.closest('.js-cart-inc');
-    const dec = e.target.closest('.js-cart-dec');
-    const btn = inc || dec;
-    if (!btn) return;
-    const productId = btn.getAttribute('data-product-id');
-    const action = inc ? 'inc' : 'dec';
-    const data = await adjustCart(productId, action);
-    if (!data) return;
-    const qtyEl = document.querySelector(`.js-cart-qty[data-product-id="${productId}"]`);
-    if (qtyEl) {
-      qtyEl.textContent = String(data.quantity);
-    } else {
-      window.location.reload();
-    }
-  });
 </script>
 {% endblock %}

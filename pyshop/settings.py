@@ -96,6 +96,20 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Internationalization
+# https://docs.djangoproject.com/en/6.0/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+# FIXED: Set this to Nairobi to match your local time
+TIME_ZONE = 'Africa/Nairobi'
+
+USE_I18N = True
+
+# Keep this as True so Django handles daylight savings and UTC internally
+USE_TZ = True
+
+
 # 5. M-Pesa Settings
 MPESA_ENVIRONMENT = os.environ.get('MPESA_ENVIRONMENT', 'sandbox')
 MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY')

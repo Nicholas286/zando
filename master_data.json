@@ -1,0 +1,7560 @@
+[
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2026-03-17T17:32:41.444Z",
+    "user": 1,
+    "content_type": 7,
+    "object_id": "16",
+    "object_repr": "Smartraha life RahaLife 130CM 3 Column Metallic Wardrobe-Black",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2026-03-17T17:38:15.792Z",
+    "user": 1,
+    "content_type": 7,
+    "object_id": "17",
+    "object_repr": "Nunix Plastic Portable 3 Column Nunix Wardrobe Organizer For Clothes, Shoes Pink 1202",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$YCXR1uFz3Ve6YyozeENjQh$K7PeS4Kq96567rV6TU+F1fGb0TfNMu+UT+Anma50r74=",
+    "last_login": "2026-03-18T23:00:09.469Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "munenenicholas96@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-17T14:57:19.387Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$o4n127v8GElYva7IEMw9he$9Wx2nlqayGJ7N0NE0PI6uWl//cLhv0Ifg3ZobjY3EQY=",
+    "last_login": "2026-03-18T22:57:24.534Z",
+    "is_superuser": false,
+    "username": "Nicholas",
+    "first_name": "",
+    "last_name": "",
+    "email": "munenenicholas96@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-03-17T17:14:24.058Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$x6GZzlfELveUpnvS7YFlj4$RsXIsMTayLXdqTQc17GV9EkhsBJugldNUa59cXLvaKA=",
+    "last_login": "2026-03-17T17:44:15.377Z",
+    "is_superuser": false,
+    "username": "dianah",
+    "first_name": "",
+    "last_name": "",
+    "email": "dianahkarimi4@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-03-17T17:44:13.987Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "cn73wa2ebzuif27mmwqwpbbx1xbgbyzx",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWk6UGnHpXvO0MwwU4saSCisjHdXEha6_e-9_zKJtrWkreqSRjEXA-b0uzEND512IHeabrMd5mldRra7Yg9abT-LPq-H-3dQqJZv7RyGVomcoEcMcA4q3mPbeWgi-MDKSOq6hl3bAFPEmIUhQuaYgwzm_QG8ijd6:1w2zs1:DSJLESksOttanogABOSZyEG58Px4M-y3I8THUH44_dA",
+    "expire_date": "2026-04-01T23:00:09.508Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "i5ewztxggw5b2hd3ai4h2fqtoql6fv2b",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAUBf-FtSG8ysOl-34DuXBBqgaS0q6M_25JutDdyczkvImHfSt-72n1C5IrkeTyywLEZ6pD4APqvdHY6rYugY6EnrbTuWF63c7276BAL-NW8UlzdCwH47KZDONMIioukCMDEJmNHQXDbK0GZY9aG66kUwew5PMFu9A2rw:1w2YSl:Z9FVJzv9p9GXDd18xh5n3C7brTU1L1_qL1KuEerI9WQ",
+    "expire_date": "2026-03-31T17:44:15.408Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "jrvou4oy1ajlxjyj6rl6h1a6pb0wst9n",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWk6UGnHpXvO0MwwU4saSCisjHdXEha6_e-9_zKJtrWkreqSRjEXA-b0uzEND512IHeabrMd5mldRra7Yg9abT-LPq-H-3dQqJZv7RyGVomcoEcMcA4q3mPbeWgi-MDKSOq6hl3bAFPEmIUhQuaYgwzm_QG8ijd6:1w2Y2g:uZxMBQYsS_Hi3TjaN_s-91_3fjR_gZuw6hU7UylnOHw",
+    "expire_date": "2026-03-31T17:17:18.647Z"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 1,
+  "fields": {
+    "name": "kirinyaga"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 2,
+  "fields": {
+    "name": "Nairobi"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 3,
+  "fields": {
+    "name": "Mombasa"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 4,
+  "fields": {
+    "name": "Kisumu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 5,
+  "fields": {
+    "name": "Nakuru"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 6,
+  "fields": {
+    "name": "Kiambu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 7,
+  "fields": {
+    "name": "Kirinyaga"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 8,
+  "fields": {
+    "name": "Uasin Gishu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 9,
+  "fields": {
+    "name": "Kakamega"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 10,
+  "fields": {
+    "name": "Machakos"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 11,
+  "fields": {
+    "name": "Kisii"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 12,
+  "fields": {
+    "name": "Bungoma"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 13,
+  "fields": {
+    "name": "Kericho"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 14,
+  "fields": {
+    "name": "Nyeri"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 15,
+  "fields": {
+    "name": "Embu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 16,
+  "fields": {
+    "name": "Meru"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 17,
+  "fields": {
+    "name": "Busia"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 18,
+  "fields": {
+    "name": "Narok"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 19,
+  "fields": {
+    "name": "Kajiado"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 20,
+  "fields": {
+    "name": "Kwale"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 21,
+  "fields": {
+    "name": "Kilifi"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 22,
+  "fields": {
+    "name": "Tana River"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 23,
+  "fields": {
+    "name": "Lamu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 24,
+  "fields": {
+    "name": "Taita-Taveta"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 25,
+  "fields": {
+    "name": "Garissa"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 26,
+  "fields": {
+    "name": "Wajir"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 27,
+  "fields": {
+    "name": "Mandera"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 28,
+  "fields": {
+    "name": "Marsabit"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 29,
+  "fields": {
+    "name": "Isiolo"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 30,
+  "fields": {
+    "name": "Tharaka-Nithi"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 31,
+  "fields": {
+    "name": "Kitui"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 32,
+  "fields": {
+    "name": "Makueni"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 33,
+  "fields": {
+    "name": "Nyandarua"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 34,
+  "fields": {
+    "name": "Murang'a"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 35,
+  "fields": {
+    "name": "Turkana"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 36,
+  "fields": {
+    "name": "West Pokot"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 37,
+  "fields": {
+    "name": "Samburu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 38,
+  "fields": {
+    "name": "Trans Nzoia"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 39,
+  "fields": {
+    "name": "Elgeyo-Marakwet"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 40,
+  "fields": {
+    "name": "Nandi"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 41,
+  "fields": {
+    "name": "Baringo"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 42,
+  "fields": {
+    "name": "Laikipia"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 43,
+  "fields": {
+    "name": "Bomet"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 44,
+  "fields": {
+    "name": "Vihiga"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 45,
+  "fields": {
+    "name": "Siaya"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 46,
+  "fields": {
+    "name": "Homa Bay"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 47,
+  "fields": {
+    "name": "Migori"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 48,
+  "fields": {
+    "name": "Nyamira"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 1,
+  "fields": {
+    "county": 1,
+    "name": "kerugoya town"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 2,
+  "fields": {
+    "county": 1,
+    "name": "kutus"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 3,
+  "fields": {
+    "county": 2,
+    "name": "Nairobi City"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 4,
+  "fields": {
+    "county": 3,
+    "name": "Mombasa"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 5,
+  "fields": {
+    "county": 4,
+    "name": "Kisumu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 6,
+  "fields": {
+    "county": 5,
+    "name": "Nakuru"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 7,
+  "fields": {
+    "county": 5,
+    "name": "Naivasha"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 8,
+  "fields": {
+    "county": 6,
+    "name": "Thika"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 9,
+  "fields": {
+    "county": 6,
+    "name": "Kikuyu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 10,
+  "fields": {
+    "county": 7,
+    "name": "Kerugoya"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 11,
+  "fields": {
+    "county": 7,
+    "name": "Kutus"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 12,
+  "fields": {
+    "county": 7,
+    "name": "Baricho"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 13,
+  "fields": {
+    "county": 8,
+    "name": "Eldoret"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 14,
+  "fields": {
+    "county": 9,
+    "name": "Kakamega"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 15,
+  "fields": {
+    "county": 10,
+    "name": "Machakos Town"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 16,
+  "fields": {
+    "county": 10,
+    "name": "Athi River"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 17,
+  "fields": {
+    "county": 11,
+    "name": "Kisii"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 18,
+  "fields": {
+    "county": 12,
+    "name": "Bungoma"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 19,
+  "fields": {
+    "county": 12,
+    "name": "Webuye"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 20,
+  "fields": {
+    "county": 13,
+    "name": "Kericho"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 21,
+  "fields": {
+    "county": 14,
+    "name": "Nyeri"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 22,
+  "fields": {
+    "county": 15,
+    "name": "Embu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 23,
+  "fields": {
+    "county": 16,
+    "name": "Meru"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 24,
+  "fields": {
+    "county": 17,
+    "name": "Busia"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 25,
+  "fields": {
+    "county": 18,
+    "name": "Narok"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 26,
+  "fields": {
+    "county": 19,
+    "name": "Kitengela"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 27,
+  "fields": {
+    "county": 19,
+    "name": "Ngong"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 28,
+  "fields": {
+    "county": 16,
+    "name": "Maua"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 29,
+  "fields": {
+    "county": 3,
+    "name": "Kilifi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 30,
+  "fields": {
+    "county": 3,
+    "name": "Malindi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 31,
+  "fields": {
+    "county": 3,
+    "name": "Lamu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 32,
+  "fields": {
+    "county": 3,
+    "name": "Kwale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 33,
+  "fields": {
+    "county": 20,
+    "name": "Kwale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 34,
+  "fields": {
+    "county": 20,
+    "name": "Msambweni"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 35,
+  "fields": {
+    "county": 20,
+    "name": "Lungalunga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 36,
+  "fields": {
+    "county": 20,
+    "name": "Matuga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 37,
+  "fields": {
+    "county": 21,
+    "name": "Kilifi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 38,
+  "fields": {
+    "county": 21,
+    "name": "Malindi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 39,
+  "fields": {
+    "county": 21,
+    "name": "Kaloleni"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 40,
+  "fields": {
+    "county": 21,
+    "name": "Rabai"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 41,
+  "fields": {
+    "county": 21,
+    "name": "Ganze"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 42,
+  "fields": {
+    "county": 22,
+    "name": "Hola"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 43,
+  "fields": {
+    "county": 22,
+    "name": "Garsen"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 44,
+  "fields": {
+    "county": 22,
+    "name": "Bura"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 45,
+  "fields": {
+    "county": 23,
+    "name": "Lamu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 46,
+  "fields": {
+    "county": 23,
+    "name": "Mokowe"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 47,
+  "fields": {
+    "county": 24,
+    "name": "Voi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 48,
+  "fields": {
+    "county": 24,
+    "name": "Taveta"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 49,
+  "fields": {
+    "county": 24,
+    "name": "Wundanyi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 50,
+  "fields": {
+    "county": 24,
+    "name": "Mwatate"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 51,
+  "fields": {
+    "county": 25,
+    "name": "Garissa"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 52,
+  "fields": {
+    "county": 25,
+    "name": "Ijara"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 53,
+  "fields": {
+    "county": 25,
+    "name": "Dadaab"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 54,
+  "fields": {
+    "county": 25,
+    "name": "Fafi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 55,
+  "fields": {
+    "county": 26,
+    "name": "Wajir"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 56,
+  "fields": {
+    "county": 26,
+    "name": "Moyale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 57,
+  "fields": {
+    "county": 26,
+    "name": "Habaswein"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 58,
+  "fields": {
+    "county": 26,
+    "name": "Griftu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 59,
+  "fields": {
+    "county": 27,
+    "name": "Mandera"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 60,
+  "fields": {
+    "county": 27,
+    "name": "Elwak"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 61,
+  "fields": {
+    "county": 27,
+    "name": "Takaba"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 62,
+  "fields": {
+    "county": 27,
+    "name": "Lafey"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 63,
+  "fields": {
+    "county": 28,
+    "name": "Marsabit"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 64,
+  "fields": {
+    "county": 28,
+    "name": "Moyale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 65,
+  "fields": {
+    "county": 28,
+    "name": "Sololo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 66,
+  "fields": {
+    "county": 28,
+    "name": "Laisamis"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 67,
+  "fields": {
+    "county": 29,
+    "name": "Isiolo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 68,
+  "fields": {
+    "county": 29,
+    "name": "Moyale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 69,
+  "fields": {
+    "county": 29,
+    "name": "Merti"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 70,
+  "fields": {
+    "county": 16,
+    "name": "Nkubu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 71,
+  "fields": {
+    "county": 16,
+    "name": "Chuka"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 72,
+  "fields": {
+    "county": 16,
+    "name": "Igembe"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 73,
+  "fields": {
+    "county": 30,
+    "name": "Chuka"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 74,
+  "fields": {
+    "county": 30,
+    "name": "Maua"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 75,
+  "fields": {
+    "county": 30,
+    "name": "Tharaka"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 76,
+  "fields": {
+    "county": 15,
+    "name": "Runyenjes"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 77,
+  "fields": {
+    "county": 15,
+    "name": "Manyatta"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 78,
+  "fields": {
+    "county": 31,
+    "name": "Kitui"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 79,
+  "fields": {
+    "county": 31,
+    "name": "Mwingi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 80,
+  "fields": {
+    "county": 31,
+    "name": "Mutomo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 81,
+  "fields": {
+    "county": 31,
+    "name": "Ikutha"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 82,
+  "fields": {
+    "county": 10,
+    "name": "Machakos"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 83,
+  "fields": {
+    "county": 10,
+    "name": "Kangundo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 84,
+  "fields": {
+    "county": 10,
+    "name": "Tala"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 85,
+  "fields": {
+    "county": 32,
+    "name": "Wote"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 86,
+  "fields": {
+    "county": 32,
+    "name": "Makueni"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 87,
+  "fields": {
+    "county": 32,
+    "name": "Kibwezi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 88,
+  "fields": {
+    "county": 32,
+    "name": "Makindu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 89,
+  "fields": {
+    "county": 33,
+    "name": "Ol Kalou"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 90,
+  "fields": {
+    "county": 33,
+    "name": "Ndaragwa"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 91,
+  "fields": {
+    "county": 33,
+    "name": "Engineer"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 92,
+  "fields": {
+    "county": 33,
+    "name": "Nyahururu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 93,
+  "fields": {
+    "county": 14,
+    "name": "Othaya"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 94,
+  "fields": {
+    "county": 14,
+    "name": "Chinga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 95,
+  "fields": {
+    "county": 14,
+    "name": "Karatina"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 96,
+  "fields": {
+    "county": 7,
+    "name": "Wanguru"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 97,
+  "fields": {
+    "county": 7,
+    "name": "Sagana"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 98,
+  "fields": {
+    "county": 34,
+    "name": "Murang'a"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 99,
+  "fields": {
+    "county": 34,
+    "name": "Kangema"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 100,
+  "fields": {
+    "county": 34,
+    "name": "Kiharu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 101,
+  "fields": {
+    "county": 34,
+    "name": "Maragua"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 102,
+  "fields": {
+    "county": 6,
+    "name": "Kiambu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 103,
+  "fields": {
+    "county": 6,
+    "name": "Limuru"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 104,
+  "fields": {
+    "county": 6,
+    "name": "Ruiru"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 105,
+  "fields": {
+    "county": 35,
+    "name": "Lodwar"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 106,
+  "fields": {
+    "county": 35,
+    "name": "Kakuma"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 107,
+  "fields": {
+    "county": 35,
+    "name": "Lokichoggio"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 108,
+  "fields": {
+    "county": 35,
+    "name": "Lokitaung"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 109,
+  "fields": {
+    "county": 36,
+    "name": "Kapenguria"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 110,
+  "fields": {
+    "county": 36,
+    "name": "Sigor"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 111,
+  "fields": {
+    "county": 36,
+    "name": "Ortum"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 112,
+  "fields": {
+    "county": 37,
+    "name": "Maralal"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 113,
+  "fields": {
+    "county": 37,
+    "name": "Baragoi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 114,
+  "fields": {
+    "county": 37,
+    "name": "Wamba"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 115,
+  "fields": {
+    "county": 38,
+    "name": "Kitale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 116,
+  "fields": {
+    "county": 38,
+    "name": "Kiminini"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 117,
+  "fields": {
+    "county": 38,
+    "name": "Endebess"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 118,
+  "fields": {
+    "county": 8,
+    "name": "Turbo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 119,
+  "fields": {
+    "county": 8,
+    "name": "Moiben"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 120,
+  "fields": {
+    "county": 8,
+    "name": "Soy"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 121,
+  "fields": {
+    "county": 39,
+    "name": "Iten"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 122,
+  "fields": {
+    "county": 39,
+    "name": "Kapsowar"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 123,
+  "fields": {
+    "county": 39,
+    "name": "Marakwet"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 124,
+  "fields": {
+    "county": 40,
+    "name": "Kapsabet"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 125,
+  "fields": {
+    "county": 40,
+    "name": "Mosoriot"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 126,
+  "fields": {
+    "county": 40,
+    "name": "Nandi Hills"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 127,
+  "fields": {
+    "county": 41,
+    "name": "Kabarnet"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 128,
+  "fields": {
+    "county": 41,
+    "name": "Eldama Ravine"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 129,
+  "fields": {
+    "county": 41,
+    "name": "Marigat"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 130,
+  "fields": {
+    "county": 42,
+    "name": "Nanyuki"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 131,
+  "fields": {
+    "county": 42,
+    "name": "Rumuruti"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 132,
+  "fields": {
+    "county": 42,
+    "name": "Dol Dol"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 133,
+  "fields": {
+    "county": 5,
+    "name": "Gilgil"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 134,
+  "fields": {
+    "county": 5,
+    "name": "Molo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 135,
+  "fields": {
+    "county": 5,
+    "name": "Njoro"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 136,
+  "fields": {
+    "county": 18,
+    "name": "Kilgoris"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 137,
+  "fields": {
+    "county": 18,
+    "name": "Ololulunga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 138,
+  "fields": {
+    "county": 19,
+    "name": "Kajiado"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 139,
+  "fields": {
+    "county": 19,
+    "name": "Ongata Rongai"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 140,
+  "fields": {
+    "county": 13,
+    "name": "Litein"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 141,
+  "fields": {
+    "county": 13,
+    "name": "Kipkelion"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 142,
+  "fields": {
+    "county": 43,
+    "name": "Bomet"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 143,
+  "fields": {
+    "county": 43,
+    "name": "Sotik"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 144,
+  "fields": {
+    "county": 43,
+    "name": "Chepalungu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 145,
+  "fields": {
+    "county": 9,
+    "name": "Mumias"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 146,
+  "fields": {
+    "county": 9,
+    "name": "Lugari"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 147,
+  "fields": {
+    "county": 9,
+    "name": "Butere"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 148,
+  "fields": {
+    "county": 44,
+    "name": "Vihiga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 149,
+  "fields": {
+    "county": 44,
+    "name": "Hamisi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 150,
+  "fields": {
+    "county": 44,
+    "name": "Luanda"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 151,
+  "fields": {
+    "county": 12,
+    "name": "Malakisi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 152,
+  "fields": {
+    "county": 12,
+    "name": "Sirisia"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 153,
+  "fields": {
+    "county": 17,
+    "name": "Malaba"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 154,
+  "fields": {
+    "county": 17,
+    "name": "Port Victoria"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 155,
+  "fields": {
+    "county": 45,
+    "name": "Siaya"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 156,
+  "fields": {
+    "county": 45,
+    "name": "Bondo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 157,
+  "fields": {
+    "county": 45,
+    "name": "Ugunja"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 158,
+  "fields": {
+    "county": 45,
+    "name": "Ukwala"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 159,
+  "fields": {
+    "county": 4,
+    "name": "Kisumu Ndogo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 160,
+  "fields": {
+    "county": 4,
+    "name": "Ahero"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 161,
+  "fields": {
+    "county": 4,
+    "name": "Muhoroni"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 162,
+  "fields": {
+    "county": 46,
+    "name": "Homa Bay"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 163,
+  "fields": {
+    "county": 46,
+    "name": "Ndhiwa"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 164,
+  "fields": {
+    "county": 46,
+    "name": "Mbita"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 165,
+  "fields": {
+    "county": 46,
+    "name": "Rachuonyo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 166,
+  "fields": {
+    "county": 47,
+    "name": "Migori"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 167,
+  "fields": {
+    "county": 47,
+    "name": "Awendo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 168,
+  "fields": {
+    "county": 47,
+    "name": "Rongo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 169,
+  "fields": {
+    "county": 47,
+    "name": "Uriri"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 170,
+  "fields": {
+    "county": 11,
+    "name": "Ogembo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 171,
+  "fields": {
+    "county": 11,
+    "name": "Nyamache"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 172,
+  "fields": {
+    "county": 11,
+    "name": "Masimba"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 173,
+  "fields": {
+    "county": 48,
+    "name": "Nyamira"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 174,
+  "fields": {
+    "county": 48,
+    "name": "Keroka"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 175,
+  "fields": {
+    "county": 48,
+    "name": "Manga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 176,
+  "fields": {
+    "county": 2,
+    "name": "Nairobi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 177,
+  "fields": {
+    "county": 2,
+    "name": "Westlands"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 178,
+  "fields": {
+    "county": 2,
+    "name": "Karen"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 179,
+  "fields": {
+    "county": 2,
+    "name": "Kilimani"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 180,
+  "fields": {
+    "county": 2,
+    "name": "Langata"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 181,
+  "fields": {
+    "county": 2,
+    "name": "Parklands"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 182,
+  "fields": {
+    "county": 2,
+    "name": "River Road"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 183,
+  "fields": {
+    "county": 2,
+    "name": "CBD"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 2,
+  "fields": {
+    "name": "Phones & Tablets",
+    "icon_class": "fa-solid fa-mobile-screen"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 4,
+  "fields": {
+    "name": "Appliances",
+    "icon_class": "fa-solid fa-plug"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 5,
+  "fields": {
+    "name": "Health & Beauty",
+    "icon_class": "fa-solid fa-sparkles"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 6,
+  "fields": {
+    "name": "Home & Office",
+    "icon_class": "fa-solid fa-couch"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 7,
+  "fields": {
+    "name": "Fashion",
+    "icon_class": "fa-solid fa-shirt"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 8,
+  "fields": {
+    "name": "Computing",
+    "icon_class": "fa-solid fa-laptop"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 9,
+  "fields": {
+    "name": "Gaming",
+    "icon_class": "fa-solid fa-gamepad"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 10,
+  "fields": {
+    "name": "Supermarket",
+    "icon_class": "fa-solid fa-basket-shopping"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 11,
+  "fields": {
+    "name": "Baby Products",
+    "icon_class": "fa-solid fa-baby"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 12,
+  "fields": {
+    "name": "Other categories",
+    "icon_class": "fa-solid fa-ellipsis"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 13,
+  "fields": {
+    "name": "TVs  & Audio",
+    "icon_class": "fa-solid fa-box"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 1,
+  "fields": {
+    "category": 4,
+    "name": "AILYONS Electric Kettle Water Heater & Boiler Jug",
+    "price": "490.00",
+    "image": "products/kettle_ailyons.jpg",
+    "stock": 20,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 2,
+  "fields": {
+    "category": 8,
+    "name": "HP ELITEBOOK 830 G6,INTEL CORE I5 8TH GEN 8GB RAM 256GB SSD NON-TOUCH (6 Months WRTY)",
+    "price": "28400.00",
+    "image": "products/hp_laptop.jpg",
+    "stock": 36,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 3,
+  "fields": {
+    "category": 8,
+    "name": "Lenovo --Lenovo Thinkpad X13 Yoga x360 core 15 16GB RAM 512GB SSD 10th generation Quad core 13.3 Inches FHD non Touch windows 11 pro, HD Camera, HDMI, USB Type C, Stylus Pen convertible 2 in 1 laptop +Mouse",
+    "price": "42999.00",
+    "image": "products/lenovo_laptop.jpg",
+    "stock": 44,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 4,
+  "fields": {
+    "category": 4,
+    "name": "VON VART-19DHS Double Door Fridge 136L - Silver (1YR WRTY)",
+    "price": "24499.00",
+    "image": "products/von_fridge_136L.jpg",
+    "stock": 59,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 5,
+  "fields": {
+    "category": 13,
+    "name": "Vitron HTC4300QFS 43\" QLED TV Bluetooth Enabled Full HD Frameless Smart Android TT, Wi-Fi Connectivity, Inbuilt Decoder, Netflix, Youtube, App Store + 6 Free Accessories (1YR WRTY)",
+    "price": "19395.00",
+    "image": "products/vitron_43_inches.jpg",
+    "stock": 72,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 6,
+  "fields": {
+    "category": null,
+    "name": "Vitron V527 - 2.1 CH Multimedia Speaker, BT/USB/SD/FM - 9000W (1YR WRTY)",
+    "price": "5490.00",
+    "image": "products/vitron_woofer.jpg",
+    "stock": 87,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 7,
+  "fields": {
+    "category": 13,
+    "name": "Hisense 32\" Inch Frameless FHD SMART TV,Netflix,WIFI,INBUILT DECODER+TV GUARD+BRACKET",
+    "price": "14599.00",
+    "image": "products/hisense_32_inches.jpg",
+    "stock": 67,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 8,
+  "fields": {
+    "category": 2,
+    "name": "Tecno CAMON 40 PRO,6.78\", Up to 16GB RAM + 256GB, 5200mAh - Black + FREE GIFTS",
+    "price": "34795.00",
+    "image": "products/camon_40.jpg",
+    "stock": 48,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 9,
+  "fields": {
+    "category": 6,
+    "name": "5FT Stylish Modern Wooden TV Stands For Up To 75'' TV",
+    "price": "6450.00",
+    "image": "products/tv_stand.jpg",
+    "stock": 41,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 10,
+  "fields": {
+    "category": 13,
+    "name": "Vitron V51SB- 2.1ch Soundbar System with Bluetooth, Black (1YR WRTY)",
+    "price": "4599.00",
+    "image": "products/woofer.jpg",
+    "stock": 25,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 11,
+  "fields": {
+    "category": 2,
+    "name": "Share thredbeat A2 Tablet, Dual SIM, 10.1-inch , 8(4+4)GB RAM/128GB ROM, Android 14, 6000 MAh Battery,Gray",
+    "price": "11505.00",
+    "image": "products/tablet.jpg",
+    "stock": 83,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 12,
+  "fields": {
+    "category": 6,
+    "name": "Istanbul 2 Modern TV Stand With LED Bulb - White & Black",
+    "price": "4539.00",
+    "image": "products/led_tv_stand.jpg",
+    "stock": 53,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 13,
+  "fields": {
+    "category": 4,
+    "name": "Em Blender 2 In 1 Grinding Machine With Durable Motor 1.5L, Black BD02",
+    "price": "1449.00",
+    "image": "products/blender.jpg",
+    "stock": 36,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 14,
+  "fields": {
+    "category": 6,
+    "name": "Stylish Mordern Coffee Table",
+    "price": "12000.00",
+    "image": "products/coffee_table.jpg",
+    "stock": 37,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 15,
+  "fields": {
+    "category": 7,
+    "name": "Machislet Dresses For The Slim Ladies Women's Fashion Long Sleeve Loose Dreeses Ladies Dresses",
+    "price": "749.00",
+    "image": "products/1.jpg",
+    "stock": 17,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 16,
+  "fields": {
+    "category": 6,
+    "name": "Smartraha life RahaLife 130CM 3 Column Metallic Wardrobe-Black",
+    "price": "1959.00",
+    "image": "products/wardrobe.jpg",
+    "stock": 8,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 17,
+  "fields": {
+    "category": 6,
+    "name": "Nunix Plastic Portable 3 Column Nunix Wardrobe Organizer For Clothes, Shoes Pink 1202",
+    "price": "3999.00",
+    "image": "products/plastic_wardrobe.jpg",
+    "stock": 19,
+    "description": ""
+  }
+},
+{
+  "model": "products.cart",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "created_at": "2026-03-08T10:36:27.033Z"
+  }
+},
+{
+  "model": "products.cart",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "created_at": "2026-03-17T17:14:38.963Z"
+  }
+},
+{
+  "model": "products.cart",
+  "pk": 3,
+  "fields": {
+    "user": 3,
+    "created_at": "2026-03-17T17:44:15.842Z"
+  }
+},
+{
+  "model": "products.cartitem",
+  "pk": 29,
+  "fields": {
+    "cart": 3,
+    "product": 1,
+    "quantity": 1
+  }
+},
+{
+  "model": "products.wishlist",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "product": 7,
+    "created_at": "2026-03-07T09:27:38.934Z"
+  }
+},
+{
+  "model": "products.wishlist",
+  "pk": 6,
+  "fields": {
+    "user": 1,
+    "product": 1,
+    "created_at": "2026-03-07T11:14:06.648Z"
+  }
+},
+{
+  "model": "products.address",
+  "pk": 23,
+  "fields": {
+    "user": 1,
+    "first_name": "Nicholas",
+    "last_name": "Munene",
+    "street": "479, maua",
+    "town": 28,
+    "postal_code": null,
+    "phone": "0715979332",
+    "is_default": true
+  }
+},
+{
+  "model": "products.address",
+  "pk": 24,
+  "fields": {
+    "user": 1,
+    "first_name": "Nicholas",
+    "last_name": "Munene",
+    "street": "10300 Kutus- Kerugoya Road",
+    "town": 2,
+    "postal_code": "10300",
+    "phone": "0715979332",
+    "is_default": false
+  }
+},
+{
+  "model": "products.address",
+  "pk": 25,
+  "fields": {
+    "user": 2,
+    "first_name": "Nicholas",
+    "last_name": "Munene",
+    "street": "479, maua",
+    "town": 11,
+    "postal_code": "60600",
+    "phone": "0715979332",
+    "is_default": true
+  }
+},
+{
+  "model": "products.address",
+  "pk": 26,
+  "fields": {
+    "user": 3,
+    "first_name": "DIANAH",
+    "last_name": "KARIMI",
+    "street": "10300",
+    "town": 11,
+    "postal_code": "10300",
+    "phone": "0731493784",
+    "is_default": false
+  }
+},
+{
+  "model": "products.order",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "total_price": "225.00",
+    "phone_number": "254700000000",
+    "transaction_id": null,
+    "payment_method": "M-Pesa",
+    "delivery_method": "standard",
+    "status": "Cancelled",
+    "created_at": "2026-03-05T04:41:19.494Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 2,
+  "fields": {
+    "user": 1,
+    "total_price": "20.00",
+    "phone_number": "254700000000",
+    "transaction_id": null,
+    "payment_method": "M-Pesa",
+    "delivery_method": "standard",
+    "status": "Delivered",
+    "created_at": "2026-03-05T04:53:21.177Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "total_price": "38275.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Cancelled",
+    "created_at": "2026-03-08T11:45:27.325Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 4,
+  "fields": {
+    "user": 1,
+    "total_price": "37598.00",
+    "phone_number": "",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Delivered",
+    "created_at": "2026-03-08T18:11:35.601Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "total_price": "49469.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "M-Pesa",
+    "delivery_method": "standard",
+    "status": "Delivered",
+    "created_at": "2026-03-09T15:03:41.889Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 6,
+  "fields": {
+    "user": 1,
+    "total_price": "49469.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Ready for Pickup",
+    "created_at": "2026-03-09T15:28:06.427Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 7,
+  "fields": {
+    "user": 1,
+    "total_price": "43989.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Ready for Pickup",
+    "created_at": "2026-03-09T16:01:35.108Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 8,
+  "fields": {
+    "user": 1,
+    "total_price": "43489.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Shipped",
+    "created_at": "2026-03-09T16:12:47.057Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 9,
+  "fields": {
+    "user": 1,
+    "total_price": "28890.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Shipped",
+    "created_at": "2026-03-09T17:23:21.020Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 10,
+  "fields": {
+    "user": 1,
+    "total_price": "4599.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-09T18:18:25.460Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": 23,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 11,
+  "fields": {
+    "user": 1,
+    "total_price": "6970.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-09T18:19:57.331Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": 23,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 12,
+  "fields": {
+    "user": 2,
+    "total_price": "11940.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-17T17:16:45.269Z",
+    "estimated_delivery_start": "2026-03-19",
+    "estimated_delivery_end": "2026-03-20",
+    "delivered_at": null,
+    "address": 25,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 13,
+  "fields": {
+    "user": 3,
+    "total_price": "24499.00",
+    "phone_number": "0731493784",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-17T17:46:48.215Z",
+    "estimated_delivery_start": "2026-03-19",
+    "estimated_delivery_end": "2026-03-20",
+    "delivered_at": null,
+    "address": 26,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 14,
+  "fields": {
+    "user": 1,
+    "total_price": "43979.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-18T10:27:59.316Z",
+    "estimated_delivery_start": "2026-03-20",
+    "estimated_delivery_end": "2026-03-23",
+    "delivered_at": null,
+    "address": 23,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 15,
+  "fields": {
+    "user": 3,
+    "total_price": "490.00",
+    "phone_number": "0731493784",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-18T10:53:12.057Z",
+    "estimated_delivery_start": "2026-03-20",
+    "estimated_delivery_end": "2026-03-23",
+    "delivered_at": null,
+    "address": 26,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 16,
+  "fields": {
+    "user": 2,
+    "total_price": "3408.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-18T22:58:57.218Z",
+    "estimated_delivery_start": "2026-03-20",
+    "estimated_delivery_end": "2026-03-23",
+    "delivered_at": null,
+    "address": 25,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 17,
+  "fields": {
+    "user": 1,
+    "total_price": "7449.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Pending",
+    "created_at": "2026-03-19T09:18:14.063Z",
+    "estimated_delivery_start": "2026-03-23",
+    "estimated_delivery_end": "2026-03-24",
+    "delivered_at": null,
+    "address": 23,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 1,
+  "fields": {
+    "order": 10,
+    "product": 10,
+    "quantity": 1,
+    "price": "4599.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 2,
+  "fields": {
+    "order": 11,
+    "product": 1,
+    "quantity": 2,
+    "price": "490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 3,
+  "fields": {
+    "order": 11,
+    "product": 6,
+    "quantity": 1,
+    "price": "5490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 4,
+  "fields": {
+    "order": 12,
+    "product": 6,
+    "quantity": 1,
+    "price": "5490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 5,
+  "fields": {
+    "order": 12,
+    "product": 9,
+    "quantity": 1,
+    "price": "6450.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 6,
+  "fields": {
+    "order": 13,
+    "product": 4,
+    "quantity": 1,
+    "price": "24499.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 7,
+  "fields": {
+    "order": 14,
+    "product": 1,
+    "quantity": 2,
+    "price": "490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 8,
+  "fields": {
+    "order": 14,
+    "product": 3,
+    "quantity": 1,
+    "price": "42999.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 9,
+  "fields": {
+    "order": 15,
+    "product": 1,
+    "quantity": 1,
+    "price": "490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 10,
+  "fields": {
+    "order": 16,
+    "product": 16,
+    "quantity": 1,
+    "price": "1959.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 11,
+  "fields": {
+    "order": 16,
+    "product": 13,
+    "quantity": 1,
+    "price": "1449.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 12,
+  "fields": {
+    "order": 17,
+    "product": 6,
+    "quantity": 1,
+    "price": "5490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 13,
+  "fields": {
+    "order": 17,
+    "product": 16,
+    "quantity": 1,
+    "price": "1959.00"
+  }
+},
+{
+  "model": "products.review",
+  "pk": 1,
+  "fields": {
+    "product": 1,
+    "user": 1,
+    "rating": 5,
+    "comment": "works perfectly thanks zando",
+    "created_at": "2026-03-10T11:46:52.265Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "order": 1,
+    "status": "Pending",
+    "message": "Your order #1 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.620Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 2,
+  "fields": {
+    "user": 1,
+    "order": 2,
+    "status": "Pending",
+    "message": "Your order #2 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.624Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "order": 3,
+    "status": "Pending",
+    "message": "Your order #3 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.628Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 4,
+  "fields": {
+    "user": 1,
+    "order": 4,
+    "status": "Pending",
+    "message": "Your order #4 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.631Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "order": 5,
+    "status": "Pending",
+    "message": "Your order #5 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.634Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 6,
+  "fields": {
+    "user": 1,
+    "order": 6,
+    "status": "Pending",
+    "message": "Your order #6 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.638Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 7,
+  "fields": {
+    "user": 1,
+    "order": 7,
+    "status": "Pending",
+    "message": "Your order #7 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.641Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 8,
+  "fields": {
+    "user": 1,
+    "order": 8,
+    "status": "Pending",
+    "message": "Your order #8 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.645Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 9,
+  "fields": {
+    "user": 1,
+    "order": 9,
+    "status": "Pending",
+    "message": "Your order #9 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.647Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 10,
+  "fields": {
+    "user": 1,
+    "order": 10,
+    "status": "Pending",
+    "message": "Your order #10 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.650Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 11,
+  "fields": {
+    "user": 1,
+    "order": 11,
+    "status": "Pending",
+    "message": "Your order #11 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.653Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 12,
+  "fields": {
+    "user": 1,
+    "order": 11,
+    "status": "Confirmed",
+    "message": "Your order #11 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.151Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 13,
+  "fields": {
+    "user": 1,
+    "order": 10,
+    "status": "Confirmed",
+    "message": "Your order #10 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.243Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 14,
+  "fields": {
+    "user": 1,
+    "order": 9,
+    "status": "Confirmed",
+    "message": "Your order #9 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.320Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 15,
+  "fields": {
+    "user": 1,
+    "order": 8,
+    "status": "Confirmed",
+    "message": "Your order #8 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.397Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 16,
+  "fields": {
+    "user": 1,
+    "order": 7,
+    "status": "Confirmed",
+    "message": "Your order #7 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.470Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 17,
+  "fields": {
+    "user": 1,
+    "order": 6,
+    "status": "Confirmed",
+    "message": "Your order #6 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.545Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 18,
+  "fields": {
+    "user": 1,
+    "order": 5,
+    "status": "Confirmed",
+    "message": "Your order #5 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.618Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 19,
+  "fields": {
+    "user": 1,
+    "order": 4,
+    "status": "Confirmed",
+    "message": "Your order #4 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.692Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 20,
+  "fields": {
+    "user": 1,
+    "order": 3,
+    "status": "Confirmed",
+    "message": "Your order #3 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.765Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 21,
+  "fields": {
+    "user": 1,
+    "order": 2,
+    "status": "Confirmed",
+    "message": "Your order #2 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.844Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 22,
+  "fields": {
+    "user": 1,
+    "order": 1,
+    "status": "Confirmed",
+    "message": "Your order #1 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.915Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 23,
+  "fields": {
+    "user": 2,
+    "order": 12,
+    "status": "Pending",
+    "message": "Your order #12 has been placed.",
+    "is_read": false,
+    "created_at": "2026-03-17T17:16:45.282Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 24,
+  "fields": {
+    "user": 2,
+    "order": 12,
+    "status": "Confirmed",
+    "message": "Your order #12 has been confirmed.",
+    "is_read": false,
+    "created_at": "2026-03-17T17:17:53.525Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 25,
+  "fields": {
+    "user": 1,
+    "order": 3,
+    "status": "Cancelled",
+    "message": "Your order #3 has been cancelled.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:18:42.583Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 26,
+  "fields": {
+    "user": 1,
+    "order": 1,
+    "status": "Cancelled",
+    "message": "Your order #1 has been cancelled.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:18:42.658Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 27,
+  "fields": {
+    "user": 1,
+    "order": 6,
+    "status": "Shipped",
+    "message": "Your order #6 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:19:14.839Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 28,
+  "fields": {
+    "user": 1,
+    "order": 5,
+    "status": "Shipped",
+    "message": "Your order #5 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:19:14.948Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 29,
+  "fields": {
+    "user": 1,
+    "order": 4,
+    "status": "Shipped",
+    "message": "Your order #4 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:19:15.044Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 30,
+  "fields": {
+    "user": 1,
+    "order": 2,
+    "status": "Shipped",
+    "message": "Your order #2 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:19:15.137Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 31,
+  "fields": {
+    "user": 1,
+    "order": 5,
+    "status": "Delivered",
+    "message": "Your order #5 has been delivered.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:20:30.864Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 32,
+  "fields": {
+    "user": 1,
+    "order": 4,
+    "status": "Delivered",
+    "message": "Your order #4 has been delivered.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:20:30.964Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 33,
+  "fields": {
+    "user": 1,
+    "order": 2,
+    "status": "Delivered",
+    "message": "Your order #2 has been delivered.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:20:31.061Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 34,
+  "fields": {
+    "user": 1,
+    "order": 6,
+    "status": "Ready for Pickup",
+    "message": "Your order #6 is ready for pickup.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:21:31.321Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 35,
+  "fields": {
+    "user": 1,
+    "order": 9,
+    "status": "Shipped",
+    "message": "Your order #9 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:22:01.075Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 36,
+  "fields": {
+    "user": 1,
+    "order": 8,
+    "status": "Shipped",
+    "message": "Your order #8 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:22:01.164Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 37,
+  "fields": {
+    "user": 1,
+    "order": 7,
+    "status": "Shipped",
+    "message": "Your order #7 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:22:01.254Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 38,
+  "fields": {
+    "user": 1,
+    "order": 7,
+    "status": "Ready for Pickup",
+    "message": "Your order #7 is ready for pickup.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:22:21.309Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 39,
+  "fields": {
+    "user": 3,
+    "order": 13,
+    "status": "Pending",
+    "message": "Your order #13 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:46:48.228Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 40,
+  "fields": {
+    "user": 3,
+    "order": 13,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "is_read": true,
+    "created_at": "2026-03-18T10:26:58.803Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 41,
+  "fields": {
+    "user": 1,
+    "order": 14,
+    "status": "Pending",
+    "message": "Your order #14 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-18T10:27:59.324Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 42,
+  "fields": {
+    "user": 1,
+    "order": 14,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "is_read": true,
+    "created_at": "2026-03-18T10:28:21.939Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 43,
+  "fields": {
+    "user": 3,
+    "order": 15,
+    "status": "Pending",
+    "message": "Your order #15 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-18T10:53:12.065Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 44,
+  "fields": {
+    "user": 2,
+    "order": 16,
+    "status": "Pending",
+    "message": "Your order #16 has been placed.",
+    "is_read": false,
+    "created_at": "2026-03-18T22:58:57.227Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 45,
+  "fields": {
+    "user": 2,
+    "order": 16,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "is_read": false,
+    "created_at": "2026-03-18T23:02:37.666Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 46,
+  "fields": {
+    "user": 3,
+    "order": 15,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "is_read": false,
+    "created_at": "2026-03-18T23:02:37.716Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 47,
+  "fields": {
+    "user": 1,
+    "order": 17,
+    "status": "Pending",
+    "message": "Your order #17 has been placed.",
+    "is_read": false,
+    "created_at": "2026-03-19T09:18:14.073Z"
+  }
+},
+{
+  "model": "products.ordertracking",
+  "pk": 1,
+  "fields": {
+    "order": 13,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "created_at": "2026-03-18T10:26:58.776Z"
+  }
+},
+{
+  "model": "products.ordertracking",
+  "pk": 2,
+  "fields": {
+    "order": 14,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "created_at": "2026-03-18T10:28:21.913Z"
+  }
+},
+{
+  "model": "products.ordertracking",
+  "pk": 3,
+  "fields": {
+    "order": 16,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "created_at": "2026-03-18T23:02:37.638Z"
+  }
+},
+{
+  "model": "products.ordertracking",
+  "pk": 4,
+  "fields": {
+    "order": 15,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "created_at": "2026-03-18T23:02:37.692Z"
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 1,
+  "fields": {
+    "content_type": 10,
+    "object_pk": "2",
+    "object_id": 2,
+    "object_repr": "Phones & Tablets",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "icon_class": [
+        "None",
+        "fa-solid fa-mobile-screen"
+      ],
+      "products": [
+        "None",
+        "products.Product.None"
+      ],
+      "id": [
+        "None",
+        "2"
+      ],
+      "name": [
+        "None",
+        "Phones & Tablets"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.542Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 2,
+  "fields": {
+    "content_type": 10,
+    "object_pk": "4",
+    "object_id": 4,
+    "object_repr": "Appliances",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "icon_class": [
+        "None",
+        "fa-solid fa-plug"
+      ],
+      "products": [
+        "None",
+        "products.Product.None"
+      ],
+      "id": [
+        "None",
+        "4"
+      ],
+      "name": [
+        "None",
+        "Appliances"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.547Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 3,
+  "fields": {
+    "content_type": 10,
+    "object_pk": "5",
+    "object_id": 5,
+    "object_repr": "Health & Beauty",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "icon_class": [
+        "None",
+        "fa-solid fa-sparkles"
+      ],
+      "products": [
+        "None",
+        "products.Product.None"
+      ],
+      "id": [
+        "None",
+        "5"
+      ],
+      "name": [
+        "None",
+        "Health & Beauty"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.549Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 4,
+  "fields": {
+    "content_type": 10,
+    "object_pk": "6",
+    "object_id": 6,
+    "object_repr": "Home & Office",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "icon_class": [
+        "None",
+        "fa-solid fa-couch"
+      ],
+      "products": [
+        "None",
+        "products.Product.None"
+      ],
+      "id": [
+        "None",
+        "6"
+      ],
+      "name": [
+        "None",
+        "Home & Office"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.551Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 5,
+  "fields": {
+    "content_type": 10,
+    "object_pk": "7",
+    "object_id": 7,
+    "object_repr": "Fashion",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "icon_class": [
+        "None",
+        "fa-solid fa-shirt"
+      ],
+      "products": [
+        "None",
+        "products.Product.None"
+      ],
+      "id": [
+        "None",
+        "7"
+      ],
+      "name": [
+        "None",
+        "Fashion"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.553Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 6,
+  "fields": {
+    "content_type": 10,
+    "object_pk": "8",
+    "object_id": 8,
+    "object_repr": "Computing",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "icon_class": [
+        "None",
+        "fa-solid fa-laptop"
+      ],
+      "products": [
+        "None",
+        "products.Product.None"
+      ],
+      "id": [
+        "None",
+        "8"
+      ],
+      "name": [
+        "None",
+        "Computing"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.555Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 7,
+  "fields": {
+    "content_type": 10,
+    "object_pk": "9",
+    "object_id": 9,
+    "object_repr": "Gaming",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "icon_class": [
+        "None",
+        "fa-solid fa-gamepad"
+      ],
+      "products": [
+        "None",
+        "products.Product.None"
+      ],
+      "id": [
+        "None",
+        "9"
+      ],
+      "name": [
+        "None",
+        "Gaming"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.556Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 8,
+  "fields": {
+    "content_type": 10,
+    "object_pk": "10",
+    "object_id": 10,
+    "object_repr": "Supermarket",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "icon_class": [
+        "None",
+        "fa-solid fa-basket-shopping"
+      ],
+      "products": [
+        "None",
+        "products.Product.None"
+      ],
+      "id": [
+        "None",
+        "10"
+      ],
+      "name": [
+        "None",
+        "Supermarket"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.558Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 9,
+  "fields": {
+    "content_type": 10,
+    "object_pk": "11",
+    "object_id": 11,
+    "object_repr": "Baby Products",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "icon_class": [
+        "None",
+        "fa-solid fa-baby"
+      ],
+      "products": [
+        "None",
+        "products.Product.None"
+      ],
+      "id": [
+        "None",
+        "11"
+      ],
+      "name": [
+        "None",
+        "Baby Products"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.560Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 10,
+  "fields": {
+    "content_type": 10,
+    "object_pk": "12",
+    "object_id": 12,
+    "object_repr": "Other categories",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "icon_class": [
+        "None",
+        "fa-solid fa-ellipsis"
+      ],
+      "products": [
+        "None",
+        "products.Product.None"
+      ],
+      "id": [
+        "None",
+        "12"
+      ],
+      "name": [
+        "None",
+        "Other categories"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.562Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 11,
+  "fields": {
+    "content_type": 10,
+    "object_pk": "13",
+    "object_id": 13,
+    "object_repr": "TVs  & Audio",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "icon_class": [
+        "None",
+        "fa-solid fa-box"
+      ],
+      "products": [
+        "None",
+        "products.Product.None"
+      ],
+      "id": [
+        "None",
+        "13"
+      ],
+      "name": [
+        "None",
+        "TVs  & Audio"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.563Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 12,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "1",
+    "object_id": 1,
+    "object_repr": "AILYONS Electric Kettle Water Heater & Boiler Jug",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "4"
+      ],
+      "name": [
+        "None",
+        "AILYONS Electric Kettle Water Heater & Boiler Jug"
+      ],
+      "price": [
+        "None",
+        "490.00"
+      ],
+      "image": [
+        "None",
+        "products/kettle_ailyons.jpg"
+      ],
+      "stock": [
+        "None",
+        "23"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.567Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 13,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "2",
+    "object_id": 2,
+    "object_repr": "HP ELITEBOOK 830 G6,INTEL CORE I5 8TH GEN 8GB RAM 256GB SSD NON-TOUCH (6 Months WRTY)",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "8"
+      ],
+      "name": [
+        "None",
+        "HP ELITEBOOK 830 G6,INTEL CORE I5 8TH GEN 8GB RAM 256GB SSD NON-TOUCH (6 Months WRTY)"
+      ],
+      "price": [
+        "None",
+        "28400.00"
+      ],
+      "image": [
+        "None",
+        "products/hp_laptop.jpg"
+      ],
+      "stock": [
+        "None",
+        "36"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "2"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.569Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 14,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "3",
+    "object_id": 3,
+    "object_repr": "Lenovo --Lenovo Thinkpad X13 Yoga x360 core 15 16GB RAM 512GB SSD 10th generation Quad core 13.3 Inches FHD non Touch windows 11 pro, HD Camera, HDMI, USB Type C, Stylus Pen convertible 2 in 1 laptop +Mouse",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "8"
+      ],
+      "name": [
+        "None",
+        "Lenovo --Lenovo Thinkpad X13 Yoga x360 core 15 16GB RAM 512GB SSD 10th generation Quad core 13.3 Inches FHD non Touch windows 11 pro, HD Camera, HDMI, USB Type C, Stylus Pen convertible 2 in 1 laptop +Mouse"
+      ],
+      "price": [
+        "None",
+        "42999.00"
+      ],
+      "image": [
+        "None",
+        "products/lenovo_laptop.jpg"
+      ],
+      "stock": [
+        "None",
+        "45"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "3"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.570Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 15,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "4",
+    "object_id": 4,
+    "object_repr": "VON VART-19DHS Double Door Fridge 136L - Silver (1YR WRTY)",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "4"
+      ],
+      "name": [
+        "None",
+        "VON VART-19DHS Double Door Fridge 136L - Silver (1YR WRTY)"
+      ],
+      "price": [
+        "None",
+        "24499.00"
+      ],
+      "image": [
+        "None",
+        "products/von_fridge_136L.jpg"
+      ],
+      "stock": [
+        "None",
+        "60"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "4"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.571Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 16,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "5",
+    "object_id": 5,
+    "object_repr": "Vitron HTC4300QFS 43\" QLED TV Bluetooth Enabled Full HD Frameless Smart Android TT, Wi-Fi Connectivity, Inbuilt Decoder, Netflix, Youtube, App Store + 6 Free Accessories (1YR WRTY)",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "13"
+      ],
+      "name": [
+        "None",
+        "Vitron HTC4300QFS 43\" QLED TV Bluetooth Enabled Full HD Frameless Smart Android TT, Wi-Fi Connectivity, Inbuilt Decoder, Netflix, Youtube, App Store + 6 Free Accessories (1YR WRTY)"
+      ],
+      "price": [
+        "None",
+        "19395.00"
+      ],
+      "image": [
+        "None",
+        "products/vitron_43_inches.jpg"
+      ],
+      "stock": [
+        "None",
+        "72"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "5"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.573Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 17,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "6",
+    "object_id": 6,
+    "object_repr": "Vitron V527 - 2.1 CH Multimedia Speaker, BT/USB/SD/FM - 9000W (1YR WRTY)",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "None"
+      ],
+      "name": [
+        "None",
+        "Vitron V527 - 2.1 CH Multimedia Speaker, BT/USB/SD/FM - 9000W (1YR WRTY)"
+      ],
+      "price": [
+        "None",
+        "5490.00"
+      ],
+      "image": [
+        "None",
+        "products/vitron_woofer.jpg"
+      ],
+      "stock": [
+        "None",
+        "89"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "6"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.575Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 18,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "7",
+    "object_id": 7,
+    "object_repr": "Hisense 32\" Inch Frameless FHD SMART TV,Netflix,WIFI,INBUILT DECODER+TV GUARD+BRACKET",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "13"
+      ],
+      "name": [
+        "None",
+        "Hisense 32\" Inch Frameless FHD SMART TV,Netflix,WIFI,INBUILT DECODER+TV GUARD+BRACKET"
+      ],
+      "price": [
+        "None",
+        "14599.00"
+      ],
+      "image": [
+        "None",
+        "products/hisense_32_inches.jpg"
+      ],
+      "stock": [
+        "None",
+        "67"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "7"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.576Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 19,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "8",
+    "object_id": 8,
+    "object_repr": "Tecno CAMON 40 PRO,6.78\", Up to 16GB RAM + 256GB, 5200mAh - Black + FREE GIFTS",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "2"
+      ],
+      "name": [
+        "None",
+        "Tecno CAMON 40 PRO,6.78\", Up to 16GB RAM + 256GB, 5200mAh - Black + FREE GIFTS"
+      ],
+      "price": [
+        "None",
+        "34795.00"
+      ],
+      "image": [
+        "None",
+        "products/camon_40.jpg"
+      ],
+      "stock": [
+        "None",
+        "48"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "8"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.578Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 20,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "9",
+    "object_id": 9,
+    "object_repr": "5FT Stylish Modern Wooden TV Stands For Up To 75'' TV",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "6"
+      ],
+      "name": [
+        "None",
+        "5FT Stylish Modern Wooden TV Stands For Up To 75'' TV"
+      ],
+      "price": [
+        "None",
+        "6450.00"
+      ],
+      "image": [
+        "None",
+        "products/tv_stand.jpg"
+      ],
+      "stock": [
+        "None",
+        "42"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "9"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.579Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 21,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "10",
+    "object_id": 10,
+    "object_repr": "Vitron V51SB- 2.1ch Soundbar System with Bluetooth, Black (1YR WRTY)",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "13"
+      ],
+      "name": [
+        "None",
+        "Vitron V51SB- 2.1ch Soundbar System with Bluetooth, Black (1YR WRTY)"
+      ],
+      "price": [
+        "None",
+        "4599.00"
+      ],
+      "image": [
+        "None",
+        "products/woofer.jpg"
+      ],
+      "stock": [
+        "None",
+        "25"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "10"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.581Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 22,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "11",
+    "object_id": 11,
+    "object_repr": "Share thredbeat A2 Tablet, Dual SIM, 10.1-inch , 8(4+4)GB RAM/128GB ROM, Android 14, 6000 MAh Battery,Gray",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "2"
+      ],
+      "name": [
+        "None",
+        "Share thredbeat A2 Tablet, Dual SIM, 10.1-inch , 8(4+4)GB RAM/128GB ROM, Android 14, 6000 MAh Battery,Gray"
+      ],
+      "price": [
+        "None",
+        "11505.00"
+      ],
+      "image": [
+        "None",
+        "products/tablet.jpg"
+      ],
+      "stock": [
+        "None",
+        "83"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "11"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.582Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 23,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "12",
+    "object_id": 12,
+    "object_repr": "Istanbul 2 Modern TV Stand With LED Bulb - White & Black",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "6"
+      ],
+      "name": [
+        "None",
+        "Istanbul 2 Modern TV Stand With LED Bulb - White & Black"
+      ],
+      "price": [
+        "None",
+        "4539.00"
+      ],
+      "image": [
+        "None",
+        "products/led_tv_stand.jpg"
+      ],
+      "stock": [
+        "None",
+        "53"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "12"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.584Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 24,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "13",
+    "object_id": 13,
+    "object_repr": "Em Blender 2 In 1 Grinding Machine With Durable Motor 1.5L, Black BD02",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "4"
+      ],
+      "name": [
+        "None",
+        "Em Blender 2 In 1 Grinding Machine With Durable Motor 1.5L, Black BD02"
+      ],
+      "price": [
+        "None",
+        "1449.00"
+      ],
+      "image": [
+        "None",
+        "products/blender.jpg"
+      ],
+      "stock": [
+        "None",
+        "37"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "13"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.586Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 25,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "14",
+    "object_id": 14,
+    "object_repr": "Stylish Mordern Coffee Table",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "6"
+      ],
+      "name": [
+        "None",
+        "Stylish Mordern Coffee Table"
+      ],
+      "price": [
+        "None",
+        "12000.00"
+      ],
+      "image": [
+        "None",
+        "products/coffee_table.jpg"
+      ],
+      "stock": [
+        "None",
+        "37"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "14"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.587Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 26,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "15",
+    "object_id": 15,
+    "object_repr": "Machislet Dresses For The Slim Ladies Women's Fashion Long Sleeve Loose Dreeses Ladies Dresses",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "category": [
+        "None",
+        "7"
+      ],
+      "name": [
+        "None",
+        "Machislet Dresses For The Slim Ladies Women's Fashion Long Sleeve Loose Dreeses Ladies Dresses"
+      ],
+      "price": [
+        "None",
+        "749.00"
+      ],
+      "image": [
+        "None",
+        "products/1.jpg"
+      ],
+      "stock": [
+        "None",
+        "17"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "15"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.589Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 27,
+  "fields": {
+    "content_type": 12,
+    "object_pk": "1",
+    "object_id": 1,
+    "object_repr": "Cart for admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "created_at": [
+        "None",
+        "2026-03-08 10:36:27.033000"
+      ],
+      "id": [
+        "None",
+        "1"
+      ],
+      "items": [
+        "None",
+        "products.CartItem.None"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.594Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 28,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "20",
+    "object_id": 20,
+    "object_repr": "CartItem object (20)",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "cart": [
+        "None",
+        "1"
+      ],
+      "id": [
+        "None",
+        "20"
+      ],
+      "product": [
+        "None",
+        "1"
+      ],
+      "quantity": [
+        "None",
+        "2"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.597Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 29,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "21",
+    "object_id": 21,
+    "object_repr": "CartItem object (21)",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "cart": [
+        "None",
+        "1"
+      ],
+      "id": [
+        "None",
+        "21"
+      ],
+      "product": [
+        "None",
+        "3"
+      ],
+      "quantity": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.598Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 30,
+  "fields": {
+    "content_type": 9,
+    "object_pk": "5",
+    "object_id": 5,
+    "object_repr": "admin's wishlist: Hisense 32\" Inch Frameless FHD SMART TV,Netflix,WIFI,INBUILT DECODER+TV GUARD+BRACKET",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "id": [
+        "None",
+        "5"
+      ],
+      "user": [
+        "None",
+        "1"
+      ],
+      "product": [
+        "None",
+        "7"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-07 09:27:38.934000"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.603Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 31,
+  "fields": {
+    "content_type": 9,
+    "object_pk": "6",
+    "object_id": 6,
+    "object_repr": "admin's wishlist: AILYONS Electric Kettle Water Heater & Boiler Jug",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "id": [
+        "None",
+        "6"
+      ],
+      "user": [
+        "None",
+        "1"
+      ],
+      "product": [
+        "None",
+        "1"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-07 11:14:06.648000"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.606Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 32,
+  "fields": {
+    "content_type": 11,
+    "object_pk": "23",
+    "object_id": 23,
+    "object_repr": "admin - 479, maua, Maua",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "id": [
+        "None",
+        "23"
+      ],
+      "user": [
+        "None",
+        "1"
+      ],
+      "first_name": [
+        "None",
+        "Nicholas"
+      ],
+      "last_name": [
+        "None",
+        "Munene"
+      ],
+      "street": [
+        "None",
+        "479, maua"
+      ],
+      "town": [
+        "None",
+        "28"
+      ],
+      "phone": [
+        "None",
+        "0715979332"
+      ],
+      "is_default": [
+        "None",
+        "True"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.613Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 33,
+  "fields": {
+    "content_type": 11,
+    "object_pk": "24",
+    "object_id": 24,
+    "object_repr": "admin - 10300 Kutus- Kerugoya Road, kutus",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "id": [
+        "None",
+        "24"
+      ],
+      "user": [
+        "None",
+        "1"
+      ],
+      "first_name": [
+        "None",
+        "Nicholas"
+      ],
+      "last_name": [
+        "None",
+        "Munene"
+      ],
+      "street": [
+        "None",
+        "10300 Kutus- Kerugoya Road"
+      ],
+      "town": [
+        "None",
+        "2"
+      ],
+      "postal_code": [
+        "None",
+        "10300"
+      ],
+      "phone": [
+        "None",
+        "0715979332"
+      ],
+      "is_default": [
+        "None",
+        "False"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.616Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 34,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "1",
+    "object_id": 1,
+    "object_repr": "Order 1 by admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "225.00"
+      ],
+      "phone_number": [
+        "None",
+        "254700000000"
+      ],
+      "payment_method": [
+        "None",
+        "M-Pesa"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-05 04:41:19.494000"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "address": [
+        "None",
+        "None"
+      ],
+      "id": [
+        "None",
+        "1"
+      ],
+      "discount_amount": [
+        "None",
+        "0.00"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.620Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 35,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "2",
+    "object_id": 2,
+    "object_repr": "Order 2 by admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "20.00"
+      ],
+      "phone_number": [
+        "None",
+        "254700000000"
+      ],
+      "payment_method": [
+        "None",
+        "M-Pesa"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-05 04:53:21.177000"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "address": [
+        "None",
+        "None"
+      ],
+      "id": [
+        "None",
+        "2"
+      ],
+      "discount_amount": [
+        "None",
+        "0.00"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.624Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 36,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "3",
+    "object_id": 3,
+    "object_repr": "Order 3 by admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "38275.00"
+      ],
+      "phone_number": [
+        "None",
+        "0715979332"
+      ],
+      "payment_method": [
+        "None",
+        "Pay on Delivery"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-08 11:45:27.325000"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "address": [
+        "None",
+        "None"
+      ],
+      "id": [
+        "None",
+        "3"
+      ],
+      "discount_amount": [
+        "None",
+        "0.00"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.627Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 37,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "4",
+    "object_id": 4,
+    "object_repr": "Order 4 by admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "37598.00"
+      ],
+      "phone_number": [
+        "None",
+        ""
+      ],
+      "payment_method": [
+        "None",
+        "Pay on Delivery"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-08 18:11:35.601000"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "address": [
+        "None",
+        "None"
+      ],
+      "id": [
+        "None",
+        "4"
+      ],
+      "discount_amount": [
+        "None",
+        "0.00"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.630Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 38,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "5",
+    "object_id": 5,
+    "object_repr": "Order 5 by admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "49469.00"
+      ],
+      "phone_number": [
+        "None",
+        "0715979332"
+      ],
+      "payment_method": [
+        "None",
+        "M-Pesa"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-09 15:03:41.889000"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "address": [
+        "None",
+        "None"
+      ],
+      "id": [
+        "None",
+        "5"
+      ],
+      "discount_amount": [
+        "None",
+        "0.00"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.634Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 39,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "6",
+    "object_id": 6,
+    "object_repr": "Order 6 by admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "49469.00"
+      ],
+      "phone_number": [
+        "None",
+        "0715979332"
+      ],
+      "payment_method": [
+        "None",
+        "Pay on Delivery"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-09 15:28:06.427000"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "address": [
+        "None",
+        "None"
+      ],
+      "id": [
+        "None",
+        "6"
+      ],
+      "discount_amount": [
+        "None",
+        "0.00"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.637Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 40,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "7",
+    "object_id": 7,
+    "object_repr": "Order 7 by admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "43989.00"
+      ],
+      "phone_number": [
+        "None",
+        "0715979332"
+      ],
+      "payment_method": [
+        "None",
+        "Pay on Delivery"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-09 16:01:35.108000"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "address": [
+        "None",
+        "None"
+      ],
+      "id": [
+        "None",
+        "7"
+      ],
+      "discount_amount": [
+        "None",
+        "0.00"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.641Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 41,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "8",
+    "object_id": 8,
+    "object_repr": "Order 8 by admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "43489.00"
+      ],
+      "phone_number": [
+        "None",
+        "0715979332"
+      ],
+      "payment_method": [
+        "None",
+        "Pay on Delivery"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-09 16:12:47.057000"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "address": [
+        "None",
+        "None"
+      ],
+      "id": [
+        "None",
+        "8"
+      ],
+      "discount_amount": [
+        "None",
+        "0.00"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.644Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 42,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "9",
+    "object_id": 9,
+    "object_repr": "Order 9 by admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "28890.00"
+      ],
+      "phone_number": [
+        "None",
+        "0715979332"
+      ],
+      "payment_method": [
+        "None",
+        "Pay on Delivery"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-09 17:23:21.020000"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "address": [
+        "None",
+        "None"
+      ],
+      "id": [
+        "None",
+        "9"
+      ],
+      "discount_amount": [
+        "None",
+        "0.00"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.647Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 43,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "10",
+    "object_id": 10,
+    "object_repr": "Order 10 by admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "4599.00"
+      ],
+      "phone_number": [
+        "None",
+        "0715979332"
+      ],
+      "payment_method": [
+        "None",
+        "Pay on Delivery"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-09 18:18:25.460000"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "address": [
+        "None",
+        "23"
+      ],
+      "id": [
+        "None",
+        "10"
+      ],
+      "discount_amount": [
+        "None",
+        "0.00"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.650Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 44,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "11",
+    "object_id": 11,
+    "object_repr": "Order 11 by admin",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "6970.00"
+      ],
+      "phone_number": [
+        "None",
+        "0715979332"
+      ],
+      "payment_method": [
+        "None",
+        "Pay on Delivery"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-09 18:19:57.331000"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "address": [
+        "None",
+        "23"
+      ],
+      "id": [
+        "None",
+        "11"
+      ],
+      "discount_amount": [
+        "None",
+        "0.00"
+      ],
+      "user": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.652Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 45,
+  "fields": {
+    "content_type": 16,
+    "object_pk": "1",
+    "object_id": 1,
+    "object_repr": "1 x Vitron V51SB- 2.1ch Soundbar System with Bluetooth, Black (1YR WRTY) in Order 10",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "order": [
+        "None",
+        "10"
+      ],
+      "id": [
+        "None",
+        "1"
+      ],
+      "product": [
+        "None",
+        "10"
+      ],
+      "price": [
+        "None",
+        "4599.00"
+      ],
+      "quantity": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.656Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 46,
+  "fields": {
+    "content_type": 16,
+    "object_pk": "2",
+    "object_id": 2,
+    "object_repr": "2 x AILYONS Electric Kettle Water Heater & Boiler Jug in Order 11",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "order": [
+        "None",
+        "11"
+      ],
+      "id": [
+        "None",
+        "2"
+      ],
+      "product": [
+        "None",
+        "1"
+      ],
+      "price": [
+        "None",
+        "490.00"
+      ],
+      "quantity": [
+        "None",
+        "2"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.659Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 47,
+  "fields": {
+    "content_type": 16,
+    "object_pk": "3",
+    "object_id": 3,
+    "object_repr": "1 x Vitron V527 - 2.1 CH Multimedia Speaker, BT/USB/SD/FM - 9000W (1YR WRTY) in Order 11",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "order": [
+        "None",
+        "11"
+      ],
+      "id": [
+        "None",
+        "3"
+      ],
+      "product": [
+        "None",
+        "6"
+      ],
+      "price": [
+        "None",
+        "5490.00"
+      ],
+      "quantity": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T15:27:37.661Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 48,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "11",
+    "object_id": 11,
+    "object_repr": "Order 11 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:06:56.100Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 49,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "10",
+    "object_id": 10,
+    "object_repr": "Order 10 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:06:56.196Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 50,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "9",
+    "object_id": 9,
+    "object_repr": "Order 9 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:06:56.269Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 51,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "8",
+    "object_id": 8,
+    "object_repr": "Order 8 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:06:56.349Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 52,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "7",
+    "object_id": 7,
+    "object_repr": "Order 7 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:06:56.423Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 53,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "6",
+    "object_id": 6,
+    "object_repr": "Order 6 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:06:56.496Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 54,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "5",
+    "object_id": 5,
+    "object_repr": "Order 5 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:06:56.571Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 55,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "4",
+    "object_id": 4,
+    "object_repr": "Order 4 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:06:56.645Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 56,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "3",
+    "object_id": 3,
+    "object_repr": "Order 3 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:06:56.718Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 57,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "2",
+    "object_id": 2,
+    "object_repr": "Order 2 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:06:56.794Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 58,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "1",
+    "object_id": 1,
+    "object_repr": "Order 1 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:06:56.870Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 59,
+  "fields": {
+    "content_type": 12,
+    "object_pk": "2",
+    "object_id": 2,
+    "object_repr": "Cart for Nicholas",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "created_at": [
+        "None",
+        "2026-03-17 17:14:38.963989"
+      ],
+      "id": [
+        "None",
+        "2"
+      ],
+      "items": [
+        "None",
+        "products.CartItem.None"
+      ],
+      "user": [
+        "None",
+        "2"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:14:38.978Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 60,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "22",
+    "object_id": 22,
+    "object_repr": "CartItem object (22)",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "cart": [
+        "None",
+        "2"
+      ],
+      "id": [
+        "None",
+        "22"
+      ],
+      "product": [
+        "None",
+        "1"
+      ],
+      "quantity": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:14:43.343Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 61,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "22",
+    "object_id": 22,
+    "object_repr": "CartItem object (22)",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "quantity": [
+        "1",
+        "2"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:14:43.532Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 62,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "22",
+    "object_id": 22,
+    "object_repr": "CartItem object (22)",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "quantity": [
+        "2",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:14:52.298Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 63,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "22",
+    "object_id": 22,
+    "object_repr": "CartItem object (22)",
+    "serialized_data": null,
+    "action": 2,
+    "changes_text": "",
+    "changes": {
+      "cart": [
+        "2",
+        "None"
+      ],
+      "id": [
+        "22",
+        "None"
+      ],
+      "product": [
+        "1",
+        "None"
+      ],
+      "quantity": [
+        "1",
+        "None"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:14:53.398Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 64,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "23",
+    "object_id": 23,
+    "object_repr": "CartItem object (23)",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "cart": [
+        "None",
+        "2"
+      ],
+      "id": [
+        "None",
+        "23"
+      ],
+      "product": [
+        "None",
+        "6"
+      ],
+      "quantity": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:14:58.875Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 65,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "24",
+    "object_id": 24,
+    "object_repr": "CartItem object (24)",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "cart": [
+        "None",
+        "2"
+      ],
+      "id": [
+        "None",
+        "24"
+      ],
+      "product": [
+        "None",
+        "9"
+      ],
+      "quantity": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:15:07.265Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 66,
+  "fields": {
+    "content_type": 11,
+    "object_pk": "25",
+    "object_id": 25,
+    "object_repr": "Nicholas - 479, maua, Kutus",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "id": [
+        "None",
+        "25"
+      ],
+      "user": [
+        "None",
+        "2"
+      ],
+      "first_name": [
+        "None",
+        "Nicholas"
+      ],
+      "last_name": [
+        "None",
+        "Munene"
+      ],
+      "street": [
+        "None",
+        "479, maua"
+      ],
+      "town": [
+        "None",
+        "11"
+      ],
+      "postal_code": [
+        "None",
+        "60600"
+      ],
+      "phone": [
+        "None",
+        "0715979332"
+      ],
+      "is_default": [
+        "None",
+        "True"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:15:43.246Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 67,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "12",
+    "object_id": 12,
+    "object_repr": "Order 12 by Nicholas",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "11940.00"
+      ],
+      "phone_number": [
+        "None",
+        "0715979332"
+      ],
+      "payment_method": [
+        "None",
+        "Pay on Delivery"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-17 17:16:45.269792"
+      ],
+      "estimated_delivery_start": [
+        "None",
+        "2026-03-19"
+      ],
+      "estimated_delivery_end": [
+        "None",
+        "2026-03-20"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "address": [
+        "None",
+        "25"
+      ],
+      "discount_amount": [
+        "None",
+        "0"
+      ],
+      "id": [
+        "None",
+        "12"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "user": [
+        "None",
+        "2"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:16:45.277Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 68,
+  "fields": {
+    "content_type": 16,
+    "object_pk": "4",
+    "object_id": 4,
+    "object_repr": "1 x Vitron V527 - 2.1 CH Multimedia Speaker, BT/USB/SD/FM - 9000W (1YR WRTY) in Order 12",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "order": [
+        "None",
+        "12"
+      ],
+      "id": [
+        "None",
+        "4"
+      ],
+      "product": [
+        "None",
+        "6"
+      ],
+      "price": [
+        "None",
+        "5490.00"
+      ],
+      "quantity": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:16:45.288Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 69,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "6",
+    "object_id": 6,
+    "object_repr": "Vitron V527 - 2.1 CH Multimedia Speaker, BT/USB/SD/FM - 9000W (1YR WRTY)",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "stock": [
+        "89",
+        "88"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:16:45.291Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 70,
+  "fields": {
+    "content_type": 16,
+    "object_pk": "5",
+    "object_id": 5,
+    "object_repr": "1 x 5FT Stylish Modern Wooden TV Stands For Up To 75'' TV in Order 12",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "order": [
+        "None",
+        "12"
+      ],
+      "id": [
+        "None",
+        "5"
+      ],
+      "product": [
+        "None",
+        "9"
+      ],
+      "price": [
+        "None",
+        "6450.00"
+      ],
+      "quantity": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:16:45.293Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 71,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "9",
+    "object_id": 9,
+    "object_repr": "5FT Stylish Modern Wooden TV Stands For Up To 75'' TV",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "stock": [
+        "42",
+        "41"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:16:45.295Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 72,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "24",
+    "object_id": 24,
+    "object_repr": "CartItem object (24)",
+    "serialized_data": null,
+    "action": 2,
+    "changes_text": "",
+    "changes": {
+      "cart": [
+        "2",
+        "None"
+      ],
+      "id": [
+        "24",
+        "None"
+      ],
+      "product": [
+        "9",
+        "None"
+      ],
+      "quantity": [
+        "1",
+        "None"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:16:45.336Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 73,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "23",
+    "object_id": 23,
+    "object_repr": "CartItem object (23)",
+    "serialized_data": null,
+    "action": 2,
+    "changes_text": "",
+    "changes": {
+      "cart": [
+        "2",
+        "None"
+      ],
+      "id": [
+        "23",
+        "None"
+      ],
+      "product": [
+        "6",
+        "None"
+      ],
+      "quantity": [
+        "1",
+        "None"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:16:45.337Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 74,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "12",
+    "object_id": 12,
+    "object_repr": "Order 12 by Nicholas",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Pending",
+        "Confirmed"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:17:53.464Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 75,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "3",
+    "object_id": 3,
+    "object_repr": "Order 3 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Confirmed",
+        "Cancelled"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:18:42.515Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 76,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "1",
+    "object_id": 1,
+    "object_repr": "Order 1 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Confirmed",
+        "Cancelled"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:18:42.609Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 77,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "6",
+    "object_id": 6,
+    "object_repr": "Order 6 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Confirmed",
+        "Shipped"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:19:14.765Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 78,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "5",
+    "object_id": 5,
+    "object_repr": "Order 5 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Confirmed",
+        "Shipped"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:19:14.883Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 79,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "4",
+    "object_id": 4,
+    "object_repr": "Order 4 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Confirmed",
+        "Shipped"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:19:14.990Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 80,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "2",
+    "object_id": 2,
+    "object_repr": "Order 2 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Confirmed",
+        "Shipped"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:19:15.079Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 81,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "5",
+    "object_id": 5,
+    "object_repr": "Order 5 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Shipped",
+        "Delivered"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:20:30.795Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 82,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "4",
+    "object_id": 4,
+    "object_repr": "Order 4 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Shipped",
+        "Delivered"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:20:30.900Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 83,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "2",
+    "object_id": 2,
+    "object_repr": "Order 2 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Shipped",
+        "Delivered"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:20:30.996Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 84,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "6",
+    "object_id": 6,
+    "object_repr": "Order 6 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Shipped",
+        "Ready for Pickup"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:21:31.264Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 85,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "9",
+    "object_id": 9,
+    "object_repr": "Order 9 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Confirmed",
+        "Shipped"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:22:01.005Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 86,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "8",
+    "object_id": 8,
+    "object_repr": "Order 8 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Confirmed",
+        "Shipped"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:22:01.108Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 87,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "7",
+    "object_id": 7,
+    "object_repr": "Order 7 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Confirmed",
+        "Shipped"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:22:01.197Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 88,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "7",
+    "object_id": 7,
+    "object_repr": "Order 7 by admin",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "status": [
+        "Shipped",
+        "Ready for Pickup"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:22:21.249Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 89,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "16",
+    "object_id": 16,
+    "object_repr": "Smartraha life RahaLife 130CM 3 Column Metallic Wardrobe-Black",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "category": [
+        "None",
+        "6"
+      ],
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "name": [
+        "None",
+        "Smartraha life RahaLife 130CM 3 Column Metallic Wardrobe-Black"
+      ],
+      "price": [
+        "None",
+        "1959"
+      ],
+      "image": [
+        "None",
+        "products/wardrobe.jpg"
+      ],
+      "stock": [
+        "None",
+        "10"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "16"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:32:41.439Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 90,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "17",
+    "object_id": 17,
+    "object_repr": "Nunix Plastic Portable 3 Column Nunix Wardrobe Organizer For Clothes, Shoes Pink 1202",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "category": [
+        "None",
+        "6"
+      ],
+      "reviews": [
+        "None",
+        "products.Review.None"
+      ],
+      "name": [
+        "None",
+        "Nunix Plastic Portable 3 Column Nunix Wardrobe Organizer For Clothes, Shoes Pink 1202"
+      ],
+      "price": [
+        "None",
+        "3999"
+      ],
+      "image": [
+        "None",
+        "products/plastic_wardrobe.jpg"
+      ],
+      "stock": [
+        "None",
+        "19"
+      ],
+      "description": [
+        "None",
+        ""
+      ],
+      "id": [
+        "None",
+        "17"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:38:15.787Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 91,
+  "fields": {
+    "content_type": 12,
+    "object_pk": "3",
+    "object_id": 3,
+    "object_repr": "Cart for dianah",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "created_at": [
+        "None",
+        "2026-03-17 17:44:15.842382"
+      ],
+      "id": [
+        "None",
+        "3"
+      ],
+      "items": [
+        "None",
+        "products.CartItem.None"
+      ],
+      "user": [
+        "None",
+        "3"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:44:15.848Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 92,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "25",
+    "object_id": 25,
+    "object_repr": "CartItem object (25)",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "cart": [
+        "None",
+        "3"
+      ],
+      "id": [
+        "None",
+        "25"
+      ],
+      "product": [
+        "None",
+        "4"
+      ],
+      "quantity": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:44:28.494Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 93,
+  "fields": {
+    "content_type": 11,
+    "object_pk": "26",
+    "object_id": 26,
+    "object_repr": "dianah - 10300, Kutus",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "id": [
+        "None",
+        "26"
+      ],
+      "user": [
+        "None",
+        "3"
+      ],
+      "first_name": [
+        "None",
+        "DIANAH"
+      ],
+      "last_name": [
+        "None",
+        "KARIMI"
+      ],
+      "street": [
+        "None",
+        "10300"
+      ],
+      "town": [
+        "None",
+        "11"
+      ],
+      "postal_code": [
+        "None",
+        "10300"
+      ],
+      "phone": [
+        "None",
+        "0731493784"
+      ],
+      "is_default": [
+        "None",
+        "False"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:46:00.588Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 94,
+  "fields": {
+    "content_type": 8,
+    "object_pk": "13",
+    "object_id": 13,
+    "object_repr": "Order 13 by dianah",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "total_price": [
+        "None",
+        "24499.00"
+      ],
+      "phone_number": [
+        "None",
+        "0731493784"
+      ],
+      "payment_method": [
+        "None",
+        "Pay on Delivery"
+      ],
+      "delivery_method": [
+        "None",
+        "standard"
+      ],
+      "status": [
+        "None",
+        "Pending"
+      ],
+      "notifications": [
+        "None",
+        "products.OrderNotification.None"
+      ],
+      "created_at": [
+        "None",
+        "2026-03-17 17:46:48.215519"
+      ],
+      "estimated_delivery_start": [
+        "None",
+        "2026-03-19"
+      ],
+      "estimated_delivery_end": [
+        "None",
+        "2026-03-20"
+      ],
+      "delivered_at": [
+        "None",
+        "None"
+      ],
+      "address": [
+        "None",
+        "26"
+      ],
+      "discount_amount": [
+        "None",
+        "0"
+      ],
+      "id": [
+        "None",
+        "13"
+      ],
+      "items": [
+        "None",
+        "products.OrderItem.None"
+      ],
+      "user": [
+        "None",
+        "3"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:46:48.223Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 95,
+  "fields": {
+    "content_type": 16,
+    "object_pk": "6",
+    "object_id": 6,
+    "object_repr": "1 x VON VART-19DHS Double Door Fridge 136L - Silver (1YR WRTY) in Order 13",
+    "serialized_data": null,
+    "action": 0,
+    "changes_text": "",
+    "changes": {
+      "order": [
+        "None",
+        "13"
+      ],
+      "id": [
+        "None",
+        "6"
+      ],
+      "product": [
+        "None",
+        "4"
+      ],
+      "price": [
+        "None",
+        "24499.00"
+      ],
+      "quantity": [
+        "None",
+        "1"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:46:48.232Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 96,
+  "fields": {
+    "content_type": 7,
+    "object_pk": "4",
+    "object_id": 4,
+    "object_repr": "VON VART-19DHS Double Door Fridge 136L - Silver (1YR WRTY)",
+    "serialized_data": null,
+    "action": 1,
+    "changes_text": "",
+    "changes": {
+      "stock": [
+        "60",
+        "59"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:46:48.234Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+},
+{
+  "model": "auditlog.logentry",
+  "pk": 97,
+  "fields": {
+    "content_type": 13,
+    "object_pk": "25",
+    "object_id": 25,
+    "object_repr": "CartItem object (25)",
+    "serialized_data": null,
+    "action": 2,
+    "changes_text": "",
+    "changes": {
+      "cart": [
+        "3",
+        "None"
+      ],
+      "id": [
+        "25",
+        "None"
+      ],
+      "product": [
+        "4",
+        "None"
+      ],
+      "quantity": [
+        "1",
+        "None"
+      ]
+    },
+    "actor": null,
+    "cid": null,
+    "remote_addr": null,
+    "remote_port": null,
+    "timestamp": "2026-03-17T17:46:48.271Z",
+    "additional_data": null,
+    "actor_email": null
+  }
+}
+]

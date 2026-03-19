@@ -12,7 +12,7 @@ from auditlog.admin import LogEntryAdmin
 from .models import (
     Product, Category, Order, OrderItem, Wishlist,
     County, Town, Address, Cart, CartItem, Coupon, Review,
-    OrderNotification, OrderTracking 
+    OrderNotification, OrderTracking, ProductImage, ProductVariant, FlashSale
 )
 
 # ----------------------------------------------------------------      
@@ -42,6 +42,19 @@ admin.site = CustomAdminSite()
 # ----------------------------------------------------------------      
 # 2. INLINES
 # ----------------------------------------------------------------
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 1
+
+class ProductVariantInline(admin.TabularInline):
+    model = ProductVariant
+    extra = 1
+
+class FlashSaleInline(admin.StackedInline):
+    model = FlashSale
+    can_delete = False
+    verbose_name_plural = 'Active Flash Sale'
+
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     fields = ('product_image', 'product', 'quantity', 'price', 'subtotal_display')
@@ -55,20 +68,66 @@ class OrderItemInline(admin.TabularInline):
         return "No Image"
 
     def subtotal_display(self, obj):
-        if obj and obj.quantity is not None and obj.price is not None:
-            return format_html("<span style='color:#000; font-weight:bold;'>Ksh {:,.0f}</span>", obj.quantity * obj.price)
+        if obj and obj.quantity and obj.price:
+            # FIX: Format number to string first
+            amount = f"{int(obj.quantity * obj.price):,}"
+            return format_html("<span style='color:#000; font-weight:bold;'>Ksh {}</span>", amount)
         return "Ksh 0"
 
 # ----------------------------------------------------------------      
-# 3. ORDER ADMIN (FIXED FOR DOUBLE MESSAGES & BULK ACTIONS)
+# 3. PRODUCT & FLASH SALE ADMIN
+# ----------------------------------------------------------------
+class ProductAdmin(ImportExportModelAdmin):
+    list_display = ('name', 'category', 'current_price_display', 'colored_stock', 'is_flash_sale')
+    list_filter = ('category',)
+    search_fields = ('name',)
+    inlines = [ProductImageInline, ProductVariantInline, FlashSaleInline]
+
+    def current_price_display(self, obj):
+        # FIX: Format numbers to strings with commas first
+        reg_price = f"{int(obj.price):,}"
+        
+        if hasattr(obj, 'flash_sale') and obj.flash_sale.is_currently_active:
+            flash_price = f"{int(obj.flash_sale.discount_price):,}"
+            return format_html(
+                '<span style="color: red; font-weight: bold;">Ksh {}</span> '
+                '<small style="text-decoration: line-through; color: #999;">Ksh {}</small>', 
+                flash_price, reg_price
+            )
+        return f"Ksh {reg_price}"
+    current_price_display.short_description = "Price"
+
+    def colored_stock(self, obj):
+        if obj.stock < 10: color = "#d9534f" # Red
+        elif obj.stock < 30: color = "#f68b1e" # Orange
+        else: color = "#5cb85c" # Green
+        return format_html('<b style="color:{}">{} in stock</b>', color, obj.stock)
+
+    def is_flash_sale(self, obj):
+        if hasattr(obj, 'flash_sale') and obj.flash_sale.is_currently_active:
+            # ✅ Use mark_safe when you have a static string with no {} placeholders
+            return mark_safe('<span style="color: #d9534f;">⚡ ACTIVE</span>')
+        return "No"
+
+class FlashSaleAdmin(admin.ModelAdmin):
+    list_display = ('product', 'discount_price_display', 'start_time', 'end_time', 'is_active_status')
+    list_filter = ('is_active',)
+
+    def discount_price_display(self, obj):
+        return f"Ksh {int(obj.discount_price):,}"
+    
+    def is_active_status(self, obj):
+        return obj.is_currently_active
+    is_active_status.boolean = True
+
+# ----------------------------------------------------------------      
+# 4. ORDER ADMIN
 # ----------------------------------------------------------------
 class OrderAdmin(ImportExportModelAdmin):
     list_display = ('id', 'user', 'colored_status', 'total_price_formatted', 'created_at', 'order_actions')
     list_filter = ('status', 'payment_method', 'created_at')
     search_fields = ('id', 'user__username', 'phone_number')
     inlines = [OrderItemInline]
-    
-    # Bulk actions dropdown at the top of the list
     actions = ['bulk_confirm', 'bulk_processing', 'bulk_shipped', 'bulk_ready', 'bulk_delivered']
 
     fieldsets = (
@@ -80,9 +139,7 @@ class OrderAdmin(ImportExportModelAdmin):
 
     readonly_fields = ('status_timeline', 'customer_email', 'full_address_card', 'user')
 
-    # --- THE HELPER: Handles Tracking & Notifications ONLY ---
     def create_status_records(self, order, new_status):
-        """Creates history and notification record without double-saving the order."""
         msg_map = {
             'Confirmed': 'Order confirmed. We are getting it ready.',
             'Processing': 'Items are being packed at our warehouse.',
@@ -92,54 +149,28 @@ class OrderAdmin(ImportExportModelAdmin):
             'Cancelled': 'Order has been cancelled.',
         }
         msg = msg_map.get(new_status, f"Order status updated to {new_status}")
-
-        # Add to Timeline History
         OrderTracking.objects.create(order=order, status=new_status, message=msg)
-
-        # Add to App Inbox
         OrderNotification.objects.create(user=order.user, order=order, status=new_status, message=msg)
 
-    # --- SINGLE ORDER SAVE (When editing one page) ---
     def save_model(self, request, obj, form, change):
         if change:
-            # Check if status changed compared to the database
             old_status = Order.objects.get(pk=obj.pk).status
             if old_status != obj.status:
                 self.create_status_records(obj, obj.status)
         super().save_model(request, obj, form, change)
 
-    # --- BULK ACTIONS (When selecting multiple checkboxes) ---
+    # Bulk actions
     def bulk_confirm(self, request, queryset):
-        for order in queryset:
-            self.create_status_records(order, 'Confirmed')
+        for order in queryset: self.create_status_records(order, 'Confirmed')
         queryset.update(status='Confirmed')
     bulk_confirm.short_description = "⭐ Mark as Confirmed"
 
-    def bulk_processing(self, request, queryset):
-        for order in queryset:
-            self.create_status_records(order, 'Processing')
-        queryset.update(status='Processing')
-    bulk_processing.short_description = "📦 Mark as Processing"
-
-    def bulk_shipped(self, request, queryset):
-        for order in queryset:
-            self.create_status_records(order, 'Shipped')
-        queryset.update(status='Shipped')
-    bulk_shipped.short_description = "🚚 Mark as Shipped"
-
-    def bulk_ready(self, request, queryset):
-        for order in queryset:
-            self.create_status_records(order, 'Ready for Pickup')
-        queryset.update(status='Ready for Pickup')
-    bulk_ready.short_description = "📍 Mark as Ready for Pickup"
-
     def bulk_delivered(self, request, queryset):
-        for order in queryset:
-            self.create_status_records(order, 'Delivered')
+        for order in queryset: self.create_status_records(order, 'Delivered')
         queryset.update(status='Delivered')
     bulk_delivered.short_description = "✅ Mark as Delivered"
 
-    # --- UI HELPERS ---
+    # UI UI UI
     def status_timeline(self, obj):
         steps = ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Ready for Pickup', 'Delivered']
         current_status = obj.status if obj.status in steps else 'Pending'
@@ -162,42 +193,41 @@ class OrderAdmin(ImportExportModelAdmin):
     def full_address_card(self, obj):
         if obj.address:
             a = obj.address
-            return format_html('<div style="background: #ffffff; padding: 15px; border: 1px solid #ccc; border-left: 6px solid #ffa500; border-radius: 4px; color: #000 !important; line-height: 1.8;">'
-                               '<span style="color: #000;"><strong>Recipient:</strong> {} {}</span><br>'
-                               '<span style="color: #000;"><strong>Street:</strong> {}</span><br>'
-                               '<span style="color: #000;"><strong>Location:</strong> {}, {}</span><br>'
-                               '<span style="color: #000;"><strong>Phone:</strong> {}</span></div>',
+            return format_html('<div style="background: #ffffff; padding: 15px; border: 1px solid #ccc; border-left: 6px solid #ffa500; border-radius: 4px; color: #000; line-height: 1.8;">'
+                               '<strong>Recipient:</strong> {} {}<br><strong>Street:</strong> {}<br><strong>Location:</strong> {}, {}<br><strong>Phone:</strong> {}</div>',
                                a.first_name, a.last_name, a.street, a.town.name, a.town.county.name, a.phone)
-        return "No shipping address linked."
+        return "No shipping address."
 
     def customer_email(self, obj): return obj.user.email
-
     def colored_status(self, obj):
         colors = {'Pending': '#6c757d', 'Confirmed': '#007bff', 'Processing': '#17a2b8', 'Ready for Pickup': '#ffa500', 'Delivered': '#198754', 'Cancelled': '#dc3545', 'Shipped': '#6f42c1'}
-        color = colors.get(obj.status, '#333')
-        return format_html('<span style="background:{}; color:white; padding:4px 12px; border-radius:20px; font-size:10px; font-weight:bold;">{}</span>', color, obj.status)
-
-    def total_price_formatted(self, obj): return f"Ksh {int(obj.total_price):,}"
-
+        return format_html('<span style="background:{}; color:white; padding:4px 12px; border-radius:20px; font-size:10px; font-weight:bold;">{}</span>', colors.get(obj.status, '#333'), obj.status)
+    
+    def total_price_formatted(self, obj): 
+        # FIX: Ensure it returns a string
+        return f"Ksh {int(obj.total_price):,}"
+    
     def order_actions(self, obj):
         url = reverse('admin:products_order_change', args=[obj.pk])
         return format_html('<a class="button" style="background:#ffa500; color:white; border:none; padding: 4px 12px; font-weight: bold;" href="{}">MANAGE</a>', url)
 
 # ----------------------------------------------------------------      
-# 4. REGISTRATION
+# 5. REGISTRATION
 # ----------------------------------------------------------------
-class ProductAdmin(ImportExportModelAdmin):
-    list_display = ('name', 'category', 'price_display', 'colored_stock')
-    def price_display(self, obj): return f"Ksh {int(obj.price):,}"
-    def colored_stock(self, obj):
-        color = "#d9534f" if obj.stock < 5 else "#5cb85c"
-        return format_html('<b style="color:{}">{} in stock</b>', color, obj.stock)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('product_name', 'user', 'rating', 'created_at')
+    readonly_fields = ('order_item', 'user', 'product_name')
+    
+    def product_name(self, obj):
+        return obj.order_item.product.name
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Product, ProductAdmin)
+admin.site.register(FlashSale, FlashSaleAdmin)
+admin.site.register(Review, ReviewAdmin)
 admin.site.register(Category); admin.site.register(Address); admin.site.register(Town)
 admin.site.register(County); admin.site.register(Wishlist); admin.site.register(Cart)
-admin.site.register(Coupon); admin.site.register(Review); admin.site.register(OrderTracking)
+admin.site.register(Coupon); admin.site.register(OrderTracking)

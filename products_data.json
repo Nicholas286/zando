@@ -1,1 +1,3286 @@
-[{"model": "products.county", "pk": 1, "fields": {"name": "kirinyaga"}}, {"model": "products.county", "pk": 2, "fields": {"name": "Nairobi"}}, {"model": "products.county", "pk": 3, "fields": {"name": "Mombasa"}}, {"model": "products.county", "pk": 4, "fields": {"name": "Kisumu"}}, {"model": "products.county", "pk": 5, "fields": {"name": "Nakuru"}}, {"model": "products.county", "pk": 6, "fields": {"name": "Kiambu"}}, {"model": "products.county", "pk": 7, "fields": {"name": "Kirinyaga"}}, {"model": "products.county", "pk": 8, "fields": {"name": "Uasin Gishu"}}, {"model": "products.county", "pk": 9, "fields": {"name": "Kakamega"}}, {"model": "products.county", "pk": 10, "fields": {"name": "Machakos"}}, {"model": "products.county", "pk": 11, "fields": {"name": "Kisii"}}, {"model": "products.county", "pk": 12, "fields": {"name": "Bungoma"}}, {"model": "products.county", "pk": 13, "fields": {"name": "Kericho"}}, {"model": "products.county", "pk": 14, "fields": {"name": "Nyeri"}}, {"model": "products.county", "pk": 15, "fields": {"name": "Embu"}}, {"model": "products.county", "pk": 16, "fields": {"name": "Meru"}}, {"model": "products.county", "pk": 17, "fields": {"name": "Busia"}}, {"model": "products.county", "pk": 18, "fields": {"name": "Narok"}}, {"model": "products.county", "pk": 19, "fields": {"name": "Kajiado"}}, {"model": "products.county", "pk": 20, "fields": {"name": "Kwale"}}, {"model": "products.county", "pk": 21, "fields": {"name": "Kilifi"}}, {"model": "products.county", "pk": 22, "fields": {"name": "Tana River"}}, {"model": "products.county", "pk": 23, "fields": {"name": "Lamu"}}, {"model": "products.county", "pk": 24, "fields": {"name": "Taita-Taveta"}}, {"model": "products.county", "pk": 25, "fields": {"name": "Garissa"}}, {"model": "products.county", "pk": 26, "fields": {"name": "Wajir"}}, {"model": "products.county", "pk": 27, "fields": {"name": "Mandera"}}, {"model": "products.county", "pk": 28, "fields": {"name": "Marsabit"}}, {"model": "products.county", "pk": 29, "fields": {"name": "Isiolo"}}, {"model": "products.county", "pk": 30, "fields": {"name": "Tharaka-Nithi"}}, {"model": "products.county", "pk": 31, "fields": {"name": "Kitui"}}, {"model": "products.county", "pk": 32, "fields": {"name": "Makueni"}}, {"model": "products.county", "pk": 33, "fields": {"name": "Nyandarua"}}, {"model": "products.county", "pk": 34, "fields": {"name": "Murang'a"}}, {"model": "products.county", "pk": 35, "fields": {"name": "Turkana"}}, {"model": "products.county", "pk": 36, "fields": {"name": "West Pokot"}}, {"model": "products.county", "pk": 37, "fields": {"name": "Samburu"}}, {"model": "products.county", "pk": 38, "fields": {"name": "Trans Nzoia"}}, {"model": "products.county", "pk": 39, "fields": {"name": "Elgeyo-Marakwet"}}, {"model": "products.county", "pk": 40, "fields": {"name": "Nandi"}}, {"model": "products.county", "pk": 41, "fields": {"name": "Baringo"}}, {"model": "products.county", "pk": 42, "fields": {"name": "Laikipia"}}, {"model": "products.county", "pk": 43, "fields": {"name": "Bomet"}}, {"model": "products.county", "pk": 44, "fields": {"name": "Vihiga"}}, {"model": "products.county", "pk": 45, "fields": {"name": "Siaya"}}, {"model": "products.county", "pk": 46, "fields": {"name": "Homa Bay"}}, {"model": "products.county", "pk": 47, "fields": {"name": "Migori"}}, {"model": "products.county", "pk": 48, "fields": {"name": "Nyamira"}}, {"model": "products.town", "pk": 1, "fields": {"county": 1, "name": "kerugoya town"}}, {"model": "products.town", "pk": 2, "fields": {"county": 1, "name": "kutus"}}, {"model": "products.town", "pk": 3, "fields": {"county": 2, "name": "Nairobi City"}}, {"model": "products.town", "pk": 4, "fields": {"county": 3, "name": "Mombasa"}}, {"model": "products.town", "pk": 5, "fields": {"county": 4, "name": "Kisumu"}}, {"model": "products.town", "pk": 6, "fields": {"county": 5, "name": "Nakuru"}}, {"model": "products.town", "pk": 7, "fields": {"county": 5, "name": "Naivasha"}}, {"model": "products.town", "pk": 8, "fields": {"county": 6, "name": "Thika"}}, {"model": "products.town", "pk": 9, "fields": {"county": 6, "name": "Kikuyu"}}, {"model": "products.town", "pk": 10, "fields": {"county": 7, "name": "Kerugoya"}}, {"model": "products.town", "pk": 11, "fields": {"county": 7, "name": "Kutus"}}, {"model": "products.town", "pk": 12, "fields": {"county": 7, "name": "Baricho"}}, {"model": "products.town", "pk": 13, "fields": {"county": 8, "name": "Eldoret"}}, {"model": "products.town", "pk": 14, "fields": {"county": 9, "name": "Kakamega"}}, {"model": "products.town", "pk": 15, "fields": {"county": 10, "name": "Machakos Town"}}, {"model": "products.town", "pk": 16, "fields": {"county": 10, "name": "Athi River"}}, {"model": "products.town", "pk": 17, "fields": {"county": 11, "name": "Kisii"}}, {"model": "products.town", "pk": 18, "fields": {"county": 12, "name": "Bungoma"}}, {"model": "products.town", "pk": 19, "fields": {"county": 12, "name": "Webuye"}}, {"model": "products.town", "pk": 20, "fields": {"county": 13, "name": "Kericho"}}, {"model": "products.town", "pk": 21, "fields": {"county": 14, "name": "Nyeri"}}, {"model": "products.town", "pk": 22, "fields": {"county": 15, "name": "Embu"}}, {"model": "products.town", "pk": 23, "fields": {"county": 16, "name": "Meru"}}, {"model": "products.town", "pk": 24, "fields": {"county": 17, "name": "Busia"}}, {"model": "products.town", "pk": 25, "fields": {"county": 18, "name": "Narok"}}, {"model": "products.town", "pk": 26, "fields": {"county": 19, "name": "Kitengela"}}, {"model": "products.town", "pk": 27, "fields": {"county": 19, "name": "Ngong"}}, {"model": "products.town", "pk": 28, "fields": {"county": 16, "name": "Maua"}}, {"model": "products.town", "pk": 29, "fields": {"county": 3, "name": "Kilifi"}}, {"model": "products.town", "pk": 30, "fields": {"county": 3, "name": "Malindi"}}, {"model": "products.town", "pk": 31, "fields": {"county": 3, "name": "Lamu"}}, {"model": "products.town", "pk": 32, "fields": {"county": 3, "name": "Kwale"}}, {"model": "products.town", "pk": 33, "fields": {"county": 20, "name": "Kwale"}}, {"model": "products.town", "pk": 34, "fields": {"county": 20, "name": "Msambweni"}}, {"model": "products.town", "pk": 35, "fields": {"county": 20, "name": "Lungalunga"}}, {"model": "products.town", "pk": 36, "fields": {"county": 20, "name": "Matuga"}}, {"model": "products.town", "pk": 37, "fields": {"county": 21, "name": "Kilifi"}}, {"model": "products.town", "pk": 38, "fields": {"county": 21, "name": "Malindi"}}, {"model": "products.town", "pk": 39, "fields": {"county": 21, "name": "Kaloleni"}}, {"model": "products.town", "pk": 40, "fields": {"county": 21, "name": "Rabai"}}, {"model": "products.town", "pk": 41, "fields": {"county": 21, "name": "Ganze"}}, {"model": "products.town", "pk": 42, "fields": {"county": 22, "name": "Hola"}}, {"model": "products.town", "pk": 43, "fields": {"county": 22, "name": "Garsen"}}, {"model": "products.town", "pk": 44, "fields": {"county": 22, "name": "Bura"}}, {"model": "products.town", "pk": 45, "fields": {"county": 23, "name": "Lamu"}}, {"model": "products.town", "pk": 46, "fields": {"county": 23, "name": "Mokowe"}}, {"model": "products.town", "pk": 47, "fields": {"county": 24, "name": "Voi"}}, {"model": "products.town", "pk": 48, "fields": {"county": 24, "name": "Taveta"}}, {"model": "products.town", "pk": 49, "fields": {"county": 24, "name": "Wundanyi"}}, {"model": "products.town", "pk": 50, "fields": {"county": 24, "name": "Mwatate"}}, {"model": "products.town", "pk": 51, "fields": {"county": 25, "name": "Garissa"}}, {"model": "products.town", "pk": 52, "fields": {"county": 25, "name": "Ijara"}}, {"model": "products.town", "pk": 53, "fields": {"county": 25, "name": "Dadaab"}}, {"model": "products.town", "pk": 54, "fields": {"county": 25, "name": "Fafi"}}, {"model": "products.town", "pk": 55, "fields": {"county": 26, "name": "Wajir"}}, {"model": "products.town", "pk": 56, "fields": {"county": 26, "name": "Moyale"}}, {"model": "products.town", "pk": 57, "fields": {"county": 26, "name": "Habaswein"}}, {"model": "products.town", "pk": 58, "fields": {"county": 26, "name": "Griftu"}}, {"model": "products.town", "pk": 59, "fields": {"county": 27, "name": "Mandera"}}, {"model": "products.town", "pk": 60, "fields": {"county": 27, "name": "Elwak"}}, {"model": "products.town", "pk": 61, "fields": {"county": 27, "name": "Takaba"}}, {"model": "products.town", "pk": 62, "fields": {"county": 27, "name": "Lafey"}}, {"model": "products.town", "pk": 63, "fields": {"county": 28, "name": "Marsabit"}}, {"model": "products.town", "pk": 64, "fields": {"county": 28, "name": "Moyale"}}, {"model": "products.town", "pk": 65, "fields": {"county": 28, "name": "Sololo"}}, {"model": "products.town", "pk": 66, "fields": {"county": 28, "name": "Laisamis"}}, {"model": "products.town", "pk": 67, "fields": {"county": 29, "name": "Isiolo"}}, {"model": "products.town", "pk": 68, "fields": {"county": 29, "name": "Moyale"}}, {"model": "products.town", "pk": 69, "fields": {"county": 29, "name": "Merti"}}, {"model": "products.town", "pk": 70, "fields": {"county": 16, "name": "Nkubu"}}, {"model": "products.town", "pk": 71, "fields": {"county": 16, "name": "Chuka"}}, {"model": "products.town", "pk": 72, "fields": {"county": 16, "name": "Igembe"}}, {"model": "products.town", "pk": 73, "fields": {"county": 30, "name": "Chuka"}}, {"model": "products.town", "pk": 74, "fields": {"county": 30, "name": "Maua"}}, {"model": "products.town", "pk": 75, "fields": {"county": 30, "name": "Tharaka"}}, {"model": "products.town", "pk": 76, "fields": {"county": 15, "name": "Runyenjes"}}, {"model": "products.town", "pk": 77, "fields": {"county": 15, "name": "Manyatta"}}, {"model": "products.town", "pk": 78, "fields": {"county": 31, "name": "Kitui"}}, {"model": "products.town", "pk": 79, "fields": {"county": 31, "name": "Mwingi"}}, {"model": "products.town", "pk": 80, "fields": {"county": 31, "name": "Mutomo"}}, {"model": "products.town", "pk": 81, "fields": {"county": 31, "name": "Ikutha"}}, {"model": "products.town", "pk": 82, "fields": {"county": 10, "name": "Machakos"}}, {"model": "products.town", "pk": 83, "fields": {"county": 10, "name": "Kangundo"}}, {"model": "products.town", "pk": 84, "fields": {"county": 10, "name": "Tala"}}, {"model": "products.town", "pk": 85, "fields": {"county": 32, "name": "Wote"}}, {"model": "products.town", "pk": 86, "fields": {"county": 32, "name": "Makueni"}}, {"model": "products.town", "pk": 87, "fields": {"county": 32, "name": "Kibwezi"}}, {"model": "products.town", "pk": 88, "fields": {"county": 32, "name": "Makindu"}}, {"model": "products.town", "pk": 89, "fields": {"county": 33, "name": "Ol Kalou"}}, {"model": "products.town", "pk": 90, "fields": {"county": 33, "name": "Ndaragwa"}}, {"model": "products.town", "pk": 91, "fields": {"county": 33, "name": "Engineer"}}, {"model": "products.town", "pk": 92, "fields": {"county": 33, "name": "Nyahururu"}}, {"model": "products.town", "pk": 93, "fields": {"county": 14, "name": "Othaya"}}, {"model": "products.town", "pk": 94, "fields": {"county": 14, "name": "Chinga"}}, {"model": "products.town", "pk": 95, "fields": {"county": 14, "name": "Karatina"}}, {"model": "products.town", "pk": 96, "fields": {"county": 7, "name": "Wanguru"}}, {"model": "products.town", "pk": 97, "fields": {"county": 7, "name": "Sagana"}}, {"model": "products.town", "pk": 98, "fields": {"county": 34, "name": "Murang'a"}}, {"model": "products.town", "pk": 99, "fields": {"county": 34, "name": "Kangema"}}, {"model": "products.town", "pk": 100, "fields": {"county": 34, "name": "Kiharu"}}, {"model": "products.town", "pk": 101, "fields": {"county": 34, "name": "Maragua"}}, {"model": "products.town", "pk": 102, "fields": {"county": 6, "name": "Kiambu"}}, {"model": "products.town", "pk": 103, "fields": {"county": 6, "name": "Limuru"}}, {"model": "products.town", "pk": 104, "fields": {"county": 6, "name": "Ruiru"}}, {"model": "products.town", "pk": 105, "fields": {"county": 35, "name": "Lodwar"}}, {"model": "products.town", "pk": 106, "fields": {"county": 35, "name": "Kakuma"}}, {"model": "products.town", "pk": 107, "fields": {"county": 35, "name": "Lokichoggio"}}, {"model": "products.town", "pk": 108, "fields": {"county": 35, "name": "Lokitaung"}}, {"model": "products.town", "pk": 109, "fields": {"county": 36, "name": "Kapenguria"}}, {"model": "products.town", "pk": 110, "fields": {"county": 36, "name": "Sigor"}}, {"model": "products.town", "pk": 111, "fields": {"county": 36, "name": "Ortum"}}, {"model": "products.town", "pk": 112, "fields": {"county": 37, "name": "Maralal"}}, {"model": "products.town", "pk": 113, "fields": {"county": 37, "name": "Baragoi"}}, {"model": "products.town", "pk": 114, "fields": {"county": 37, "name": "Wamba"}}, {"model": "products.town", "pk": 115, "fields": {"county": 38, "name": "Kitale"}}, {"model": "products.town", "pk": 116, "fields": {"county": 38, "name": "Kiminini"}}, {"model": "products.town", "pk": 117, "fields": {"county": 38, "name": "Endebess"}}, {"model": "products.town", "pk": 118, "fields": {"county": 8, "name": "Turbo"}}, {"model": "products.town", "pk": 119, "fields": {"county": 8, "name": "Moiben"}}, {"model": "products.town", "pk": 120, "fields": {"county": 8, "name": "Soy"}}, {"model": "products.town", "pk": 121, "fields": {"county": 39, "name": "Iten"}}, {"model": "products.town", "pk": 122, "fields": {"county": 39, "name": "Kapsowar"}}, {"model": "products.town", "pk": 123, "fields": {"county": 39, "name": "Marakwet"}}, {"model": "products.town", "pk": 124, "fields": {"county": 40, "name": "Kapsabet"}}, {"model": "products.town", "pk": 125, "fields": {"county": 40, "name": "Mosoriot"}}, {"model": "products.town", "pk": 126, "fields": {"county": 40, "name": "Nandi Hills"}}, {"model": "products.town", "pk": 127, "fields": {"county": 41, "name": "Kabarnet"}}, {"model": "products.town", "pk": 128, "fields": {"county": 41, "name": "Eldama Ravine"}}, {"model": "products.town", "pk": 129, "fields": {"county": 41, "name": "Marigat"}}, {"model": "products.town", "pk": 130, "fields": {"county": 42, "name": "Nanyuki"}}, {"model": "products.town", "pk": 131, "fields": {"county": 42, "name": "Rumuruti"}}, {"model": "products.town", "pk": 132, "fields": {"county": 42, "name": "Dol Dol"}}, {"model": "products.town", "pk": 133, "fields": {"county": 5, "name": "Gilgil"}}, {"model": "products.town", "pk": 134, "fields": {"county": 5, "name": "Molo"}}, {"model": "products.town", "pk": 135, "fields": {"county": 5, "name": "Njoro"}}, {"model": "products.town", "pk": 136, "fields": {"county": 18, "name": "Kilgoris"}}, {"model": "products.town", "pk": 137, "fields": {"county": 18, "name": "Ololulunga"}}, {"model": "products.town", "pk": 138, "fields": {"county": 19, "name": "Kajiado"}}, {"model": "products.town", "pk": 139, "fields": {"county": 19, "name": "Ongata Rongai"}}, {"model": "products.town", "pk": 140, "fields": {"county": 13, "name": "Litein"}}, {"model": "products.town", "pk": 141, "fields": {"county": 13, "name": "Kipkelion"}}, {"model": "products.town", "pk": 142, "fields": {"county": 43, "name": "Bomet"}}, {"model": "products.town", "pk": 143, "fields": {"county": 43, "name": "Sotik"}}, {"model": "products.town", "pk": 144, "fields": {"county": 43, "name": "Chepalungu"}}, {"model": "products.town", "pk": 145, "fields": {"county": 9, "name": "Mumias"}}, {"model": "products.town", "pk": 146, "fields": {"county": 9, "name": "Lugari"}}, {"model": "products.town", "pk": 147, "fields": {"county": 9, "name": "Butere"}}, {"model": "products.town", "pk": 148, "fields": {"county": 44, "name": "Vihiga"}}, {"model": "products.town", "pk": 149, "fields": {"county": 44, "name": "Hamisi"}}, {"model": "products.town", "pk": 150, "fields": {"county": 44, "name": "Luanda"}}, {"model": "products.town", "pk": 151, "fields": {"county": 12, "name": "Malakisi"}}, {"model": "products.town", "pk": 152, "fields": {"county": 12, "name": "Sirisia"}}, {"model": "products.town", "pk": 153, "fields": {"county": 17, "name": "Malaba"}}, {"model": "products.town", "pk": 154, "fields": {"county": 17, "name": "Port Victoria"}}, {"model": "products.town", "pk": 155, "fields": {"county": 45, "name": "Siaya"}}, {"model": "products.town", "pk": 156, "fields": {"county": 45, "name": "Bondo"}}, {"model": "products.town", "pk": 157, "fields": {"county": 45, "name": "Ugunja"}}, {"model": "products.town", "pk": 158, "fields": {"county": 45, "name": "Ukwala"}}, {"model": "products.town", "pk": 159, "fields": {"county": 4, "name": "Kisumu Ndogo"}}, {"model": "products.town", "pk": 160, "fields": {"county": 4, "name": "Ahero"}}, {"model": "products.town", "pk": 161, "fields": {"county": 4, "name": "Muhoroni"}}, {"model": "products.town", "pk": 162, "fields": {"county": 46, "name": "Homa Bay"}}, {"model": "products.town", "pk": 163, "fields": {"county": 46, "name": "Ndhiwa"}}, {"model": "products.town", "pk": 164, "fields": {"county": 46, "name": "Mbita"}}, {"model": "products.town", "pk": 165, "fields": {"county": 46, "name": "Rachuonyo"}}, {"model": "products.town", "pk": 166, "fields": {"county": 47, "name": "Migori"}}, {"model": "products.town", "pk": 167, "fields": {"county": 47, "name": "Awendo"}}, {"model": "products.town", "pk": 168, "fields": {"county": 47, "name": "Rongo"}}, {"model": "products.town", "pk": 169, "fields": {"county": 47, "name": "Uriri"}}, {"model": "products.town", "pk": 170, "fields": {"county": 11, "name": "Ogembo"}}, {"model": "products.town", "pk": 171, "fields": {"county": 11, "name": "Nyamache"}}, {"model": "products.town", "pk": 172, "fields": {"county": 11, "name": "Masimba"}}, {"model": "products.town", "pk": 173, "fields": {"county": 48, "name": "Nyamira"}}, {"model": "products.town", "pk": 174, "fields": {"county": 48, "name": "Keroka"}}, {"model": "products.town", "pk": 175, "fields": {"county": 48, "name": "Manga"}}, {"model": "products.town", "pk": 176, "fields": {"county": 2, "name": "Nairobi"}}, {"model": "products.town", "pk": 177, "fields": {"county": 2, "name": "Westlands"}}, {"model": "products.town", "pk": 178, "fields": {"county": 2, "name": "Karen"}}, {"model": "products.town", "pk": 179, "fields": {"county": 2, "name": "Kilimani"}}, {"model": "products.town", "pk": 180, "fields": {"county": 2, "name": "Langata"}}, {"model": "products.town", "pk": 181, "fields": {"county": 2, "name": "Parklands"}}, {"model": "products.town", "pk": 182, "fields": {"county": 2, "name": "River Road"}}, {"model": "products.town", "pk": 183, "fields": {"county": 2, "name": "CBD"}}, {"model": "products.category", "pk": 2, "fields": {"name": "Phones & Tablets", "icon_class": "fa-solid fa-mobile-screen"}}, {"model": "products.category", "pk": 4, "fields": {"name": "Appliances", "icon_class": "fa-solid fa-plug"}}, {"model": "products.category", "pk": 5, "fields": {"name": "Health & Beauty", "icon_class": "fa-solid fa-sparkles"}}, {"model": "products.category", "pk": 6, "fields": {"name": "Home & Office", "icon_class": "fa-solid fa-couch"}}, {"model": "products.category", "pk": 7, "fields": {"name": "Fashion", "icon_class": "fa-solid fa-shirt"}}, {"model": "products.category", "pk": 8, "fields": {"name": "Computing", "icon_class": "fa-solid fa-laptop"}}, {"model": "products.category", "pk": 9, "fields": {"name": "Gaming", "icon_class": "fa-solid fa-gamepad"}}, {"model": "products.category", "pk": 10, "fields": {"name": "Supermarket", "icon_class": "fa-solid fa-basket-shopping"}}, {"model": "products.category", "pk": 11, "fields": {"name": "Baby Products", "icon_class": "fa-solid fa-baby"}}, {"model": "products.category", "pk": 12, "fields": {"name": "Other categories", "icon_class": "fa-solid fa-ellipsis"}}, {"model": "products.category", "pk": 13, "fields": {"name": "TVs  & Audio", "icon_class": "fa-solid fa-box"}}, {"model": "products.product", "pk": 1, "fields": {"category": 4, "name": "AILYONS Electric Kettle Water Heater & Boiler Jug", "price": "490.00", "image": "products/kettle_ailyons.jpg", "stock": 23, "description": ""}}, {"model": "products.product", "pk": 2, "fields": {"category": 8, "name": "HP ELITEBOOK 830 G6,INTEL CORE I5 8TH GEN 8GB RAM 256GB SSD NON-TOUCH (6 Months WRTY)", "price": "28400.00", "image": "products/hp_laptop.jpg", "stock": 36, "description": ""}}, {"model": "products.product", "pk": 3, "fields": {"category": 8, "name": "Lenovo --Lenovo Thinkpad X13 Yoga x360 core 15 16GB RAM 512GB SSD 10th generation Quad core 13.3 Inches FHD non Touch windows 11 pro, HD Camera, HDMI, USB Type C, Stylus Pen convertible 2 in 1 laptop +Mouse", "price": "42999.00", "image": "products/lenovo_laptop.jpg", "stock": 45, "description": ""}}, {"model": "products.product", "pk": 4, "fields": {"category": 4, "name": "VON VART-19DHS Double Door Fridge 136L - Silver (1YR WRTY)", "price": "24499.00", "image": "products/von_fridge_136L.jpg", "stock": 60, "description": ""}}, {"model": "products.product", "pk": 5, "fields": {"category": 13, "name": "Vitron HTC4300QFS 43\" QLED TV Bluetooth Enabled Full HD Frameless Smart Android TT, Wi-Fi Connectivity, Inbuilt Decoder, Netflix, Youtube, App Store + 6 Free Accessories (1YR WRTY)", "price": "19395.00", "image": "products/vitron_43_inches.jpg", "stock": 72, "description": ""}}, {"model": "products.product", "pk": 6, "fields": {"category": null, "name": "Vitron V527 - 2.1 CH Multimedia Speaker, BT/USB/SD/FM - 9000W (1YR WRTY)", "price": "5490.00", "image": "products/vitron_woofer.jpg", "stock": 89, "description": ""}}, {"model": "products.product", "pk": 7, "fields": {"category": 13, "name": "Hisense 32\" Inch Frameless FHD SMART TV,Netflix,WIFI,INBUILT DECODER+TV GUARD+BRACKET", "price": "14599.00", "image": "products/hisense_32_inches.jpg", "stock": 67, "description": ""}}, {"model": "products.product", "pk": 8, "fields": {"category": 2, "name": "Tecno CAMON 40 PRO,6.78\", Up to 16GB RAM + 256GB, 5200mAh - Black + FREE GIFTS", "price": "34795.00", "image": "products/camon_40.jpg", "stock": 48, "description": ""}}, {"model": "products.product", "pk": 9, "fields": {"category": 6, "name": "5FT Stylish Modern Wooden TV Stands For Up To 75'' TV", "price": "6450.00", "image": "products/tv_stand.jpg", "stock": 42, "description": ""}}, {"model": "products.product", "pk": 10, "fields": {"category": 13, "name": "Vitron V51SB- 2.1ch Soundbar System with Bluetooth, Black (1YR WRTY)", "price": "4599.00", "image": "products/woofer.jpg", "stock": 25, "description": ""}}, {"model": "products.product", "pk": 11, "fields": {"category": 2, "name": "Share thredbeat A2 Tablet, Dual SIM, 10.1-inch , 8(4+4)GB RAM/128GB ROM, Android 14, 6000 MAh Battery,Gray", "price": "11505.00", "image": "products/tablet.jpg", "stock": 83, "description": ""}}, {"model": "products.product", "pk": 12, "fields": {"category": 6, "name": "Istanbul 2 Modern TV Stand With LED Bulb - White & Black", "price": "4539.00", "image": "products/led_tv_stand.jpg", "stock": 53, "description": ""}}, {"model": "products.product", "pk": 13, "fields": {"category": 4, "name": "Em Blender 2 In 1 Grinding Machine With Durable Motor 1.5L, Black BD02", "price": "1449.00", "image": "products/blender.jpg", "stock": 37, "description": ""}}, {"model": "products.product", "pk": 14, "fields": {"category": 6, "name": "Stylish Mordern Coffee Table", "price": "12000.00", "image": "products/coffee_table.jpg", "stock": 37, "description": ""}}, {"model": "products.product", "pk": 15, "fields": {"category": 7, "name": "Machislet Dresses For The Slim Ladies Women's Fashion Long Sleeve Loose Dreeses Ladies Dresses", "price": "749.00", "image": "products/1.jpg", "stock": 17, "description": ""}}, {"model": "products.cart", "pk": 1, "fields": {"user": 1, "created_at": "2026-03-08T10:36:27.033Z"}}, {"model": "products.cartitem", "pk": 20, "fields": {"cart": 1, "product": 1, "quantity": 2}}, {"model": "products.cartitem", "pk": 21, "fields": {"cart": 1, "product": 3, "quantity": 1}}, {"model": "products.wishlist", "pk": 5, "fields": {"user": 1, "product": 7, "created_at": "2026-03-07T09:27:38.934Z"}}, {"model": "products.wishlist", "pk": 6, "fields": {"user": 1, "product": 1, "created_at": "2026-03-07T11:14:06.648Z"}}, {"model": "products.address", "pk": 23, "fields": {"user": 1, "first_name": "Nicholas", "last_name": "Munene", "street": "479, maua", "town": 28, "postal_code": null, "phone": "0715979332", "is_default": true}}, {"model": "products.address", "pk": 24, "fields": {"user": 1, "first_name": "Nicholas", "last_name": "Munene", "street": "10300 Kutus- Kerugoya Road", "town": 2, "postal_code": "10300", "phone": "0715979332", "is_default": false}}, {"model": "products.order", "pk": 1, "fields": {"user": 1, "total_price": "225.00", "phone_number": "254700000000", "transaction_id": null, "payment_method": "M-Pesa", "status": "Pending", "created_at": "2026-03-05T04:41:19.494Z", "address": null, "coupon_code": null, "discount_amount": "0.00"}}, {"model": "products.order", "pk": 2, "fields": {"user": 1, "total_price": "20.00", "phone_number": "254700000000", "transaction_id": null, "payment_method": "M-Pesa", "status": "Pending", "created_at": "2026-03-05T04:53:21.177Z", "address": null, "coupon_code": null, "discount_amount": "0.00"}}, {"model": "products.order", "pk": 3, "fields": {"user": 1, "total_price": "38275.00", "phone_number": "0715979332", "transaction_id": null, "payment_method": "Pay on Delivery", "status": "Pending", "created_at": "2026-03-08T11:45:27.325Z", "address": null, "coupon_code": null, "discount_amount": "0.00"}}, {"model": "products.order", "pk": 4, "fields": {"user": 1, "total_price": "37598.00", "phone_number": "", "transaction_id": null, "payment_method": "Pay on Delivery", "status": "Pending", "created_at": "2026-03-08T18:11:35.601Z", "address": null, "coupon_code": null, "discount_amount": "0.00"}}, {"model": "products.order", "pk": 5, "fields": {"user": 1, "total_price": "49469.00", "phone_number": "0715979332", "transaction_id": null, "payment_method": "M-Pesa", "status": "Pending", "created_at": "2026-03-09T15:03:41.889Z", "address": null, "coupon_code": null, "discount_amount": "0.00"}}, {"model": "products.order", "pk": 6, "fields": {"user": 1, "total_price": "49469.00", "phone_number": "0715979332", "transaction_id": null, "payment_method": "Pay on Delivery", "status": "Pending", "created_at": "2026-03-09T15:28:06.427Z", "address": null, "coupon_code": null, "discount_amount": "0.00"}}, {"model": "products.order", "pk": 7, "fields": {"user": 1, "total_price": "43989.00", "phone_number": "0715979332", "transaction_id": null, "payment_method": "Pay on Delivery", "status": "Pending", "created_at": "2026-03-09T16:01:35.108Z", "address": null, "coupon_code": null, "discount_amount": "0.00"}}, {"model": "products.order", "pk": 8, "fields": {"user": 1, "total_price": "43489.00", "phone_number": "0715979332", "transaction_id": null, "payment_method": "Pay on Delivery", "status": "Pending", "created_at": "2026-03-09T16:12:47.057Z", "address": null, "coupon_code": null, "discount_amount": "0.00"}}, {"model": "products.order", "pk": 9, "fields": {"user": 1, "total_price": "28890.00", "phone_number": "0715979332", "transaction_id": null, "payment_method": "Pay on Delivery", "status": "Pending", "created_at": "2026-03-09T17:23:21.020Z", "address": null, "coupon_code": null, "discount_amount": "0.00"}}, {"model": "products.order", "pk": 10, "fields": {"user": 1, "total_price": "4599.00", "phone_number": "0715979332", "transaction_id": null, "payment_method": "Pay on Delivery", "status": "Pending", "created_at": "2026-03-09T18:18:25.460Z", "address": 23, "coupon_code": null, "discount_amount": "0.00"}}, {"model": "products.order", "pk": 11, "fields": {"user": 1, "total_price": "6970.00", "phone_number": "0715979332", "transaction_id": null, "payment_method": "Pay on Delivery", "status": "Pending", "created_at": "2026-03-09T18:19:57.331Z", "address": 23, "coupon_code": null, "discount_amount": "0.00"}}, {"model": "products.orderitem", "pk": 1, "fields": {"order": 10, "product": 10, "quantity": 1, "price": "4599.00"}}, {"model": "products.orderitem", "pk": 2, "fields": {"order": 11, "product": 1, "quantity": 2, "price": "490.00"}}, {"model": "products.orderitem", "pk": 3, "fields": {"order": 11, "product": 6, "quantity": 1, "price": "5490.00"}}, {"model": "products.review", "pk": 1, "fields": {"product": 1, "user": 1, "rating": 5, "comment": "works perfectly thanks zando", "created_at": "2026-03-10T11:46:52.265Z"}}]
+[
+{
+  "model": "products.county",
+  "pk": 1,
+  "fields": {
+    "name": "kirinyaga"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 2,
+  "fields": {
+    "name": "Nairobi"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 3,
+  "fields": {
+    "name": "Mombasa"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 4,
+  "fields": {
+    "name": "Kisumu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 5,
+  "fields": {
+    "name": "Nakuru"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 6,
+  "fields": {
+    "name": "Kiambu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 7,
+  "fields": {
+    "name": "Kirinyaga"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 8,
+  "fields": {
+    "name": "Uasin Gishu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 9,
+  "fields": {
+    "name": "Kakamega"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 10,
+  "fields": {
+    "name": "Machakos"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 11,
+  "fields": {
+    "name": "Kisii"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 12,
+  "fields": {
+    "name": "Bungoma"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 13,
+  "fields": {
+    "name": "Kericho"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 14,
+  "fields": {
+    "name": "Nyeri"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 15,
+  "fields": {
+    "name": "Embu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 16,
+  "fields": {
+    "name": "Meru"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 17,
+  "fields": {
+    "name": "Busia"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 18,
+  "fields": {
+    "name": "Narok"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 19,
+  "fields": {
+    "name": "Kajiado"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 20,
+  "fields": {
+    "name": "Kwale"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 21,
+  "fields": {
+    "name": "Kilifi"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 22,
+  "fields": {
+    "name": "Tana River"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 23,
+  "fields": {
+    "name": "Lamu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 24,
+  "fields": {
+    "name": "Taita-Taveta"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 25,
+  "fields": {
+    "name": "Garissa"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 26,
+  "fields": {
+    "name": "Wajir"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 27,
+  "fields": {
+    "name": "Mandera"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 28,
+  "fields": {
+    "name": "Marsabit"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 29,
+  "fields": {
+    "name": "Isiolo"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 30,
+  "fields": {
+    "name": "Tharaka-Nithi"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 31,
+  "fields": {
+    "name": "Kitui"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 32,
+  "fields": {
+    "name": "Makueni"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 33,
+  "fields": {
+    "name": "Nyandarua"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 34,
+  "fields": {
+    "name": "Murang'a"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 35,
+  "fields": {
+    "name": "Turkana"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 36,
+  "fields": {
+    "name": "West Pokot"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 37,
+  "fields": {
+    "name": "Samburu"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 38,
+  "fields": {
+    "name": "Trans Nzoia"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 39,
+  "fields": {
+    "name": "Elgeyo-Marakwet"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 40,
+  "fields": {
+    "name": "Nandi"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 41,
+  "fields": {
+    "name": "Baringo"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 42,
+  "fields": {
+    "name": "Laikipia"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 43,
+  "fields": {
+    "name": "Bomet"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 44,
+  "fields": {
+    "name": "Vihiga"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 45,
+  "fields": {
+    "name": "Siaya"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 46,
+  "fields": {
+    "name": "Homa Bay"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 47,
+  "fields": {
+    "name": "Migori"
+  }
+},
+{
+  "model": "products.county",
+  "pk": 48,
+  "fields": {
+    "name": "Nyamira"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 1,
+  "fields": {
+    "county": 1,
+    "name": "kerugoya town"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 2,
+  "fields": {
+    "county": 1,
+    "name": "kutus"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 3,
+  "fields": {
+    "county": 2,
+    "name": "Nairobi City"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 4,
+  "fields": {
+    "county": 3,
+    "name": "Mombasa"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 5,
+  "fields": {
+    "county": 4,
+    "name": "Kisumu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 6,
+  "fields": {
+    "county": 5,
+    "name": "Nakuru"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 7,
+  "fields": {
+    "county": 5,
+    "name": "Naivasha"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 8,
+  "fields": {
+    "county": 6,
+    "name": "Thika"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 9,
+  "fields": {
+    "county": 6,
+    "name": "Kikuyu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 10,
+  "fields": {
+    "county": 7,
+    "name": "Kerugoya"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 11,
+  "fields": {
+    "county": 7,
+    "name": "Kutus"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 12,
+  "fields": {
+    "county": 7,
+    "name": "Baricho"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 13,
+  "fields": {
+    "county": 8,
+    "name": "Eldoret"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 14,
+  "fields": {
+    "county": 9,
+    "name": "Kakamega"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 15,
+  "fields": {
+    "county": 10,
+    "name": "Machakos Town"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 16,
+  "fields": {
+    "county": 10,
+    "name": "Athi River"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 17,
+  "fields": {
+    "county": 11,
+    "name": "Kisii"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 18,
+  "fields": {
+    "county": 12,
+    "name": "Bungoma"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 19,
+  "fields": {
+    "county": 12,
+    "name": "Webuye"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 20,
+  "fields": {
+    "county": 13,
+    "name": "Kericho"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 21,
+  "fields": {
+    "county": 14,
+    "name": "Nyeri"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 22,
+  "fields": {
+    "county": 15,
+    "name": "Embu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 23,
+  "fields": {
+    "county": 16,
+    "name": "Meru"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 24,
+  "fields": {
+    "county": 17,
+    "name": "Busia"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 25,
+  "fields": {
+    "county": 18,
+    "name": "Narok"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 26,
+  "fields": {
+    "county": 19,
+    "name": "Kitengela"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 27,
+  "fields": {
+    "county": 19,
+    "name": "Ngong"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 28,
+  "fields": {
+    "county": 16,
+    "name": "Maua"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 29,
+  "fields": {
+    "county": 3,
+    "name": "Kilifi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 30,
+  "fields": {
+    "county": 3,
+    "name": "Malindi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 31,
+  "fields": {
+    "county": 3,
+    "name": "Lamu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 32,
+  "fields": {
+    "county": 3,
+    "name": "Kwale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 33,
+  "fields": {
+    "county": 20,
+    "name": "Kwale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 34,
+  "fields": {
+    "county": 20,
+    "name": "Msambweni"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 35,
+  "fields": {
+    "county": 20,
+    "name": "Lungalunga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 36,
+  "fields": {
+    "county": 20,
+    "name": "Matuga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 37,
+  "fields": {
+    "county": 21,
+    "name": "Kilifi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 38,
+  "fields": {
+    "county": 21,
+    "name": "Malindi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 39,
+  "fields": {
+    "county": 21,
+    "name": "Kaloleni"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 40,
+  "fields": {
+    "county": 21,
+    "name": "Rabai"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 41,
+  "fields": {
+    "county": 21,
+    "name": "Ganze"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 42,
+  "fields": {
+    "county": 22,
+    "name": "Hola"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 43,
+  "fields": {
+    "county": 22,
+    "name": "Garsen"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 44,
+  "fields": {
+    "county": 22,
+    "name": "Bura"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 45,
+  "fields": {
+    "county": 23,
+    "name": "Lamu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 46,
+  "fields": {
+    "county": 23,
+    "name": "Mokowe"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 47,
+  "fields": {
+    "county": 24,
+    "name": "Voi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 48,
+  "fields": {
+    "county": 24,
+    "name": "Taveta"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 49,
+  "fields": {
+    "county": 24,
+    "name": "Wundanyi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 50,
+  "fields": {
+    "county": 24,
+    "name": "Mwatate"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 51,
+  "fields": {
+    "county": 25,
+    "name": "Garissa"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 52,
+  "fields": {
+    "county": 25,
+    "name": "Ijara"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 53,
+  "fields": {
+    "county": 25,
+    "name": "Dadaab"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 54,
+  "fields": {
+    "county": 25,
+    "name": "Fafi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 55,
+  "fields": {
+    "county": 26,
+    "name": "Wajir"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 56,
+  "fields": {
+    "county": 26,
+    "name": "Moyale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 57,
+  "fields": {
+    "county": 26,
+    "name": "Habaswein"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 58,
+  "fields": {
+    "county": 26,
+    "name": "Griftu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 59,
+  "fields": {
+    "county": 27,
+    "name": "Mandera"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 60,
+  "fields": {
+    "county": 27,
+    "name": "Elwak"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 61,
+  "fields": {
+    "county": 27,
+    "name": "Takaba"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 62,
+  "fields": {
+    "county": 27,
+    "name": "Lafey"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 63,
+  "fields": {
+    "county": 28,
+    "name": "Marsabit"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 64,
+  "fields": {
+    "county": 28,
+    "name": "Moyale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 65,
+  "fields": {
+    "county": 28,
+    "name": "Sololo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 66,
+  "fields": {
+    "county": 28,
+    "name": "Laisamis"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 67,
+  "fields": {
+    "county": 29,
+    "name": "Isiolo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 68,
+  "fields": {
+    "county": 29,
+    "name": "Moyale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 69,
+  "fields": {
+    "county": 29,
+    "name": "Merti"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 70,
+  "fields": {
+    "county": 16,
+    "name": "Nkubu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 71,
+  "fields": {
+    "county": 16,
+    "name": "Chuka"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 72,
+  "fields": {
+    "county": 16,
+    "name": "Igembe"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 73,
+  "fields": {
+    "county": 30,
+    "name": "Chuka"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 74,
+  "fields": {
+    "county": 30,
+    "name": "Maua"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 75,
+  "fields": {
+    "county": 30,
+    "name": "Tharaka"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 76,
+  "fields": {
+    "county": 15,
+    "name": "Runyenjes"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 77,
+  "fields": {
+    "county": 15,
+    "name": "Manyatta"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 78,
+  "fields": {
+    "county": 31,
+    "name": "Kitui"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 79,
+  "fields": {
+    "county": 31,
+    "name": "Mwingi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 80,
+  "fields": {
+    "county": 31,
+    "name": "Mutomo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 81,
+  "fields": {
+    "county": 31,
+    "name": "Ikutha"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 82,
+  "fields": {
+    "county": 10,
+    "name": "Machakos"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 83,
+  "fields": {
+    "county": 10,
+    "name": "Kangundo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 84,
+  "fields": {
+    "county": 10,
+    "name": "Tala"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 85,
+  "fields": {
+    "county": 32,
+    "name": "Wote"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 86,
+  "fields": {
+    "county": 32,
+    "name": "Makueni"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 87,
+  "fields": {
+    "county": 32,
+    "name": "Kibwezi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 88,
+  "fields": {
+    "county": 32,
+    "name": "Makindu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 89,
+  "fields": {
+    "county": 33,
+    "name": "Ol Kalou"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 90,
+  "fields": {
+    "county": 33,
+    "name": "Ndaragwa"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 91,
+  "fields": {
+    "county": 33,
+    "name": "Engineer"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 92,
+  "fields": {
+    "county": 33,
+    "name": "Nyahururu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 93,
+  "fields": {
+    "county": 14,
+    "name": "Othaya"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 94,
+  "fields": {
+    "county": 14,
+    "name": "Chinga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 95,
+  "fields": {
+    "county": 14,
+    "name": "Karatina"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 96,
+  "fields": {
+    "county": 7,
+    "name": "Wanguru"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 97,
+  "fields": {
+    "county": 7,
+    "name": "Sagana"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 98,
+  "fields": {
+    "county": 34,
+    "name": "Murang'a"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 99,
+  "fields": {
+    "county": 34,
+    "name": "Kangema"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 100,
+  "fields": {
+    "county": 34,
+    "name": "Kiharu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 101,
+  "fields": {
+    "county": 34,
+    "name": "Maragua"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 102,
+  "fields": {
+    "county": 6,
+    "name": "Kiambu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 103,
+  "fields": {
+    "county": 6,
+    "name": "Limuru"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 104,
+  "fields": {
+    "county": 6,
+    "name": "Ruiru"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 105,
+  "fields": {
+    "county": 35,
+    "name": "Lodwar"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 106,
+  "fields": {
+    "county": 35,
+    "name": "Kakuma"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 107,
+  "fields": {
+    "county": 35,
+    "name": "Lokichoggio"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 108,
+  "fields": {
+    "county": 35,
+    "name": "Lokitaung"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 109,
+  "fields": {
+    "county": 36,
+    "name": "Kapenguria"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 110,
+  "fields": {
+    "county": 36,
+    "name": "Sigor"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 111,
+  "fields": {
+    "county": 36,
+    "name": "Ortum"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 112,
+  "fields": {
+    "county": 37,
+    "name": "Maralal"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 113,
+  "fields": {
+    "county": 37,
+    "name": "Baragoi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 114,
+  "fields": {
+    "county": 37,
+    "name": "Wamba"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 115,
+  "fields": {
+    "county": 38,
+    "name": "Kitale"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 116,
+  "fields": {
+    "county": 38,
+    "name": "Kiminini"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 117,
+  "fields": {
+    "county": 38,
+    "name": "Endebess"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 118,
+  "fields": {
+    "county": 8,
+    "name": "Turbo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 119,
+  "fields": {
+    "county": 8,
+    "name": "Moiben"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 120,
+  "fields": {
+    "county": 8,
+    "name": "Soy"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 121,
+  "fields": {
+    "county": 39,
+    "name": "Iten"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 122,
+  "fields": {
+    "county": 39,
+    "name": "Kapsowar"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 123,
+  "fields": {
+    "county": 39,
+    "name": "Marakwet"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 124,
+  "fields": {
+    "county": 40,
+    "name": "Kapsabet"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 125,
+  "fields": {
+    "county": 40,
+    "name": "Mosoriot"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 126,
+  "fields": {
+    "county": 40,
+    "name": "Nandi Hills"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 127,
+  "fields": {
+    "county": 41,
+    "name": "Kabarnet"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 128,
+  "fields": {
+    "county": 41,
+    "name": "Eldama Ravine"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 129,
+  "fields": {
+    "county": 41,
+    "name": "Marigat"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 130,
+  "fields": {
+    "county": 42,
+    "name": "Nanyuki"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 131,
+  "fields": {
+    "county": 42,
+    "name": "Rumuruti"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 132,
+  "fields": {
+    "county": 42,
+    "name": "Dol Dol"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 133,
+  "fields": {
+    "county": 5,
+    "name": "Gilgil"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 134,
+  "fields": {
+    "county": 5,
+    "name": "Molo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 135,
+  "fields": {
+    "county": 5,
+    "name": "Njoro"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 136,
+  "fields": {
+    "county": 18,
+    "name": "Kilgoris"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 137,
+  "fields": {
+    "county": 18,
+    "name": "Ololulunga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 138,
+  "fields": {
+    "county": 19,
+    "name": "Kajiado"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 139,
+  "fields": {
+    "county": 19,
+    "name": "Ongata Rongai"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 140,
+  "fields": {
+    "county": 13,
+    "name": "Litein"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 141,
+  "fields": {
+    "county": 13,
+    "name": "Kipkelion"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 142,
+  "fields": {
+    "county": 43,
+    "name": "Bomet"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 143,
+  "fields": {
+    "county": 43,
+    "name": "Sotik"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 144,
+  "fields": {
+    "county": 43,
+    "name": "Chepalungu"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 145,
+  "fields": {
+    "county": 9,
+    "name": "Mumias"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 146,
+  "fields": {
+    "county": 9,
+    "name": "Lugari"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 147,
+  "fields": {
+    "county": 9,
+    "name": "Butere"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 148,
+  "fields": {
+    "county": 44,
+    "name": "Vihiga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 149,
+  "fields": {
+    "county": 44,
+    "name": "Hamisi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 150,
+  "fields": {
+    "county": 44,
+    "name": "Luanda"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 151,
+  "fields": {
+    "county": 12,
+    "name": "Malakisi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 152,
+  "fields": {
+    "county": 12,
+    "name": "Sirisia"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 153,
+  "fields": {
+    "county": 17,
+    "name": "Malaba"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 154,
+  "fields": {
+    "county": 17,
+    "name": "Port Victoria"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 155,
+  "fields": {
+    "county": 45,
+    "name": "Siaya"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 156,
+  "fields": {
+    "county": 45,
+    "name": "Bondo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 157,
+  "fields": {
+    "county": 45,
+    "name": "Ugunja"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 158,
+  "fields": {
+    "county": 45,
+    "name": "Ukwala"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 159,
+  "fields": {
+    "county": 4,
+    "name": "Kisumu Ndogo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 160,
+  "fields": {
+    "county": 4,
+    "name": "Ahero"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 161,
+  "fields": {
+    "county": 4,
+    "name": "Muhoroni"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 162,
+  "fields": {
+    "county": 46,
+    "name": "Homa Bay"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 163,
+  "fields": {
+    "county": 46,
+    "name": "Ndhiwa"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 164,
+  "fields": {
+    "county": 46,
+    "name": "Mbita"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 165,
+  "fields": {
+    "county": 46,
+    "name": "Rachuonyo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 166,
+  "fields": {
+    "county": 47,
+    "name": "Migori"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 167,
+  "fields": {
+    "county": 47,
+    "name": "Awendo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 168,
+  "fields": {
+    "county": 47,
+    "name": "Rongo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 169,
+  "fields": {
+    "county": 47,
+    "name": "Uriri"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 170,
+  "fields": {
+    "county": 11,
+    "name": "Ogembo"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 171,
+  "fields": {
+    "county": 11,
+    "name": "Nyamache"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 172,
+  "fields": {
+    "county": 11,
+    "name": "Masimba"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 173,
+  "fields": {
+    "county": 48,
+    "name": "Nyamira"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 174,
+  "fields": {
+    "county": 48,
+    "name": "Keroka"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 175,
+  "fields": {
+    "county": 48,
+    "name": "Manga"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 176,
+  "fields": {
+    "county": 2,
+    "name": "Nairobi"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 177,
+  "fields": {
+    "county": 2,
+    "name": "Westlands"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 178,
+  "fields": {
+    "county": 2,
+    "name": "Karen"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 179,
+  "fields": {
+    "county": 2,
+    "name": "Kilimani"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 180,
+  "fields": {
+    "county": 2,
+    "name": "Langata"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 181,
+  "fields": {
+    "county": 2,
+    "name": "Parklands"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 182,
+  "fields": {
+    "county": 2,
+    "name": "River Road"
+  }
+},
+{
+  "model": "products.town",
+  "pk": 183,
+  "fields": {
+    "county": 2,
+    "name": "CBD"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 2,
+  "fields": {
+    "name": "Phones & Tablets",
+    "icon_class": "fa-solid fa-mobile-screen"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 4,
+  "fields": {
+    "name": "Appliances",
+    "icon_class": "fa-solid fa-plug"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 5,
+  "fields": {
+    "name": "Health & Beauty",
+    "icon_class": "fa-solid fa-sparkles"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 6,
+  "fields": {
+    "name": "Home & Office",
+    "icon_class": "fa-solid fa-couch"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 7,
+  "fields": {
+    "name": "Fashion",
+    "icon_class": "fa-solid fa-shirt"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 8,
+  "fields": {
+    "name": "Computing",
+    "icon_class": "fa-solid fa-laptop"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 9,
+  "fields": {
+    "name": "Gaming",
+    "icon_class": "fa-solid fa-gamepad"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 10,
+  "fields": {
+    "name": "Supermarket",
+    "icon_class": "fa-solid fa-basket-shopping"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 11,
+  "fields": {
+    "name": "Baby Products",
+    "icon_class": "fa-solid fa-baby"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 12,
+  "fields": {
+    "name": "Other categories",
+    "icon_class": "fa-solid fa-ellipsis"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 13,
+  "fields": {
+    "name": "TVs  & Audio",
+    "icon_class": "fa-solid fa-box"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 1,
+  "fields": {
+    "category": 4,
+    "name": "AILYONS Electric Kettle Water Heater & Boiler Jug",
+    "price": "490.00",
+    "image": "products/kettle_ailyons.jpg",
+    "stock": 20,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 2,
+  "fields": {
+    "category": 8,
+    "name": "HP ELITEBOOK 830 G6,INTEL CORE I5 8TH GEN 8GB RAM 256GB SSD NON-TOUCH (6 Months WRTY)",
+    "price": "28400.00",
+    "image": "products/hp_laptop.jpg",
+    "stock": 36,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 3,
+  "fields": {
+    "category": 8,
+    "name": "Lenovo --Lenovo Thinkpad X13 Yoga x360 core 15 16GB RAM 512GB SSD 10th generation Quad core 13.3 Inches FHD non Touch windows 11 pro, HD Camera, HDMI, USB Type C, Stylus Pen convertible 2 in 1 laptop +Mouse",
+    "price": "42999.00",
+    "image": "products/lenovo_laptop.jpg",
+    "stock": 44,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 4,
+  "fields": {
+    "category": 4,
+    "name": "VON VART-19DHS Double Door Fridge 136L - Silver (1YR WRTY)",
+    "price": "24499.00",
+    "image": "products/von_fridge_136L.jpg",
+    "stock": 59,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 5,
+  "fields": {
+    "category": 13,
+    "name": "Vitron HTC4300QFS 43\" QLED TV Bluetooth Enabled Full HD Frameless Smart Android TT, Wi-Fi Connectivity, Inbuilt Decoder, Netflix, Youtube, App Store + 6 Free Accessories (1YR WRTY)",
+    "price": "19395.00",
+    "image": "products/vitron_43_inches.jpg",
+    "stock": 72,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 6,
+  "fields": {
+    "category": null,
+    "name": "Vitron V527 - 2.1 CH Multimedia Speaker, BT/USB/SD/FM - 9000W (1YR WRTY)",
+    "price": "5490.00",
+    "image": "products/vitron_woofer.jpg",
+    "stock": 87,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 7,
+  "fields": {
+    "category": 13,
+    "name": "Hisense 32\" Inch Frameless FHD SMART TV,Netflix,WIFI,INBUILT DECODER+TV GUARD+BRACKET",
+    "price": "14599.00",
+    "image": "products/hisense_32_inches.jpg",
+    "stock": 67,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 8,
+  "fields": {
+    "category": 2,
+    "name": "Tecno CAMON 40 PRO,6.78\", Up to 16GB RAM + 256GB, 5200mAh - Black + FREE GIFTS",
+    "price": "34795.00",
+    "image": "products/camon_40.jpg",
+    "stock": 48,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 9,
+  "fields": {
+    "category": 6,
+    "name": "5FT Stylish Modern Wooden TV Stands For Up To 75'' TV",
+    "price": "6450.00",
+    "image": "products/tv_stand.jpg",
+    "stock": 41,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 10,
+  "fields": {
+    "category": 13,
+    "name": "Vitron V51SB- 2.1ch Soundbar System with Bluetooth, Black (1YR WRTY)",
+    "price": "4599.00",
+    "image": "products/woofer.jpg",
+    "stock": 25,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 11,
+  "fields": {
+    "category": 2,
+    "name": "Share thredbeat A2 Tablet, Dual SIM, 10.1-inch , 8(4+4)GB RAM/128GB ROM, Android 14, 6000 MAh Battery,Gray",
+    "price": "11505.00",
+    "image": "products/tablet.jpg",
+    "stock": 83,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 12,
+  "fields": {
+    "category": 6,
+    "name": "Istanbul 2 Modern TV Stand With LED Bulb - White & Black",
+    "price": "4539.00",
+    "image": "products/led_tv_stand.jpg",
+    "stock": 53,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 13,
+  "fields": {
+    "category": 4,
+    "name": "Em Blender 2 In 1 Grinding Machine With Durable Motor 1.5L, Black BD02",
+    "price": "1449.00",
+    "image": "products/blender.jpg",
+    "stock": 36,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 14,
+  "fields": {
+    "category": 6,
+    "name": "Stylish Mordern Coffee Table",
+    "price": "12000.00",
+    "image": "products/coffee_table.jpg",
+    "stock": 37,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 15,
+  "fields": {
+    "category": 7,
+    "name": "Machislet Dresses For The Slim Ladies Women's Fashion Long Sleeve Loose Dreeses Ladies Dresses",
+    "price": "749.00",
+    "image": "products/1.jpg",
+    "stock": 17,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 16,
+  "fields": {
+    "category": 6,
+    "name": "Smartraha life RahaLife 130CM 3 Column Metallic Wardrobe-Black",
+    "price": "1959.00",
+    "image": "products/wardrobe.jpg",
+    "stock": 8,
+    "description": ""
+  }
+},
+{
+  "model": "products.product",
+  "pk": 17,
+  "fields": {
+    "category": 6,
+    "name": "Nunix Plastic Portable 3 Column Nunix Wardrobe Organizer For Clothes, Shoes Pink 1202",
+    "price": "3999.00",
+    "image": "products/plastic_wardrobe.jpg",
+    "stock": 19,
+    "description": ""
+  }
+},
+{
+  "model": "products.cart",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "created_at": "2026-03-08T10:36:27.033Z"
+  }
+},
+{
+  "model": "products.cart",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "created_at": "2026-03-17T17:14:38.963Z"
+  }
+},
+{
+  "model": "products.cart",
+  "pk": 3,
+  "fields": {
+    "user": 3,
+    "created_at": "2026-03-17T17:44:15.842Z"
+  }
+},
+{
+  "model": "products.cartitem",
+  "pk": 29,
+  "fields": {
+    "cart": 3,
+    "product": 1,
+    "quantity": 1
+  }
+},
+{
+  "model": "products.wishlist",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "product": 7,
+    "created_at": "2026-03-07T09:27:38.934Z"
+  }
+},
+{
+  "model": "products.wishlist",
+  "pk": 6,
+  "fields": {
+    "user": 1,
+    "product": 1,
+    "created_at": "2026-03-07T11:14:06.648Z"
+  }
+},
+{
+  "model": "products.address",
+  "pk": 23,
+  "fields": {
+    "user": 1,
+    "first_name": "Nicholas",
+    "last_name": "Munene",
+    "street": "479, maua",
+    "town": 28,
+    "postal_code": null,
+    "phone": "0715979332",
+    "is_default": true
+  }
+},
+{
+  "model": "products.address",
+  "pk": 24,
+  "fields": {
+    "user": 1,
+    "first_name": "Nicholas",
+    "last_name": "Munene",
+    "street": "10300 Kutus- Kerugoya Road",
+    "town": 2,
+    "postal_code": "10300",
+    "phone": "0715979332",
+    "is_default": false
+  }
+},
+{
+  "model": "products.address",
+  "pk": 25,
+  "fields": {
+    "user": 2,
+    "first_name": "Nicholas",
+    "last_name": "Munene",
+    "street": "479, maua",
+    "town": 11,
+    "postal_code": "60600",
+    "phone": "0715979332",
+    "is_default": true
+  }
+},
+{
+  "model": "products.address",
+  "pk": 26,
+  "fields": {
+    "user": 3,
+    "first_name": "DIANAH",
+    "last_name": "KARIMI",
+    "street": "10300",
+    "town": 11,
+    "postal_code": "10300",
+    "phone": "0731493784",
+    "is_default": false
+  }
+},
+{
+  "model": "products.order",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "total_price": "225.00",
+    "phone_number": "254700000000",
+    "transaction_id": null,
+    "payment_method": "M-Pesa",
+    "delivery_method": "standard",
+    "status": "Cancelled",
+    "created_at": "2026-03-05T04:41:19.494Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 2,
+  "fields": {
+    "user": 1,
+    "total_price": "20.00",
+    "phone_number": "254700000000",
+    "transaction_id": null,
+    "payment_method": "M-Pesa",
+    "delivery_method": "standard",
+    "status": "Delivered",
+    "created_at": "2026-03-05T04:53:21.177Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "total_price": "38275.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Cancelled",
+    "created_at": "2026-03-08T11:45:27.325Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 4,
+  "fields": {
+    "user": 1,
+    "total_price": "37598.00",
+    "phone_number": "",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Delivered",
+    "created_at": "2026-03-08T18:11:35.601Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "total_price": "49469.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "M-Pesa",
+    "delivery_method": "standard",
+    "status": "Delivered",
+    "created_at": "2026-03-09T15:03:41.889Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 6,
+  "fields": {
+    "user": 1,
+    "total_price": "49469.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Ready for Pickup",
+    "created_at": "2026-03-09T15:28:06.427Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 7,
+  "fields": {
+    "user": 1,
+    "total_price": "43989.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Ready for Pickup",
+    "created_at": "2026-03-09T16:01:35.108Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 8,
+  "fields": {
+    "user": 1,
+    "total_price": "43489.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Shipped",
+    "created_at": "2026-03-09T16:12:47.057Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 9,
+  "fields": {
+    "user": 1,
+    "total_price": "28890.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Shipped",
+    "created_at": "2026-03-09T17:23:21.020Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": null,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 10,
+  "fields": {
+    "user": 1,
+    "total_price": "4599.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-09T18:18:25.460Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": 23,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 11,
+  "fields": {
+    "user": 1,
+    "total_price": "6970.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-09T18:19:57.331Z",
+    "estimated_delivery_start": null,
+    "estimated_delivery_end": null,
+    "delivered_at": null,
+    "address": 23,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 12,
+  "fields": {
+    "user": 2,
+    "total_price": "11940.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-17T17:16:45.269Z",
+    "estimated_delivery_start": "2026-03-19",
+    "estimated_delivery_end": "2026-03-20",
+    "delivered_at": null,
+    "address": 25,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 13,
+  "fields": {
+    "user": 3,
+    "total_price": "24499.00",
+    "phone_number": "0731493784",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-17T17:46:48.215Z",
+    "estimated_delivery_start": "2026-03-19",
+    "estimated_delivery_end": "2026-03-20",
+    "delivered_at": null,
+    "address": 26,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 14,
+  "fields": {
+    "user": 1,
+    "total_price": "43979.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-18T10:27:59.316Z",
+    "estimated_delivery_start": "2026-03-20",
+    "estimated_delivery_end": "2026-03-23",
+    "delivered_at": null,
+    "address": 23,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 15,
+  "fields": {
+    "user": 3,
+    "total_price": "490.00",
+    "phone_number": "0731493784",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-18T10:53:12.057Z",
+    "estimated_delivery_start": "2026-03-20",
+    "estimated_delivery_end": "2026-03-23",
+    "delivered_at": null,
+    "address": 26,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 16,
+  "fields": {
+    "user": 2,
+    "total_price": "3408.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Confirmed",
+    "created_at": "2026-03-18T22:58:57.218Z",
+    "estimated_delivery_start": "2026-03-20",
+    "estimated_delivery_end": "2026-03-23",
+    "delivered_at": null,
+    "address": 25,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.order",
+  "pk": 17,
+  "fields": {
+    "user": 1,
+    "total_price": "7449.00",
+    "phone_number": "0715979332",
+    "transaction_id": null,
+    "payment_method": "Pay on Delivery",
+    "delivery_method": "standard",
+    "status": "Pending",
+    "created_at": "2026-03-19T09:18:14.063Z",
+    "estimated_delivery_start": "2026-03-23",
+    "estimated_delivery_end": "2026-03-24",
+    "delivered_at": null,
+    "address": 23,
+    "coupon_code": null,
+    "discount_amount": "0.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 1,
+  "fields": {
+    "order": 10,
+    "product": 10,
+    "quantity": 1,
+    "price": "4599.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 2,
+  "fields": {
+    "order": 11,
+    "product": 1,
+    "quantity": 2,
+    "price": "490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 3,
+  "fields": {
+    "order": 11,
+    "product": 6,
+    "quantity": 1,
+    "price": "5490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 4,
+  "fields": {
+    "order": 12,
+    "product": 6,
+    "quantity": 1,
+    "price": "5490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 5,
+  "fields": {
+    "order": 12,
+    "product": 9,
+    "quantity": 1,
+    "price": "6450.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 6,
+  "fields": {
+    "order": 13,
+    "product": 4,
+    "quantity": 1,
+    "price": "24499.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 7,
+  "fields": {
+    "order": 14,
+    "product": 1,
+    "quantity": 2,
+    "price": "490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 8,
+  "fields": {
+    "order": 14,
+    "product": 3,
+    "quantity": 1,
+    "price": "42999.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 9,
+  "fields": {
+    "order": 15,
+    "product": 1,
+    "quantity": 1,
+    "price": "490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 10,
+  "fields": {
+    "order": 16,
+    "product": 16,
+    "quantity": 1,
+    "price": "1959.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 11,
+  "fields": {
+    "order": 16,
+    "product": 13,
+    "quantity": 1,
+    "price": "1449.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 12,
+  "fields": {
+    "order": 17,
+    "product": 6,
+    "quantity": 1,
+    "price": "5490.00"
+  }
+},
+{
+  "model": "products.orderitem",
+  "pk": 13,
+  "fields": {
+    "order": 17,
+    "product": 16,
+    "quantity": 1,
+    "price": "1959.00"
+  }
+},
+{
+  "model": "products.review",
+  "pk": 1,
+  "fields": {
+    "product": 1,
+    "user": 1,
+    "rating": 5,
+    "comment": "works perfectly thanks zando",
+    "created_at": "2026-03-10T11:46:52.265Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "order": 1,
+    "status": "Pending",
+    "message": "Your order #1 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.620Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 2,
+  "fields": {
+    "user": 1,
+    "order": 2,
+    "status": "Pending",
+    "message": "Your order #2 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.624Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "order": 3,
+    "status": "Pending",
+    "message": "Your order #3 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.628Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 4,
+  "fields": {
+    "user": 1,
+    "order": 4,
+    "status": "Pending",
+    "message": "Your order #4 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.631Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "order": 5,
+    "status": "Pending",
+    "message": "Your order #5 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.634Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 6,
+  "fields": {
+    "user": 1,
+    "order": 6,
+    "status": "Pending",
+    "message": "Your order #6 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.638Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 7,
+  "fields": {
+    "user": 1,
+    "order": 7,
+    "status": "Pending",
+    "message": "Your order #7 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.641Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 8,
+  "fields": {
+    "user": 1,
+    "order": 8,
+    "status": "Pending",
+    "message": "Your order #8 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.645Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 9,
+  "fields": {
+    "user": 1,
+    "order": 9,
+    "status": "Pending",
+    "message": "Your order #9 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.647Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 10,
+  "fields": {
+    "user": 1,
+    "order": 10,
+    "status": "Pending",
+    "message": "Your order #10 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.650Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 11,
+  "fields": {
+    "user": 1,
+    "order": 11,
+    "status": "Pending",
+    "message": "Your order #11 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T15:27:37.653Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 12,
+  "fields": {
+    "user": 1,
+    "order": 11,
+    "status": "Confirmed",
+    "message": "Your order #11 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.151Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 13,
+  "fields": {
+    "user": 1,
+    "order": 10,
+    "status": "Confirmed",
+    "message": "Your order #10 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.243Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 14,
+  "fields": {
+    "user": 1,
+    "order": 9,
+    "status": "Confirmed",
+    "message": "Your order #9 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.320Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 15,
+  "fields": {
+    "user": 1,
+    "order": 8,
+    "status": "Confirmed",
+    "message": "Your order #8 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.397Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 16,
+  "fields": {
+    "user": 1,
+    "order": 7,
+    "status": "Confirmed",
+    "message": "Your order #7 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.470Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 17,
+  "fields": {
+    "user": 1,
+    "order": 6,
+    "status": "Confirmed",
+    "message": "Your order #6 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.545Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 18,
+  "fields": {
+    "user": 1,
+    "order": 5,
+    "status": "Confirmed",
+    "message": "Your order #5 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.618Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 19,
+  "fields": {
+    "user": 1,
+    "order": 4,
+    "status": "Confirmed",
+    "message": "Your order #4 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.692Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 20,
+  "fields": {
+    "user": 1,
+    "order": 3,
+    "status": "Confirmed",
+    "message": "Your order #3 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.765Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 21,
+  "fields": {
+    "user": 1,
+    "order": 2,
+    "status": "Confirmed",
+    "message": "Your order #2 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.844Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 22,
+  "fields": {
+    "user": 1,
+    "order": 1,
+    "status": "Confirmed",
+    "message": "Your order #1 has been confirmed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:06:56.915Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 23,
+  "fields": {
+    "user": 2,
+    "order": 12,
+    "status": "Pending",
+    "message": "Your order #12 has been placed.",
+    "is_read": false,
+    "created_at": "2026-03-17T17:16:45.282Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 24,
+  "fields": {
+    "user": 2,
+    "order": 12,
+    "status": "Confirmed",
+    "message": "Your order #12 has been confirmed.",
+    "is_read": false,
+    "created_at": "2026-03-17T17:17:53.525Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 25,
+  "fields": {
+    "user": 1,
+    "order": 3,
+    "status": "Cancelled",
+    "message": "Your order #3 has been cancelled.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:18:42.583Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 26,
+  "fields": {
+    "user": 1,
+    "order": 1,
+    "status": "Cancelled",
+    "message": "Your order #1 has been cancelled.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:18:42.658Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 27,
+  "fields": {
+    "user": 1,
+    "order": 6,
+    "status": "Shipped",
+    "message": "Your order #6 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:19:14.839Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 28,
+  "fields": {
+    "user": 1,
+    "order": 5,
+    "status": "Shipped",
+    "message": "Your order #5 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:19:14.948Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 29,
+  "fields": {
+    "user": 1,
+    "order": 4,
+    "status": "Shipped",
+    "message": "Your order #4 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:19:15.044Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 30,
+  "fields": {
+    "user": 1,
+    "order": 2,
+    "status": "Shipped",
+    "message": "Your order #2 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:19:15.137Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 31,
+  "fields": {
+    "user": 1,
+    "order": 5,
+    "status": "Delivered",
+    "message": "Your order #5 has been delivered.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:20:30.864Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 32,
+  "fields": {
+    "user": 1,
+    "order": 4,
+    "status": "Delivered",
+    "message": "Your order #4 has been delivered.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:20:30.964Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 33,
+  "fields": {
+    "user": 1,
+    "order": 2,
+    "status": "Delivered",
+    "message": "Your order #2 has been delivered.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:20:31.061Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 34,
+  "fields": {
+    "user": 1,
+    "order": 6,
+    "status": "Ready for Pickup",
+    "message": "Your order #6 is ready for pickup.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:21:31.321Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 35,
+  "fields": {
+    "user": 1,
+    "order": 9,
+    "status": "Shipped",
+    "message": "Your order #9 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:22:01.075Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 36,
+  "fields": {
+    "user": 1,
+    "order": 8,
+    "status": "Shipped",
+    "message": "Your order #8 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:22:01.164Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 37,
+  "fields": {
+    "user": 1,
+    "order": 7,
+    "status": "Shipped",
+    "message": "Your order #7 has been shipped.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:22:01.254Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 38,
+  "fields": {
+    "user": 1,
+    "order": 7,
+    "status": "Ready for Pickup",
+    "message": "Your order #7 is ready for pickup.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:22:21.309Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 39,
+  "fields": {
+    "user": 3,
+    "order": 13,
+    "status": "Pending",
+    "message": "Your order #13 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-17T17:46:48.228Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 40,
+  "fields": {
+    "user": 3,
+    "order": 13,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "is_read": true,
+    "created_at": "2026-03-18T10:26:58.803Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 41,
+  "fields": {
+    "user": 1,
+    "order": 14,
+    "status": "Pending",
+    "message": "Your order #14 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-18T10:27:59.324Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 42,
+  "fields": {
+    "user": 1,
+    "order": 14,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "is_read": true,
+    "created_at": "2026-03-18T10:28:21.939Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 43,
+  "fields": {
+    "user": 3,
+    "order": 15,
+    "status": "Pending",
+    "message": "Your order #15 has been placed.",
+    "is_read": true,
+    "created_at": "2026-03-18T10:53:12.065Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 44,
+  "fields": {
+    "user": 2,
+    "order": 16,
+    "status": "Pending",
+    "message": "Your order #16 has been placed.",
+    "is_read": false,
+    "created_at": "2026-03-18T22:58:57.227Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 45,
+  "fields": {
+    "user": 2,
+    "order": 16,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "is_read": false,
+    "created_at": "2026-03-18T23:02:37.666Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 46,
+  "fields": {
+    "user": 3,
+    "order": 15,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "is_read": false,
+    "created_at": "2026-03-18T23:02:37.716Z"
+  }
+},
+{
+  "model": "products.ordernotification",
+  "pk": 47,
+  "fields": {
+    "user": 1,
+    "order": 17,
+    "status": "Pending",
+    "message": "Your order #17 has been placed.",
+    "is_read": false,
+    "created_at": "2026-03-19T09:18:14.073Z"
+  }
+},
+{
+  "model": "products.ordertracking",
+  "pk": 1,
+  "fields": {
+    "order": 13,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "created_at": "2026-03-18T10:26:58.776Z"
+  }
+},
+{
+  "model": "products.ordertracking",
+  "pk": 2,
+  "fields": {
+    "order": 14,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "created_at": "2026-03-18T10:28:21.913Z"
+  }
+},
+{
+  "model": "products.ordertracking",
+  "pk": 3,
+  "fields": {
+    "order": 16,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "created_at": "2026-03-18T23:02:37.638Z"
+  }
+},
+{
+  "model": "products.ordertracking",
+  "pk": 4,
+  "fields": {
+    "order": 15,
+    "status": "Confirmed",
+    "message": "Order confirmed. We are getting it ready.",
+    "created_at": "2026-03-18T23:02:37.692Z"
+  }
+}
+]

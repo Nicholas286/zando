@@ -88,6 +88,7 @@
             </form>
 
             <div class="d-flex align-items-center gap-3">
+                <!-- User Account Dropdown -->
                 <div class="dropdown">
                     <a href="#" class="nav-icon-link text-decoration-none d-flex align-items-center" data-bs-toggle="dropdown">
                         <i class="far fa-user fs-4"></i>
@@ -106,6 +107,11 @@
                                     <span class="badge bg-danger ms-auto">{{ inbox_unread_count }}</span>
                                 {% endif %}
                             </a></li>
+                            
+                            <!-- CORRECT PLACEMENT OF PENDING REVIEWS -->
+                            <li><a class="dropdown-item d-flex align-items-center py-2" href="{% url 'products:pending_reviews' %}">
+                                <i class="fa-regular fa-star me-2 text-warning"></i> Pending Reviews</a></li>
+
                             <li><a class="dropdown-item d-flex align-items-center py-2" href="{% url 'products:view_wishlist' %}">
                                 <i class="fa-regular fa-heart me-2"></i> Wishlist</a></li>
                             <li><a class="dropdown-item d-flex align-items-center py-2" href="{% url 'products:vouchers' %}">
@@ -114,7 +120,7 @@
                             <li>
                                 <form method="post" action="{% url 'products:logout' %}" style="margin: 0;">
                                     {% csrf_token %}
-                                    <button type="submit" class="dropdown-item text-warning fw-bold">Logout</button>
+                                    <button type="submit" class="dropdown-item text-danger fw-bold">Logout</button>
                                 </form>
                             </li>
                         {% else %}
@@ -131,13 +137,13 @@
                 </a>
 
                <a href="{% url 'products:view_cart' %}" class="nav-icon-link text-decoration-none">
-    <div class="position-relative">
-        <i class="fas fa-shopping-cart fs-4"></i>
-        <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.6rem;">
-            {{ global_cart_count|default:"0" }}
-        </span>
-    </div>
-</a>
+                    <div class="position-relative">
+                        <i class="fas fa-shopping-cart fs-4"></i>
+                        <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.6rem;">
+                            {{ global_cart_count|default:"0" }}
+                        </span>
+                    </div>
+                </a>
             </div>
         </div>
     </nav>
@@ -169,7 +175,6 @@
     searchInput.addEventListener('input', function() {
         const query = this.value.trim();
         if (query.length > 1) {
-            // Using the namespaced URL via the template tag
             fetch("{% url 'products:search_suggestions' %}?q=" + query)
                 .then(response => response.json())
                 .then(data => {
