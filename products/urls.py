@@ -49,4 +49,5 @@ urlpatterns = [
     path('reviews/pending/', views.pending_reviews_view, name='pending_reviews'),
 path('review/submit/<int:order_item_id>/', views.submit_review, name='submit_review'),
 path('address/add-ajax/', views.add_address_ajax, name='add_address_ajax'),
+path('search-suggestions/', views.search_suggestions, name='search_suggestions'),
 ]

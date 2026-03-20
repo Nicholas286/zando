@@ -42,40 +42,62 @@ def add_business_days(start_date, days):
 
 # --- 2. MAIN SHOP & SEARCH ---
 
+from django.utils import timezone  # Ensure this is imported at the top
+
 def index(request):
-    """The master shop view handling search, categories, and price filtering."""
+    """The master shop view handling search, categories, and Jumia-style strips."""
     products = Product.objects.all()
     categories = Category.objects.all()
     active_category = None
+    now = timezone.now()
 
-    # --- NEW: FETCH RECENTLY VIEWED ---
+    # 1. --- FLASH SALES ---
+    flash_sales = Product.objects.filter(
+        flash_sale__is_active=True,
+        flash_sale__start_time__lte=now,
+        flash_sale__end_time__gte=now
+    ).select_related('flash_sale').order_by('?')[:10]
+
+    # 2. --- RECENTLY VIEWED (MATCHING base.html NAME) ---
     recent_ids = request.session.get('recently_viewed', [])
-    recently_viewed_items = []
-    
+    global_recently_viewed = [] # Renamed to match your base.html
     if recent_ids:
-        # We use in_bulk because filter(id__in=...) does NOT preserve order.
-        # in_bulk returns a dictionary: {id: object}
+        # Fetching items in bulk but maintaining the session order
         items_dict = Product.objects.in_bulk(recent_ids)
-        # Reconstruct the list in the order of recent_ids (newest first)
-        recently_viewed_items = [items_dict[pk] for pk in recent_ids if pk in items_dict]
-    # ----------------------------------
+        global_recently_viewed = [items_dict[pk] for pk in recent_ids if pk in items_dict]
 
-    # Search Logic
+    # 3. --- RECOMMENDED FOR YOU (Improved Logic) ---
+    recommended = []
+    if recent_ids:
+        # Get categories of items the user has actually clicked on
+        viewed_cat_ids = Product.objects.filter(id__in=recent_ids).values_list('category', flat=True)
+        
+        # Pull products from those categories. 
+        # We use order_by('?') so it changes slightly every time the user refreshes.
+        recommended = Product.objects.filter(
+            category__in=viewed_cat_ids,
+            stock__gt=0
+        ).exclude(id__in=recent_ids).distinct().order_by('?')[:12]
+    
+    # If recommended is still empty (new user), show newest arrivals
+    if not recommended:
+        recommended = Product.objects.filter(stock__gt=0).order_by('-id')[:12]
+
+    # 4. --- FILTERS ---
     query = request.GET.get('q')
     if query:
         products = products.filter(name__icontains=query)
 
-    # Category Filter
     cat_id = request.GET.get('category')
     if cat_id:
         products = products.filter(category_id=cat_id)
         active_category = Category.objects.filter(id=cat_id).first()
 
     # Price Filters
-    min_price = request.GET.get('min_price')
-    max_price = request.GET.get('max_price')
-    if min_price: products = products.filter(price__gte=min_price)
-    if max_price: products = products.filter(price__lte=max_price)
+    min_p = request.GET.get('min_price')
+    max_p = request.GET.get('max_price')
+    if min_p: products = products.filter(price__gte=min_p)
+    if max_p: products = products.filter(price__lte=max_p)
 
     # Sorting
     sort = request.GET.get('sort')
@@ -83,14 +105,17 @@ def index(request):
     elif sort == 'price_high': products = products.order_by('-price')
     elif sort == 'newest': products = products.order_by('-id')
 
+    # 5. --- CONTEXT ---
     return render(request, 'index.html', {
         'products': products,
         'categories': categories,
         'active_category': active_category,
-        'recently_viewed': recently_viewed_items[:6] # Pass top 6 to home page
+        'flash_sales': flash_sales,
+        'recommended': recommended,
+        # IMPORTANT: Key must be 'global_recently_viewed' to show up in base.html
+        'global_recently_viewed': global_recently_viewed[:6] 
     })
-    
-    
+        
 def search_suggestions(request):
     query = request.GET.get('q', '')
     suggestions = []
@@ -104,21 +129,13 @@ def search_suggestions(request):
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
-    # --- NEW: RECORD RECENTLY VIEWED ---
-    # 1. Get the list of IDs from the session (default to empty list)
+    # --- RECORD RECENTLY VIEWED ---
     recent_ids = request.session.get('recently_viewed', [])
-
-    # 2. If the product is already in the list, remove it so we can move it to the top
     if product.id in recent_ids:
         recent_ids.remove(product.id)
-
-    # 3. Add current product ID to the front of the list
     recent_ids.insert(0, product.id)
-
-    # 4. Limit the list to the last 10 items and save back to session
     request.session['recently_viewed'] = recent_ids[:10]
     request.session.modified = True 
-    # ----------------------------------
 
     gallery = product.gallery.all()
     variants = product.variants.all()
@@ -130,7 +147,6 @@ def product_detail(request, product_id):
     else:
         related = related[:5]
 
-    # --- FLASH SALE CHECK ---
     flash_sale = None
     if hasattr(product, 'flash_sale') and product.flash_sale.is_currently_active:
         flash_sale = product.flash_sale
@@ -153,8 +169,7 @@ def product_detail(request, product_id):
         'reviews': reviews,
         'pending_item': pending_item,
         'flash_sale': flash_sale,
-    })
-    
+    })    
     # --- 3. VERIFIED REVIEWS & PENDING TAB ---
 
 @login_required
@@ -603,3 +618,20 @@ def add_address_ajax(request):
                 'phone': address.phone
             })
     return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+
+
+def search_suggestions(request):
+    query = request.GET.get('q', '')
+    if len(query) > 1:
+        # Search by name and limit to 8 results
+        products = Product.objects.filter(name__icontains=query)[:8]
+        results = []
+        for p in products:
+            results.append({
+                'id': p.id,
+                'name': p.name,
+                'price': f"{int(p.get_current_price()):,}",
+                'image_url': p.image.url
+            })
+        return JsonResponse(results, safe=False)
+    return JsonResponse([], safe=False)

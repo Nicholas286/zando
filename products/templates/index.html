@@ -4,214 +4,205 @@
 
 {% block head_extra %}
 <style>
-    .product-card {
-        transition: all 0.3s ease;
-        border-radius: 8px;
-    }
-    .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-    }
-    .active-cat {
-        background-color: var(--pro-blue) !important;
-        color: white !important;
-    }
-    .active-cat i { color: white !important; }
-    .wishlist-btn:hover { background-color: #f8d7da !important; }
-    .price-text { color: #212529; font-size: 1.1rem; }
+    /* Flash Sale Red Progress Bar */
+    .flash-progress-bar { height: 6px; background-color: #eee; border-radius: 10px; overflow: hidden; margin-top: 5px; }
+    .flash-progress-fill { height: 100%; background-color: #e61601 !important; } /* SOLID RED */
+
+    /* Flash Sale Strip */
+    .flash-header { background: #e61601; color: white; padding: 10px 15px; border-radius: 4px 4px 0 0; }
+    
+    /* Layout Logic */
+    #filterSidebar { transition: all 0.3s ease; border-right: 1px solid #ddd; }
+    .cat-bubble { width: 65px; height: 65px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; transition: 0.2s; }
+    .active-bubble { border: 2px solid var(--pro-blue) !important; background: #e7f1ff; }
+
+    .x-small { font-size: 0.7rem; }
     .text-orange { color: #f68b1e !important; }
 </style>
 {% endblock %}
 
 {% block content %}
+
+<!-- 1. CATEGORY BUBBLES -->
+<div class="mb-4">
+    <div class="scroll-container d-flex overflow-auto py-2" style="scrollbar-width: none;">
+        {% for cat in categories %}
+        <a href="?category={{ cat.id }}" class="text-decoration-none text-center me-3" style="min-width: 90px;">
+            <div class="cat-bubble mx-auto {% if request.GET.category == cat.id|stringformat:'i' %}active-bubble{% endif %}">
+                <i class="{{ cat.icon_class|default:'fa-solid fa-tag' }} text-primary fs-4"></i>
+            </div>
+            <span class="x-small fw-bold text-dark d-block text-truncate">{{ cat.name }}</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- 2. HOME SECTIONS (Hide if searching or filtering) -->
+{% if not request.GET.q and not request.GET.category %}
+    {% if flash_sales %}
+    <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+        <div class="flash-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 fw-bold"><i class="fas fa-bolt me-2"></i> FLASH SALES</h6>
+            <div id="flash-timer-clock" class="small fw-bold" data-endtime="{{ flash_sales.0.flash_sale.end_time|date:'Y-m-d H:i:s' }}">
+                Ends in: 00h 00m 00s
+            </div>
+            <a href="#" class="text-white small text-decoration-none">SEE ALL ></a>
+        </div>
+        <div class="d-flex overflow-auto bg-white p-2" style="scrollbar-width: none;">
+            {% for p in flash_sales %}
+            <div class="p-2" style="min-width:150px; max-width:150px;">
+                <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none text-dark">
+                    <img src="{{ p.image.url }}" class="img-fluid mb-2" style="height:120px; width:100%; object-fit:contain;">
+                    <div class="text-truncate small">{{ p.name }}</div>
+                    <div class="fw-bold">KSh {{ p.get_current_price|intcomma }}</div>
+                    
+                    <!-- RED FLASH SALE LINE -->
+                    <div class="flash-progress-bar">
+                        <div class="flash-progress-fill" style="width: {{ p.stock }}%;"></div>
+                    </div>
+                    <div class="x-small text-muted mt-1">{{ p.stock }} items left</div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- RECOMMENDED (Stars Removed) -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="bg-primary text-white p-2 d-flex justify-content-between align-items-center rounded-top">
+            <h6 class="mb-0 fw-bold">RECOMMENDED FOR YOU</h6>
+            <a href="#" class="text-white small text-decoration-none">SEE ALL ></a>
+        </div>
+        <div class="d-flex overflow-auto p-2" style="scrollbar-width: none;">
+            {% for p in recommended %}
+            <div class="p-2" style="min-width:150px; max-width:150px;">
+                <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none text-dark">
+                    <img src="{{ p.image.url }}" class="img-fluid mb-2" style="height:120px; width:100%; object-fit:contain;">
+                    <div class="text-truncate small">{{ p.name }}</div>
+                    <div class="fw-bold text-primary">KSh {{ p.get_current_price|intcomma }}</div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<!-- 3. MAIN PRODUCT GRID -->
 <div class="row">
-    <!-- Mobile Filter Toggle -->
-    <div class="col-12 d-md-none mb-3">
-        <button class="btn btn-pro w-100 fw-bold shadow-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileFilterSidebar">
-            <i class="fa-solid fa-list me-2"></i> CATEGORIES & FILTERS
-        </button>
+    <div class="col-12 mb-3">
+        <div class="d-flex align-items-center">
+            <!-- Three Lines Toggle Icon -->
+            <button class="btn btn-light shadow-sm border me-3" id="sidebarToggle" title="Filter Menu">
+                <i class="fa-solid fa-bars fs-5"></i>
+            </button>
+            <h5 class="fw-bold text-uppercase m-0" style="font-size: 0.9rem;">
+                {% if request.GET.q %}Results for "{{ request.GET.q }}"{% else %}Top Picks For You{% endif %}
+            </h5>
+        </div>
     </div>
 
-    <!-- Sidebar (Desktop) -->
-    <div class="col-md-3 d-none d-md-block">
-        <div class="card border-0 shadow-sm mb-3">
-            <div class="list-group list-group-flush">
-                <h6 class="p-3 mb-0 fw-bold border-bottom bg-light">
-                    <i class="fa-solid fa-bars me-2"></i> CATEGORIES
-                </h6>
-                <a href="{% url 'products:index' %}" class="list-group-item list-group-item-action border-0 py-2">
-                    <i class="fa-solid fa-layer-group me-2 text-primary" style="width: 20px;"></i> All Products
-                </a>
-                {% for cat in categories %}
-                <a href="{% url 'products:index' %}?category={{ cat.id }}" class="list-group-item list-group-item-action border-0 py-2 {% if request.GET.category == cat.id|stringformat:'i' %}active-cat{% endif %}">
-                    <i class="{{ cat.icon_class|default:'fa-solid fa-chevron-right' }} me-2 text-muted" style="width: 20px;"></i>
-                    {{ cat.name }}
-                </a>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="card border-0 shadow-sm p-3 sticky-top" style="top: 90px; z-index: 10;">
-            <h6 class="fw-bold mb-3 border-bottom pb-2">REFINE SEARCH</h6>
+    <!-- LEFT SIDEBAR (Hidden by default) -->
+    <div id="sidebarMenu" class="col-md-3 d-none">
+        <div class="card border-0 shadow-sm p-3 sticky-top" style="top: 90px;">
+            <h6 class="fw-bold border-bottom pb-2 mb-3 small">REFINE SEARCH</h6>
             {% include 'includes/filter_form.html' %}
         </div>
     </div>
 
-    <!-- Main Product Grid -->
-    <div class="col-md-9">
-        {% if request.GET.q or active_category %}
-        <div class="mb-3 p-2 bg-white rounded shadow-sm">
-            <span class="text-muted small">
-                Showing results for: 
-                <span class="fw-bold text-dark">
-                    {% if request.GET.q %}"{{ request.GET.q }}"{% else %}{{ active_category.name }}{% endif %}
-                </span>
-            </span>
-        </div>
-        {% endif %}
-
-        <div class="row row-cols-2 row-cols-lg-4 g-3">
+    <!-- PRODUCTS -->
+    <div id="productGrid" class="col-md-12">
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
             {% for product in products %}
             <div class="col">
                 <div class="card h-100 border-0 shadow-sm p-2 product-card">
-                    <div class="position-absolute top-0 end-0 p-2" style="z-index: 5;">
-                        <a href="{% url 'products:add_to_wishlist' product.id %}" class="text-decoration-none">
-                            <div class="wishlist-btn bg-white shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; transition: 0.2s;">
-                                <i class="fa-regular fa-heart text-danger small"></i>
-                            </div>
-                        </a>
-                    </div>
-
                     <a href="{% url 'products:product_detail' product.id %}" class="text-center text-decoration-none">
-                        <div class="bg-white rounded mb-2 d-flex align-items-center justify-content-center" style="height: 160px;">
-                            {% if product.image %}
-                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid p-2" style="max-height: 100%;" loading="lazy">
-                            {% else %}
-                                <i class="fa-solid fa-image text-muted fa-3x"></i>
-                            {% endif %}
+                        <div style="height: 150px;" class="d-flex align-items-center justify-content-center mb-2">
+                            <img src="{{ product.image.url }}" class="img-fluid p-2" style="max-height: 100%;">
                         </div>
                     </a>
 
-                    <div class="card-body p-2 d-flex flex-column">
-                        <a href="{% url 'products:product_detail' product.id %}" class="text-decoration-none text-dark">
-                            <h6 class="card-title text-truncate small mb-1">{{ product.name }}</h6>
-                        </a>
+                    <div class="card-body p-1 d-flex flex-column">
+                        <h6 class="text-truncate small mb-1 text-dark">{{ product.name }}</h6>
 
-                        <div class="mb-1">
-                            {% if product.flash_sale and product.flash_sale.is_currently_active %}
-                                <span class="badge bg-danger mb-1" style="font-size: 0.6rem; padding: 2px 5px;">
-                                    <i class="fas fa-bolt"></i> FLASH SALE
-                                </span>
-                                <p class="fw-bold mb-0 text-danger" style="font-size: 1rem;">
-                                    KSh {{ product.get_current_price|floatformat:"-2"|intcomma }}
-                                </p>
-                                <div class="d-flex align-items-center gap-1">
-                                    <span class="text-muted text-decoration-line-through" style="font-size: 0.75rem;">
-                                        KSh {{ product.price|floatformat:"-2"|intcomma }}
-                                    </span>
-                                    <span class="badge bg-warning text-dark p-1" style="font-size: 0.65rem;">
-                                        -{{ product.get_discount_percentage }}%
-                                    </span>
-                                </div>
-                            {% else %}
-                                <p class="fw-bold mb-1 price-text" style="font-size: 1rem;">
-                                    KSh {{ product.price|floatformat:"-2"|intcomma }}
-                                </p>
-                            {% endif %}
+                        <!-- FIXED RATING LOOKUP -->
+                        <div class="mb-1 x-small text-warning">
+                            {% for i in "12345" %}
+                                <i class="fa{% if product.average_rating >= forloop.counter %}s{% else %}r{% endif %} fa-star"></i>
+                            {% endfor %}
+                            <span class="text-muted">({{ product.review_count }})</span>
                         </div>
 
-                        <div class="mb-1" style="line-height: 1;">
-                            <span class="text-warning" style="font-size: 0.75rem;">
-                                {% for i in "12345" %}
-                                    <i class="fa{% if product.average_rating >= forloop.counter %}s{% else %}r{% endif %} fa-star"></i>
-                                {% endfor %}
-                            </span>
-                            <span class="text-muted" style="font-size: 0.7rem;">({{ product.review_count }})</span>
-                        </div>
-
-                        <div class="mb-2">
-                            {% if product.stock <= 0 %}
-                                <span class="badge bg-light text-danger x-small fw-bold">Out of Stock</span>
-                            {% elif product.stock < 10 %}
-                                <span class="text-danger x-small fw-bold"><i class="fa-solid fa-bolt-lightning me-1"></i>Only {{ product.stock }} left!</span>
-                            {% elif product.stock < 30 %}
-                                <span class="x-small fw-bold" style="color: #f68b1e !important;"><i class="fa-solid fa-circle-exclamation me-1"></i>Few units left</span>
-                            {% else %}
-                                <span class="text-success x-small fw-bold">In Stock</span>
-                            {% endif %}
-                        </div>
+                        <p class="fw-bold mb-1 {% if product.flash_sale and product.flash_sale.is_currently_active %}text-danger{% else %}text-dark{% endif %}">
+                            KSh {{ product.get_current_price|intcomma }}
+                        </p>
 
                         <div class="mt-auto">
-                            {% if product.stock > 0 %}
-                                {% with qty=cart_quantities|get_item:product.id %}
-                                {% if qty %}
-                                    <div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
-                                        <button type="button" class="btn btn-sm btn-primary fw-bold js-cart-dec" data-product-id="{{ product.id }}">−</button>
-                                        <div class="fw-bold small js-cart-qty" data-product-id="{{ product.id }}">{{ qty }}</div>
-                                        <button type="button" class="btn btn-sm btn-primary fw-bold js-cart-inc" data-product-id="{{ product.id }}">+</button>
-                                    </div>
+                            <!-- STOCK STATUS LOGIC RESTORED -->
+                            <div class="mb-2">
+                                {% if product.stock < 10 %}
+                                    <span class="text-danger x-small fw-bold">
+                                        <i class="fa-solid fa-bolt-lightning me-1"></i>Only {{ product.stock }} left!
+                                    </span>
+                                {% elif product.stock < 30 %}
+                                    <span class="text-orange x-small fw-bold">
+                                        <i class="fa-solid fa-circle-exclamation me-1"></i>Few units left
+                                    </span>
                                 {% else %}
-                                    <button type="button" class="btn btn-primary btn-sm w-100 fw-bold shadow-sm js-cart-inc" data-product-id="{{ product.id }}">
-                                        ADD TO CART
-                                    </button>
+                                    <span class="text-success x-small fw-bold">In Stock</span>
                                 {% endif %}
-                                {% endwith %}
-                            {% else %}
-                                <button class="btn btn-secondary btn-sm w-100 fw-bold" disabled>OUT OF STOCK</button>
-                            {% endif %}
+                            </div>
+
+                            <button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="{{ product.id }}">ADD TO CART</button>
                         </div>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
-
-        
-
-<!-- Mobile Filter Offcanvas (Unchanged) -->
-<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileFilterSidebar">
-    <div class="offcanvas-header border-bottom">
-        <h5 class="offcanvas-title fw-bold">Menu & Filters</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-    </div>
-    <div class="offcanvas-body">
-        <h6 class="fw-bold text-uppercase small mb-3">Categories</h6>
-        <div class="list-group list-group-flush mb-4">
-            {% for cat in categories %}
-            <a href="{% url 'products:index' %}?category={{ cat.id }}" class="list-group-item px-0 border-0">{{ cat.name }}</a>
-            {% endfor %}
-        </div>
-        <hr>
-        <h6 class="fw-bold text-uppercase small mb-3">Refine Search</h6>
-        {% include 'includes/filter_form.html' %}
     </div>
 </div>
 
 <script>
-  async function adjustCart(productId, action) {
-    const res = await fetch(`/products/api/cart/${productId}/${action}/`, {
-      method: 'POST',
-      headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
-    });
-    const data = await res.json();
-    if (res.ok) {
-        const badge = document.querySelector('.badge.bg-danger');
-        if (badge) badge.textContent = data.global_cart_count;
-        
-        const qtyEl = document.querySelector(`.js-cart-qty[data-product-id="${productId}"]`);
-        if (qtyEl) {
-            qtyEl.textContent = data.quantity;
-            if (data.quantity <= 0) window.location.reload();
-        } else {
-            window.location.reload();
-        }
-    } else { alert(data.error); }
-  }
+    // 1. Sidebar Toggle Implementation
+    const btn = document.getElementById('sidebarToggle');
+    const menu = document.getElementById('sidebarMenu');
+    const grid = document.getElementById('productGrid');
 
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.js-cart-inc, .js-cart-dec');
-    if (!btn) return;
-    adjustCart(btn.dataset.productId, btn.classList.contains('js-cart-inc') ? 'inc' : 'dec');
-  });
+    btn.addEventListener('click', () => {
+        if (menu.classList.contains('d-none')) {
+            menu.classList.remove('d-none');
+            grid.classList.replace('col-md-12', 'col-md-9');
+        } else {
+            menu.classList.add('d-none');
+            grid.classList.replace('col-md-9', 'col-md-12');
+        }
+    });
+
+    // 2. Fixed Flash Sale Timer
+    function updateTimer() {
+        const timerClock = document.getElementById('flash-timer-clock');
+        if (!timerClock) return;
+
+        const endTime = new Date(timerClock.getAttribute('data-endtime')).getTime();
+
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = endTime - now;
+
+            if (distance < 0) {
+                clearInterval(x);
+                timerClock.innerHTML = "EXPIRED";
+                return;
+            }
+
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+            timerClock.innerHTML = `Ends in: ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
+        }, 1000);
+    }
+    updateTimer();
 </script>
 {% endblock %}

@@ -1,47 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-{% load humanize %}  <!-- ADD THIS LINE HERE -->
+{% load humanize %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zando | Shop Smarter</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     {% block head_extra %}{% endblock %}
-
     <style>
-        :root {
-            --pro-blue: #0d6efd;
-            --soft-bg: #f4f6f9;
-            --pro-orange: #f68b1e;
-            --navbar-height: 72px;
-            --page-top-offset: calc(var(--navbar-height) + 12px);
-        }
+        :root { --pro-blue: #0d6efd; --soft-bg: #f4f6f9; --pro-orange: #f68b1e; }
         body { background-color: var(--soft-bg); font-family: 'Inter', sans-serif; }
-
         .navbar { background-color: #ffffff; border-bottom: 3px solid var(--pro-blue); padding: 0.8rem 0; z-index: 1030; }
-        .navbar .container { min-height: var(--navbar-height); align-items: center; }
-        .navbar-brand { letter-spacing: -1px; }
         .text-pro { color: var(--pro-blue) !important; }
-
-        .search-container .input-group { border: 1px solid #ced4da; border-radius: 4px; overflow: hidden; background: #fff; }
-        .search-container .form-control { border: none !important; box-shadow: none !important; }
-
-        .btn-pro { background-color: var(--pro-blue); color: white; border-radius: 0 !important; font-weight: 600; border: none; transition: background 0.2s; }
-        .btn-pro:hover { background-color: #0b5ed7; color: white; }
-
-        .nav-icon-link { color: #333; transition: color 0.2s; position: relative; }
+        .btn-pro { background: var(--pro-blue); color: white; border-radius: 0 !important; font-weight: 600; border: none; transition: 0.2s; }
+        .btn-pro:hover { background: #0b5ed7; }
+        .btn-clear { background: white; border: none; color: #dc3545; padding: 0 15px; border-right: 1px solid #eee; text-decoration: none; }
+        .nav-icon-link { color: #333; position: relative; text-decoration: none; transition: 0.2s; }
         .nav-icon-link:hover { color: var(--pro-orange); }
-
-        /* Recently Viewed Mini Cards */
-        .recent-card { transition: transform 0.2s; border: 1px solid #eee !important; }
+        .recent-card { transition: transform 0.2s; border: 1px solid #eee !important; border-radius: 8px; }
         .recent-card:hover { transform: scale(1.03); border-color: var(--pro-blue) !important; }
-
-        @media (max-width: 768px) {
-            :root { --navbar-height: 88px; }
-            .search-container { order: 3; margin-top: 15px; }
-        }
+        .x-small { font-size: 0.7rem; }
+        .pointer { cursor: pointer; }
+        #suggestionsBox { border-radius: 0 0 8px 8px; }
     </style>
 </head>
 <body>
@@ -49,19 +30,27 @@
         <div class="container">
             <a class="navbar-brand fw-bold fs-2 text-pro" href="{% url 'products:index' %}">ZANDO</a>
 
+            <!-- Search Bar with older "Clear" feature integrated -->
             <form action="{% url 'products:index' %}" method="GET" class="d-flex flex-grow-1 mx-lg-5 search-container position-relative">
-                <div class="input-group w-100">
-                    <input type="text" id="searchInput" name="q" class="form-control" placeholder="Search products, brands and categories..." value="{{ request.GET.q|default:'' }}" autocomplete="off">
+                <div class="input-group w-100 shadow-sm" style="border-radius: 4px; overflow: hidden; border: 1px solid #ced4da;">
+                    {% if request.GET.q %}
+                    <a href="{% url 'products:index' %}" class="btn-clear d-flex align-items-center" title="Clear Search">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    {% endif %}
+                    <input type="text" id="searchInput" name="q" class="form-control border-0" placeholder="Search products, brands and categories..." value="{{ request.GET.q|default:'' }}" autocomplete="off">
                     <button class="btn btn-pro px-4" type="submit">
                         <i class="fas fa-search"></i> <span class="d-none d-md-inline ms-1">SEARCH</span>
                     </button>
                 </div>
-                <div id="suggestionsBox" class="list-group position-absolute w-100 shadow-lg d-none" style="top: 100%; z-index: 1050; max-height: 300px; overflow-y: auto; background: white; border: 1px solid #ced4da;"></div>
+                <!-- Suggestions Box -->
+                <div id="suggestionsBox" class="list-group position-absolute w-100 shadow-lg d-none" style="top: 100%; z-index: 1050; max-height: 350px; overflow-y: auto; background: white; border: 1px solid #ced4da;"></div>
             </form>
 
             <div class="d-flex align-items-center gap-3">
+                <!-- Account Dropdown -->
                 <div class="dropdown">
-                    <a href="#" class="nav-icon-link text-decoration-none d-flex align-items-center" data-bs-toggle="dropdown">
+                    <a href="#" class="nav-icon-link d-flex align-items-center" data-bs-toggle="dropdown">
                         <i class="far fa-user fs-4"></i>
                         <span class="d-none d-md-inline ms-2 small fw-bold text-pro">Hi, {{ user.username|default:"Guest" }}</span>
                     </a>
@@ -69,7 +58,7 @@
                         {% if user.is_authenticated %}
                             <li><a class="dropdown-item py-2" href="{% url 'products:account_settings' %}"><i class="fa-regular fa-user me-2"></i> My Account</a></li>
                             <li><a class="dropdown-item py-2" href="{% url 'products:my_orders' %}"><i class="fa-solid fa-box-archive me-2"></i> Orders</a></li>
-                            <li><a class="dropdown-item py-2" href="{% url 'products:inbox' %}"><i class="fa-regular fa-envelope me-2"></i> Inbox</a></li>
+                            <li><a class="dropdown-item py-2" href="{% url 'products:inbox' %}"><i class="fa-regular fa-envelope me-2"></i> Inbox {% if inbox_unread_count %}<span class="badge bg-danger ms-auto">{{ inbox_unread_count }}</span>{% endif %}</a></li>
                             <li><a class="dropdown-item py-2" href="{% url 'products:pending_reviews' %}"><i class="fa-regular fa-star me-2 text-warning"></i> Pending Reviews</a></li>
                             <li><a class="dropdown-item py-2" href="{% url 'products:view_wishlist' %}"><i class="fa-regular fa-heart me-2"></i> Wishlist</a></li>
                             <li><hr class="dropdown-divider"></li>
@@ -86,10 +75,16 @@
                     </ul>
                 </div>
 
-                <a href="{% url 'products:view_cart' %}" class="nav-icon-link text-decoration-none">
+                <!-- Wishlist Icon -->
+                <a href="{% url 'products:view_wishlist' %}" class="nav-icon-link d-none d-md-block">
+                    <i class="far fa-heart fs-4"></i>
+                </a>
+                
+                <!-- Cart Icon -->
+                <a href="{% url 'products:view_cart' %}" class="nav-icon-link">
                     <div class="position-relative">
                         <i class="fas fa-shopping-cart fs-4"></i>
-                        <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.6rem;">
+                        <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle global-cart-count" style="font-size: 0.6rem;">
                             {{ global_cart_count|default:"0" }}
                         </span>
                     </div>
@@ -98,36 +93,34 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
+    <!-- Content Area -->
+    <div class="container mt-4" style="min-height: 60vh;">
         {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0" role="alert">
-                    {{ message }}
+            {% for m in messages %}
+                <div class="alert alert-{{ m.tags }} alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
+                    {{ m }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
-
-        <!-- MAIN PAGE CONTENT -->
+        
         {% block content %}{% endblock %}
     </div>
 
-    <!-- GLOBAL RECENTLY VIEWED SECTION -->
+    <!-- Recently Viewed (STARS REMOVED AS REQUESTED) -->
     {% if global_recently_viewed %}
     <div class="container mt-5 pt-4 border-top">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold mb-0 text-uppercase" style="font-size: 0.85rem; letter-spacing: 1px; color: #555;">Your Recently Viewed Items</h5>
-        </div>
+        <h5 class="fw-bold mb-3 x-small text-uppercase" style="letter-spacing: 1px; color: #666;">Recently Viewed Items</h5>
         <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-2">
             {% for p in global_recently_viewed %}
             <div class="col">
                 <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none">
-                    <div class="card h-100 recent-card p-2 bg-white shadow-sm">
+                    <div class="card h-100 recent-card p-2 bg-white text-center shadow-sm">
                         <div style="height: 80px;" class="d-flex align-items-center justify-content-center mb-1">
-                            <img src="{{ p.image.url }}" class="img-fluid" style="max-height: 100%;" alt="{{ p.name }}">
+                            <img src="{{ p.image.url }}" class="img-fluid" style="max-height: 100%; object-fit: contain;" alt="{{ p.name }}">
                         </div>
-                        <div class="card-body p-0 text-center">
-                            <h6 class="text-truncate x-small mb-1 text-dark px-1" style="font-size: 0.7rem;">{{ p.name }}</h6>
+                        <div class="card-body p-0">
+                            <h6 class="text-truncate x-small mb-1 text-dark px-1">{{ p.name }}</h6>
                             <p class="fw-bold text-pro mb-0" style="font-size: 0.8rem;">KSh {{ p.get_current_price|floatformat:0|intcomma }}</p>
                         </div>
                     </div>
@@ -138,13 +131,54 @@
     </div>
     {% endif %}
 
-    <footer class="py-5 mt-5 bg-white border-top">
-        <div class="container text-center">
-            <p class="text-muted small">&copy; 2026 ZANDO ONLINE SHOPPING</p>
+    <footer class="py-5 mt-5 bg-white border-top text-center">
+        <div class="container">
+            <p class="text-muted small">&copy; 2026 ZANDO ONLINE SHOPPING | All Rights Reserved</p>
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- (Your existing search scripts here) -->
+    <script>
+        // Search Suggestion logic
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsBox = document.getElementById('suggestionsBox');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            if (query.length > 1) {
+                fetch("{% url 'products:search_suggestions' %}?q=" + query)
+                    .then(res => res.json())
+                    .then(data => {
+                        suggestionsBox.innerHTML = '';
+                        if (data && data.length > 0) {
+                            suggestionsBox.classList.remove('d-none');
+                            data.forEach(item => {
+                                const div = document.createElement('div');
+                                div.className = 'list-group-item list-group-item-action border-0 py-2 d-flex align-items-center pointer';
+                                div.innerHTML = `<i class="fas fa-search text-muted me-2 small"></i><span class="small">${item.name}</span>`;
+                                div.addEventListener('click', () => {
+                                    searchInput.value = item.name;
+                                    suggestionsBox.classList.add('d-none');
+                                    searchInput.closest('form').submit();
+                                });
+                                suggestionsBox.appendChild(div);
+                            });
+                        } else {
+                            suggestionsBox.classList.add('d-none');
+                        }
+                    });
+            } else {
+                suggestionsBox.classList.add('d-none');
+            }
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                suggestionsBox.classList.add('d-none');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -51,6 +51,7 @@ class Product(models.Model):
         return 0
 
     def get_reviews(self):
+        # This is the correct way to get reviews since they are linked via OrderItem
         return Review.objects.filter(order_item__product=self)
 
     @property
