@@ -61,6 +61,7 @@ TEMPLATES = [
                 'products.context_processors.cart_contents',
                 'products.context_processors.inbox_unread_count',
                 'products.context_processors.cart_quantities',
+                'products.context_processors.recently_viewed_processor',
             ],
         },
     },

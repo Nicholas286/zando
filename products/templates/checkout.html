@@ -2,218 +2,310 @@
 {% load humanize %}
 {% block content %}
 <style>
-    :root { --brand-blue: #004b91; --light-blue: #f0f7ff; }
+    :root { --brand-blue: #004b91; --light-blue: #f0f7ff; --pro-orange: #f68b1e; }
     body { background-color: #f5f5f5; font-family: 'Inter', sans-serif; }
     
     /* Step Cards */
     .checkout-step { background: white; border-radius: 4px; margin-bottom: 1rem; border: 1px solid #eee; overflow: hidden; }
-    .step-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: white; cursor: pointer; }
-    .step-title { font-weight: bold; text-transform: uppercase; font-size: 14px; display: flex; align-items: center; }
-    .step-number { background: #eee; color: #666; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; }
-    .active .step-number { background: var(--brand-blue); color: white; }
-    .completed .step-number { background: #28a745; color: white; }
+    .step-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: white; cursor: pointer; border-bottom: 1px solid #f9f9f9; }
+    .step-title { font-weight: bold; text-transform: uppercase; font-size: 14px; display: flex; align-items: center; color: #333; }
+    .step-number { background: #eee; color: #666; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; font-weight: bold; }
     
-    .step-content { padding: 20px; display: none; border-top: 1px solid #f9f9f9; }
-    .step-summary { padding: 0 20px 15px 56px; color: #666; font-size: 13px; display: block; }
-    .active .step-content { display: block; }
-    .active .step-summary { display: none; }
+    /* Active State */
+    .checkout-step.active .step-number { background: var(--brand-blue); color: white; }
+    .checkout-step.active .step-header { border-bottom: 1px solid #eee; }
+    
+    .step-content { padding: 20px; display: none; }
+    .checkout-step.active .step-content { display: block; }
 
-    /* Buttons */
-    .btn-blue { background: var(--brand-blue); color: white; font-weight: bold; padding: 12px 30px; border: none; border-radius: 4px; text-transform: uppercase; font-size: 13px; }
-    .btn-blue:hover { background: #003366; color: white; }
-    .btn-place-order { background: #ffa500; color: white; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 4px; font-size: 16px; margin-top: 15px; }
-
-    /* Address Selection */
-    .address-card { border: 1px solid #eee; padding: 15px; border-radius: 4px; margin-bottom: 10px; cursor: pointer; position: relative; }
+    /* Address Cards */
+    .address-card { border: 1px solid #eee; padding: 15px; border-radius: 4px; margin-bottom: 10px; cursor: pointer; position: relative; transition: 0.2s; }
+    .address-card:hover { border-color: var(--brand-blue); }
     .address-card.selected { border: 2px solid var(--brand-blue); background: var(--light-blue); }
-    .address-card input { position: absolute; right: 15px; top: 15px; }
-
-    /* Summary Sidebar */
+    
+    /* Order Summary Sidebar */
     .summary-card { background: white; padding: 20px; border-radius: 4px; border: 1px solid #eee; position: sticky; top: 100px; }
+    .btn-place-order { background: var(--pro-orange); color: white; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 4px; font-size: 16px; margin-top: 15px; transition: 0.3s; }
+    .btn-place-order:hover { background: #e67e00; transform: translateY(-2px); }
+    .btn-place-order:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+    .btn-save-continue { background: var(--brand-blue); color: white; font-weight: bold; padding: 12px 30px; border: none; border-radius: 4px; text-transform: uppercase; font-size: 13px; }
 </style>
 
 <div class="container" style="padding-top: 2rem; padding-bottom: 5rem;">
-    <!-- Top Stepper (Visual Only) -->
-    <div class="row mb-4 text-center d-none d-md-flex">
-        <div class="col-4 step-done pb-2 border-bottom border-success text-success fw-bold"><i class="fas fa-check-circle"></i> CART</div>
-        <div class="col-4 pb-2 border-bottom border-primary text-primary fw-bold">2. CHECKOUT</div>
-        <div class="col-4 pb-2 text-muted">3. PAYMENT</div>
-    </div>
-
     <form method="POST" action="{% url 'products:checkout' %}" id="checkoutForm">
         {% csrf_token %}
         <input type="hidden" name="action" value="place_order">
 
         <div class="row g-4">
-            <!-- Left Side: Steps -->
+            <!-- LEFT: CHECKOUT STEPS -->
             <div class="col-lg-8">
                 
-                <!-- STEP 1: ADDRESS -->
-                <div class="checkout-step active" id="step_address">
-                    <div class="step-header" onclick="openStep('address')">
-                        <div class="step-title">
-                            <span class="step-number">1</span>
-                            ADDRESS DETAILS
-                        </div>
-                        <span class="text-primary fw-bold small change-btn">CHANGE</span>
-                    </div>
-                    <div class="step-summary" id="summary_address">
-                        <p class="mb-0" id="text_summary_address">Loading address...</p>
+                <!-- STEP 1: ADDRESS DETAILS -->
+                <div class="checkout-step active" id="step_1">
+                    <div class="step-header" onclick="openStep(1)">
+                        <div class="step-title"><span class="step-number">1</span> ADDRESS DETAILS</div>
+                        <button type="button" class="btn btn-link btn-sm fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#addAddressModal">+ ADD NEW</button>
                     </div>
                     <div class="step-content">
                         <div class="row g-3">
-                            {% for address in addresses %}
+                            {% for addr in addresses %}
                             <div class="col-md-6">
-                                <div class="address-card {% if address.is_default %}selected{% endif %}" onclick="selectAddress('{{ address.id }}', '{{ address.first_name }} {{ address.last_name }}, {{ address.street }}')">
-                                    <input type="radio" name="selected_address" id="addr_{{ address.id }}" value="{{ address.id }}" {% if address.is_default or forloop.first %}checked{% endif %}>
-                                    <p class="fw-bold mb-1">{{ address.first_name }} {{ address.last_name }}</p>
-                                    <p class="small text-muted mb-0">{{ address.street }}</p>
-                                    <p class="small text-muted mb-0">{{ address.town.name }}, {{ address.town.county.name }}</p>
-                                    <p class="small text-muted mb-0">+254 {{ address.phone }}</p>
+                                <div class="address-card {% if selected_address.id == addr.id %}selected{% endif %}" 
+                                     onclick="changeAddress('{{ addr.id }}')">
+                                    <input type="radio" name="selected_address" value="{{ addr.id }}" 
+                                           {% if selected_address.id == addr.id %}checked{% endif %} class="d-none">
+                                    <p class="fw-bold mb-1">{{ addr.first_name }} {{ addr.last_name }}</p>
+                                    <p class="small text-muted mb-0">{{ addr.street }}</p>
+                                    <p class="small text-muted mb-0">{{ addr.town.name }}, {{ addr.town.county.name }}</p>
+                                    <p class="small mb-0 fw-bold">+254 {{ addr.phone }}</p>
                                 </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-12 text-center py-3">
+                                <p class="text-muted">No addresses found. Please add one to continue.</p>
                             </div>
                             {% endfor %}
                         </div>
-                        <button type="button" class="btn btn-blue mt-3" onclick="openStep('delivery')">SAVE & CONTINUE</button>
+                        {% if selected_address %}
+                        <button type="button" class="btn-save-continue mt-3" onclick="openStep(2)">SAVE & CONTINUE</button>
+                        {% endif %}
                     </div>
                 </div>
 
-                <!-- STEP 2: DELIVERY -->
-                <div class="checkout-step" id="step_delivery">
-                    <div class="step-header" onclick="openStep('delivery')">
-                        <div class="step-title">
-                            <span class="step-number">2</span>
-                            DELIVERY METHOD
-                        </div>
-                        <span class="text-primary fw-bold small change-btn">CHANGE</span>
-                    </div>
-                    <div class="step-summary" id="summary_delivery">
-                        <p class="mb-0" id="text_summary_delivery">Standard Delivery</p>
+                <!-- STEP 2: DELIVERY METHOD -->
+                <div class="checkout-step" id="step_2">
+                    <div class="step-header" onclick="openStep(2)">
+                        <div class="step-title"><span class="step-number">2</span> DELIVERY METHOD</div>
                     </div>
                     <div class="step-content">
-                        <div class="form-check border p-3 rounded mb-2">
-                            <input class="form-check-input" type="radio" name="delivery_method" id="std" value="standard" checked onclick="updateDelivery('Standard Delivery', 0)">
-                            <label class="form-check-label w-100" for="std">
-                                <strong>Standard Delivery</strong><br>
-                                <span class="text-muted small">Delivered within 2-3 business days (Ksh 0)</span>
-                            </label>
-                        </div>
-                        <div class="form-check border p-3 rounded mb-3">
-                            <input class="form-check-input" type="radio" name="delivery_method" id="exp" value="express" onclick="updateDelivery('Express Delivery', 500)">
-                            <label class="form-check-label w-100" for="exp">
-                                <strong>Express Delivery</strong><br>
-                                <span class="text-muted small">Delivered within 24 hours (Ksh 500)</span>
-                            </label>
-                        </div>
-                        <button type="button" class="btn btn-blue" onclick="openStep('payment')">SAVE & CONTINUE</button>
+                        {% if not selected_address %}
+                            <p class="text-danger small">Please select a shipping address in Step 1.</p>
+                        {% else %}
+                            <div class="form-check border p-3 rounded mb-2">
+                                <input class="form-check-input" type="radio" name="delivery_method" id="std" value="standard" checked 
+                                       onclick="updateSummaryPrice('standard', {{ selected_address.town.base_delivery_fee|default:0 }})">
+                                <label class="form-check-label w-100" for="std">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Standard Delivery</strong>
+                                        <span class="fw-bold">KSh {{ selected_address.town.base_delivery_fee|floatformat:0|intcomma }}</span>
+                                    </div>
+                                    <span class="text-muted small">Delivered to {{ selected_address.town.name }} within {{ est_days }} business day(s).</span>
+                                </label>
+                            </div>
+
+                            <div class="form-check border p-3 rounded mb-3">
+                                <input class="form-check-input" type="radio" name="delivery_method" id="exp" value="express" 
+                                       onclick="updateSummaryPrice('express', {{ selected_address.town.base_delivery_fee|default:0 }})">
+                                <label class="form-check-label w-100" for="exp">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Express Delivery</strong>
+                                        <span class="fw-bold">KSh {{ selected_address.town.base_delivery_fee|add:200|floatformat:0|intcomma }}</span>
+                                    </div>
+                                    <span class="text-muted small">Priority processing. Delivered within 24 hours (+KSh 200).</span>
+                                </label>
+                            </div>
+                            <button type="button" class="btn-save-continue" onclick="openStep(3)">SAVE & CONTINUE</button>
+                        {% endif %}
                     </div>
                 </div>
 
-                <!-- STEP 3: PAYMENT -->
-                <div class="checkout-step" id="step_payment">
-                    <div class="step-header" onclick="openStep('payment')">
-                        <div class="step-title">
-                            <span class="step-number">3</span>
-                            PAYMENT METHOD
-                        </div>
-                        <span class="text-primary fw-bold small change-btn">CHANGE</span>
-                    </div>
-                    <div class="step-summary" id="summary_payment">
-                        <p class="mb-0" id="text_summary_payment">M-Pesa</p>
+                <!-- STEP 3: PAYMENT METHOD -->
+                <div class="checkout-step" id="step_3">
+                    <div class="step-header" onclick="openStep(3)">
+                        <div class="step-title"><span class="step-number">3</span> PAYMENT METHOD</div>
                     </div>
                     <div class="step-content">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <div class="address-card selected" id="card_mpesa" onclick="selectPayment('mpesa', 'M-Pesa')">
-                                    <input type="radio" name="payment_method" value="mpesa" checked>
-                                    <p class="fw-bold mb-1">M-Pesa</p>
-                                    <p class="small text-muted mb-0">Pay instantly via phone STK push.</p>
-                                </div>
-                                <div id="mpesaPhoneBox" class="mt-2">
-                                    <input type="text" name="phone_number" class="form-control" placeholder="2547XXXXXXXX">
+                                <div class="address-card selected" id="card_mpesa" onclick="togglePaymentUI('mpesa')">
+                                    <input type="radio" name="payment_method" value="mpesa" checked class="d-none">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-mobile-alt text-success fs-4 me-3"></i>
+                                        <div>
+                                            <p class="fw-bold mb-0">M-Pesa</p>
+                                            <p class="small text-muted mb-0">STK Push prompt</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="address-card" id="card_cod" onclick="selectPayment('delivery', 'Pay on Delivery')">
-                                    <input type="radio" name="payment_method" value="delivery">
-                                    <p class="fw-bold mb-1">Pay on Delivery</p>
-                                    <p class="small text-muted mb-0">Pay Cash or M-Pesa when item arrives.</p>
+                                <div class="address-card" id="card_cod" onclick="togglePaymentUI('delivery')">
+                                    <input type="radio" name="payment_method" value="delivery" class="d-none">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-hand-holding-usd text-warning fs-4 me-3"></i>
+                                        <div>
+                                            <p class="fw-bold mb-0">Pay on Delivery</p>
+                                            <p class="small text-muted mb-0">Cash or M-Pesa</p>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- M-PESA PHONE INPUT -->
+                        <div id="mpesaPhoneBox" class="mt-4 p-3 border rounded bg-light" style="display: block;">
+                            <label class="form-label fw-bold small text-uppercase">M-Pesa Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white">+254</span>
+                                <input type="text" name="phone_number" class="form-control" placeholder="7XXXXXXXX" 
+                                       value="{{ selected_address.phone|default:'' }}">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Side: Sticky Summary -->
+            <!-- RIGHT: ORDER SUMMARY -->
             <div class="col-lg-4">
                 <div class="summary-card shadow-sm">
                     <h6 class="fw-bold border-bottom pb-2">ORDER SUMMARY</h6>
                     <div class="d-flex justify-content-between mt-3 small">
-                        <span>Items Total:</span>
-                        <span>Ksh {{ total_price|floatformat:"0"|intcomma }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mt-2 small">
-                        <span>Delivery Fee:</span>
-                        <span id="side_fee">Ksh 0</span>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <span class="fw-bold">Total:</span>
-                        <span class="fw-bold text-primary fs-5" id="side_total">Ksh {{ total_price|floatformat:"0"|intcomma }}</span>
+                        <span class="text-muted">Items Total:</span>
+                        <span>KSh {{ total_price|floatformat:0|intcomma }}</span>
                     </div>
 
-                    <button type="submit" class="btn-place-order">CONFIRM ORDER</button>
+                    {% if discount > 0 %}
+                    <div class="d-flex justify-content-between mt-2 small text-success">
+                        <span>Discount ({{ coupon_code }}):</span>
+                        <span>- KSh {{ discount|floatformat:0|intcomma }}</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between mt-2 small">
+                        <span class="text-muted">Delivery Fee:</span>
+                        <span class="fw-bold text-dark" id="side_fee">KSh {{ delivery_fee|floatformat:0|intcomma }}</span>
+                    </div>
+
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold">Total:</span>
+                        <span class="fw-bold text-primary fs-4" id="side_total">KSh {{ final_total|floatformat:0|intcomma }}</span>
+                    </div>
+
+                    <button type="submit" class="btn-place-order" {% if not selected_address %}disabled{% endif %}>
+                        CONFIRM ORDER
+                    </button>
+                    
+                    {% if not selected_address %}
+                    <p class="text-danger x-small mt-2 text-center">Please select a shipping address.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </form>
 </div>
 
+<!-- AJAX ADD ADDRESS MODAL -->
+<div class="modal fade" id="addAddressModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Add New Shipping Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="ajaxAddressForm">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label class="small fw-bold">FIRST NAME</label>
+                            <input type="text" name="first_name" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="small fw-bold">LAST NAME</label>
+                            <input type="text" name="last_name" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="small fw-bold">STREET ADDRESS / BUILDING</label>
+                            <input type="text" name="street" class="form-control" placeholder="e.g. Kimathi St, House 4" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="small fw-bold">TOWN / CITY</label>
+                            <select name="town" class="form-select" required>
+                                <option value="">Select Town</option>
+                                {% for town in towns %}
+                                <option value="{{ town.id }}">{{ town.name }} ({{ town.county.name }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="small fw-bold">PHONE NUMBER</label>
+                            <div class="input-group">
+                                <span class="input-group-text">+254</span>
+                                <input type="text" name="phone" class="form-control" placeholder="712345678" required>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-4 fw-bold py-2">SAVE & USE THIS ADDRESS</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    // 1. Open Section Logic
-    function openStep(stepId) {
-        document.querySelectorAll('.checkout-step').forEach(el => el.classList.remove('active'));
-        const target = document.getElementById('step_' + stepId);
-        target.classList.add('active');
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Variables from backend
+    const itemsTotal = {{ total_price }};
+    const discountAmount = {{ discount }};
+
+    // 1. Navigation Logic
+    function openStep(n) {
+        document.querySelectorAll('.checkout-step').forEach(step => step.classList.remove('active'));
+        document.getElementById('step_' + n).classList.add('active');
     }
 
-    // 2. Address Logic
-    function selectAddress(id, summaryText) {
-        document.querySelectorAll('#step_address .address-card').forEach(el => el.classList.remove('selected'));
-        document.getElementById('addr_' + id).checked = true;
-        document.getElementById('addr_' + id).closest('.address-card').classList.add('selected');
-        document.getElementById('text_summary_address').innerText = summaryText;
+    // 2. Address Selection Logic (Backend Calculation)
+    function changeAddress(id) {
+        // We reload the page with the new ID to let Django calculate Town-specific fees
+        window.location.href = `?addr_id=${id}`;
     }
 
-    // 3. Delivery Logic
-    function updateDelivery(methodName, fee) {
-        document.getElementById('text_summary_delivery').innerText = methodName;
-        document.getElementById('side_fee').innerText = 'Ksh ' + fee;
-        
-        const base = {{ total_price }};
-        const total = base + fee;
-        document.getElementById('side_total').innerText = 'Ksh ' + total.toLocaleString();
-    }
-
-    // 4. Payment Logic
-    function selectPayment(val, label) {
-        document.querySelectorAll('#step_payment .address-card').forEach(el => el.classList.remove('selected'));
-        const input = document.querySelector(`input[value="${val}"]`);
-        input.checked = true;
-        input.closest('.address-card').classList.add('selected');
-        document.getElementById('text_summary_payment').innerText = label;
-        document.getElementById('mpesaPhoneBox').style.display = (val === 'mpesa') ? 'block' : 'none';
-    }
-
-    // Initialize display
-    window.onload = function() {
-        const checkedAddr = document.querySelector('input[name="selected_address"]:checked');
-        if(checkedAddr) {
-            const label = checkedAddr.closest('.address-card').querySelector('.fw-bold').innerText;
-            document.getElementById('text_summary_address').innerText = label;
+    // 3. Delivery Method Toggle (Frontend Calculation)
+    function updateSummaryPrice(method, baseFee) {
+        let shipping = parseFloat(baseFee);
+        if (method === 'express') {
+            shipping += 200;
         }
+        
+        const finalTotal = (itemsTotal - discountAmount) + shipping;
+        
+        document.getElementById('side_fee').innerText = 'KSh ' + shipping.toLocaleString();
+        document.getElementById('side_total').innerText = 'KSh ' + finalTotal.toLocaleString();
     }
+
+    // 4. Payment Toggle
+    function togglePaymentUI(mode) {
+        document.getElementById('card_mpesa').classList.remove('selected');
+        document.getElementById('card_cod').classList.remove('selected');
+
+        const activeCard = (mode === 'mpesa') ? document.getElementById('card_mpesa') : document.getElementById('card_cod');
+        activeCard.classList.add('selected');
+        activeCard.querySelector('input').checked = true;
+
+        document.getElementById('mpesaPhoneBox').style.display = (mode === 'mpesa') ? 'block' : 'none';
+    }
+
+    // 5. AJAX Address Submission
+    document.getElementById('ajaxAddressForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch("{% url 'products:add_address_ajax' %}", {
+            method: "POST",
+            body: formData,
+            headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                // Address saved successfully, reload page with the new address active
+                window.location.href = `?addr_id=${data.address_id}`;
+            } else {
+                alert("Please check the form for errors.");
+            }
+        })
+        .catch(err => alert("An error occurred. Please try again."));
+    });
 </script>
 {% endblock %}

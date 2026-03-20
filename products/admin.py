@@ -69,7 +69,6 @@ class OrderItemInline(admin.TabularInline):
 
     def subtotal_display(self, obj):
         if obj and obj.quantity and obj.price:
-            # FIX: Format number to string first
             amount = f"{int(obj.quantity * obj.price):,}"
             return format_html("<span style='color:#000; font-weight:bold;'>Ksh {}</span>", amount)
         return "Ksh 0"
@@ -84,9 +83,7 @@ class ProductAdmin(ImportExportModelAdmin):
     inlines = [ProductImageInline, ProductVariantInline, FlashSaleInline]
 
     def current_price_display(self, obj):
-        # FIX: Format numbers to strings with commas first
         reg_price = f"{int(obj.price):,}"
-        
         if hasattr(obj, 'flash_sale') and obj.flash_sale.is_currently_active:
             flash_price = f"{int(obj.flash_sale.discount_price):,}"
             return format_html(
@@ -98,14 +95,13 @@ class ProductAdmin(ImportExportModelAdmin):
     current_price_display.short_description = "Price"
 
     def colored_stock(self, obj):
-        if obj.stock < 10: color = "#d9534f" # Red
-        elif obj.stock < 30: color = "#f68b1e" # Orange
-        else: color = "#5cb85c" # Green
+        if obj.stock < 10: color = "#d9534f"
+        elif obj.stock < 30: color = "#f68b1e"
+        else: color = "#5cb85c"
         return format_html('<b style="color:{}">{} in stock</b>', color, obj.stock)
 
     def is_flash_sale(self, obj):
         if hasattr(obj, 'flash_sale') and obj.flash_sale.is_currently_active:
-            # ✅ Use mark_safe when you have a static string with no {} placeholders
             return mark_safe('<span style="color: #d9534f;">⚡ ACTIVE</span>')
         return "No"
 
@@ -139,6 +135,7 @@ class OrderAdmin(ImportExportModelAdmin):
 
     readonly_fields = ('status_timeline', 'customer_email', 'full_address_card', 'user')
 
+    # Logic methods
     def create_status_records(self, order, new_status):
         msg_map = {
             'Confirmed': 'Order confirmed. We are getting it ready.',
@@ -159,24 +156,41 @@ class OrderAdmin(ImportExportModelAdmin):
                 self.create_status_records(obj, obj.status)
         super().save_model(request, obj, form, change)
 
-    # Bulk actions
+    # Bulk actions (Now correctly inside the class)
+    @admin.action(description="⭐ Mark as Confirmed")
     def bulk_confirm(self, request, queryset):
         for order in queryset: self.create_status_records(order, 'Confirmed')
         queryset.update(status='Confirmed')
-    bulk_confirm.short_description = "⭐ Mark as Confirmed"
+    
+    @admin.action(description="📦 Mark as Processing")
+    def bulk_processing(self, request, queryset):
+        for order in queryset: self.create_status_records(order, 'Processing')
+        queryset.update(status='Processing')
 
+    @admin.action(description="🚚 Mark as Shipped")
+    def bulk_shipped(self, request, queryset):
+        for order in queryset: self.create_status_records(order, 'Shipped')
+        queryset.update(status='Shipped')
+
+    @admin.action(description="📍 Mark as Ready for Pickup")
+    def bulk_ready(self, request, queryset):
+        for order in queryset: self.create_status_records(order, 'Ready for Pickup')
+        queryset.update(status='Ready for Pickup')
+
+    @admin.action(description="✅ Mark as Delivered")
     def bulk_delivered(self, request, queryset):
         for order in queryset: self.create_status_records(order, 'Delivered')
         queryset.update(status='Delivered')
-    bulk_delivered.short_description = "✅ Mark as Delivered"
 
-    # UI UI UI
+    # Display UI Methods (Now correctly inside the class)
+    @admin.display(description="Status Timeline")
     def status_timeline(self, obj):
         steps = ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Ready for Pickup', 'Delivered']
         current_status = obj.status if obj.status in steps else 'Pending'
         try: current_index = steps.index(current_status)
         except ValueError: current_index = 0
-        html = '<div style="display: flex; align-items: center; width: 100%; max-width: 800px; padding: 30px 10px; background: #fff; border-radius: 8px; border: 1px solid #ccc; overflow-x: auto;">'
+        
+        html = '<div style="display: flex; align-items: center; width: 100%; max-width: 800px; padding: 20px 10px; background: #fff; border-radius: 8px; border: 1px solid #ccc; overflow-x: auto;">'
         for i, step in enumerate(steps):
             color = "#28a745" if i <= current_index else "#ddd"
             text_color = "#333" if i <= current_index else "#999"
@@ -190,26 +204,36 @@ class OrderAdmin(ImportExportModelAdmin):
         html += '</div>'
         return mark_safe(html)
 
+    @admin.display(description="Shipping Address")
     def full_address_card(self, obj):
         if obj.address:
             a = obj.address
-            return format_html('<div style="background: #ffffff; padding: 15px; border: 1px solid #ccc; border-left: 6px solid #ffa500; border-radius: 4px; color: #000; line-height: 1.8;">'
-                               '<strong>Recipient:</strong> {} {}<br><strong>Street:</strong> {}<br><strong>Location:</strong> {}, {}<br><strong>Phone:</strong> {}</div>',
-                               a.first_name, a.last_name, a.street, a.town.name, a.town.county.name, a.phone)
+            return format_html(
+                '<div style="background: #ffffff; padding: 15px; border: 1px solid #ccc; border-left: 6px solid #ffa500; border-radius: 4px; color: #000; line-height: 1.8;">'
+                '<strong>Recipient:</strong> {} {}<br><strong>Street:</strong> {}<br><strong>Location:</strong> {}, {}<br><strong>Phone:</strong> {}</div>',
+                a.first_name, a.last_name, a.street, a.town.name, a.town.county.name, a.phone
+            )
         return "No shipping address."
 
-    def customer_email(self, obj): return obj.user.email
+    @admin.display(description="Email")
+    def customer_email(self, obj): 
+        return obj.user.email if obj.user else "N/A"
+
+    @admin.display(description="Status")
     def colored_status(self, obj):
         colors = {'Pending': '#6c757d', 'Confirmed': '#007bff', 'Processing': '#17a2b8', 'Ready for Pickup': '#ffa500', 'Delivered': '#198754', 'Cancelled': '#dc3545', 'Shipped': '#6f42c1'}
         return format_html('<span style="background:{}; color:white; padding:4px 12px; border-radius:20px; font-size:10px; font-weight:bold;">{}</span>', colors.get(obj.status, '#333'), obj.status)
     
+    @admin.display(description="Total", ordering='total_price')
     def total_price_formatted(self, obj): 
-        # FIX: Ensure it returns a string
         return f"Ksh {int(obj.total_price):,}"
     
+    @admin.display(description="Actions")
     def order_actions(self, obj):
         url = reverse('admin:products_order_change', args=[obj.pk])
         return format_html('<a class="button" style="background:#ffa500; color:white; border:none; padding: 4px 12px; font-weight: bold;" href="{}">MANAGE</a>', url)
+
+# ... (all your previous code: CustomAdminSite, Inlines, ProductAdmin, OrderAdmin)
 
 # ----------------------------------------------------------------      
 # 5. REGISTRATION
@@ -221,13 +245,22 @@ class ReviewAdmin(admin.ModelAdmin):
     def product_name(self, obj):
         return obj.order_item.product.name
 
+# IMPORTANT: Do NOT unregister User or Group here. 
+# Your CustomAdminSite is already empty. Just register them.
 admin.site.register(User, UserAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
+
+# Register your models
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(FlashSale, FlashSaleAdmin)
 admin.site.register(Review, ReviewAdmin)
-admin.site.register(Category); admin.site.register(Address); admin.site.register(Town)
-admin.site.register(County); admin.site.register(Wishlist); admin.site.register(Cart)
-admin.site.register(Coupon); admin.site.register(OrderTracking)
+admin.site.register(Category)
+admin.site.register(Address)
+admin.site.register(Town)
+admin.site.register(County)
+admin.site.register(Wishlist)
+admin.site.register(Cart)
+admin.site.register(Coupon)
+admin.site.register(OrderTracking)

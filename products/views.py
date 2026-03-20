@@ -46,7 +46,19 @@ def index(request):
     """The master shop view handling search, categories, and price filtering."""
     products = Product.objects.all()
     categories = Category.objects.all()
-    active_category = None  # FIXED: Initialized here to prevent NameError
+    active_category = None
+
+    # --- NEW: FETCH RECENTLY VIEWED ---
+    recent_ids = request.session.get('recently_viewed', [])
+    recently_viewed_items = []
+    
+    if recent_ids:
+        # We use in_bulk because filter(id__in=...) does NOT preserve order.
+        # in_bulk returns a dictionary: {id: object}
+        items_dict = Product.objects.in_bulk(recent_ids)
+        # Reconstruct the list in the order of recent_ids (newest first)
+        recently_viewed_items = [items_dict[pk] for pk in recent_ids if pk in items_dict]
+    # ----------------------------------
 
     # Search Logic
     query = request.GET.get('q')
@@ -62,26 +74,23 @@ def index(request):
     # Price Filters
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
-    if min_price:
-        products = products.filter(price__gte=min_price)
-    if max_price:
-        products = products.filter(price__lte=max_price)
+    if min_price: products = products.filter(price__gte=min_price)
+    if max_price: products = products.filter(price__lte=max_price)
 
     # Sorting
     sort = request.GET.get('sort')
-    if sort == 'price_low':
-        products = products.order_by('price')
-    elif sort == 'price_high':
-        products = products.order_by('-price')
-    elif sort == 'newest':
-        products = products.order_by('-id')
+    if sort == 'price_low': products = products.order_by('price')
+    elif sort == 'price_high': products = products.order_by('-price')
+    elif sort == 'newest': products = products.order_by('-id')
 
     return render(request, 'index.html', {
         'products': products,
         'categories': categories,
-        'active_category': active_category
+        'active_category': active_category,
+        'recently_viewed': recently_viewed_items[:6] # Pass top 6 to home page
     })
-
+    
+    
 def search_suggestions(request):
     query = request.GET.get('q', '')
     suggestions = []
@@ -94,6 +103,23 @@ def search_suggestions(request):
 # --- PRODUCT DETAIL VIEW ---
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+
+    # --- NEW: RECORD RECENTLY VIEWED ---
+    # 1. Get the list of IDs from the session (default to empty list)
+    recent_ids = request.session.get('recently_viewed', [])
+
+    # 2. If the product is already in the list, remove it so we can move it to the top
+    if product.id in recent_ids:
+        recent_ids.remove(product.id)
+
+    # 3. Add current product ID to the front of the list
+    recent_ids.insert(0, product.id)
+
+    # 4. Limit the list to the last 10 items and save back to session
+    request.session['recently_viewed'] = recent_ids[:10]
+    request.session.modified = True 
+    # ----------------------------------
+
     gallery = product.gallery.all()
     variants = product.variants.all()
     
@@ -105,7 +131,6 @@ def product_detail(request, product_id):
         related = related[:5]
 
     # --- FLASH SALE CHECK ---
-    # We pass the flash_sale object if it's active so the JS timer can use its end_time
     flash_sale = None
     if hasattr(product, 'flash_sale') and product.flash_sale.is_currently_active:
         flash_sale = product.flash_sale
@@ -127,9 +152,10 @@ def product_detail(request, product_id):
         'related_products': related,
         'reviews': reviews,
         'pending_item': pending_item,
-        'flash_sale': flash_sale, # Needed for the timer
+        'flash_sale': flash_sale,
     })
-# --- 3. VERIFIED REVIEWS & PENDING TAB ---
+    
+    # --- 3. VERIFIED REVIEWS & PENDING TAB ---
 
 @login_required
 def pending_reviews_view(request):
@@ -314,68 +340,132 @@ def cart_adjust_api(request, product_id, action):
 
 
 @login_required
+@login_required
 def checkout(request):
     cart = get_user_cart(request.user)
     items = cart.items.all()
-    if not items.exists(): return redirect('products:index')
+    if not items.exists(): 
+        return redirect('products:index')
 
-    total_price = cart.total_price  # This property in Cart model uses item.subtotal
+    total_price = cart.total_price  
     discount = 0
     coupon_code = None
+    
+    # --- DYNAMIC DELIVERY VARIABLES ---
+    delivery_fee = 0
+    est_days = 3
+    # Get address from POST (if placing order) or GET (if just viewing/selecting)
+    selected_addr_id = request.POST.get('selected_address') or request.GET.get('addr_id')
+    addresses = Address.objects.filter(user=request.user)
+    
+    # Try to find the selected address, otherwise use the default one
+    selected_address = None
+    if selected_addr_id:
+        selected_address = addresses.filter(id=selected_addr_id).first()
+    else:
+        selected_address = addresses.filter(is_default=True).first()
+
+    # --- 1. CALCULATE DELIVERY FEE BASED ON LOCATION & BULKINESS ---
+    if selected_address:
+        town = selected_address.town
+        delivery_fee = town.base_delivery_fee # e.g., 120 for Nairobi
+        est_days = town.estimated_days
+        
+        # Check for bulky items and add surcharges
+        bulky_items = items.filter(product__is_bulky=True)
+        if bulky_items.exists():
+            # Logic: Add the highest bulky surcharge in the cart
+            max_surcharge = max(item.product.bulky_surcharge for item in bulky_items)
+            delivery_fee += max_surcharge
 
     if request.method == 'POST':
         action = request.POST.get('action')
 
         if action == 'apply_coupon':
-            # ... (your existing coupon logic remains the same)
-            pass
+            code = request.POST.get('coupon', '').strip()
+            cp = Coupon.objects.filter(code__iexact=code, active=True).first()
+            if cp and total_price >= cp.min_total:
+                discount = cp.compute_discount(total_price)
+                coupon_code = cp.code
+                messages.success(request, f"Coupon {code} applied!")
+            else:
+                messages.warning(request, "Invalid coupon.")
 
         elif action == 'place_order':
-            addr_id = request.POST.get('selected_address')
+            if not selected_address:
+                messages.error(request, "Please select or add a shipping address.")
+                return redirect('products:checkout')
+
             pay_method = request.POST.get('payment_method')
             delivery_method = request.POST.get('delivery_method', 'standard')
             
-            address = get_object_or_404(Address, id=addr_id, user=request.user)
-            delivery_fee = 500 if delivery_method == 'express' else 0
-            final_total = total_price - discount + delivery_fee
+            # Additional logic for Express Delivery
+            if delivery_method == 'express':
+                delivery_fee += 200 # Add a premium for express
+                est_days = 1
+            
+            final_total = (total_price - discount) + delivery_fee
 
+            # Business Day Estimation
             today = timezone.localdate()
-            est_start = add_business_days(today, 1 if delivery_method == 'express' else 2)
-            est_end = add_business_days(today, 1 if delivery_method == 'express' else 4)
+            est_start = add_business_days(today, est_days)
+            est_end = add_business_days(today, est_days + 1)
 
             try:
                 with transaction.atomic():
                     order = Order.objects.create(
-                        user=request.user, total_price=final_total,
-                        address=address, phone_number=address.phone,
+                        user=request.user,
+                        total_price=final_total,
+                        shipping_fee=delivery_fee, # Save the dynamic fee
+                        address=selected_address,
+                        phone_number=request.POST.get('phone_number') or selected_address.phone,
                         payment_method='M-Pesa' if pay_method == 'mpesa' else 'Pay on Delivery',
-                        delivery_method=delivery_method, discount_amount=discount,
-                        coupon_code=coupon_code, estimated_delivery_start=est_start,
+                        delivery_method=delivery_method,
+                        discount_amount=discount,
+                        coupon_code=coupon_code,
+                        estimated_delivery_start=est_start,
                         estimated_delivery_end=est_end
                     )
+                    
                     for item in items:
-                        # FLASH SALE FIX: Save the actual dynamic price at the moment of purchase
                         current_purchase_price = item.product.get_current_price()
-                        
                         OrderItem.objects.create(
-                            order=order, product=item.product,
-                            quantity=item.quantity, 
-                            price=current_purchase_price # Correctly captures Flash Price
+                            order=order,
+                            product=item.product,
+                            quantity=item.quantity,
+                            price=current_purchase_price
                         )
                         item.product.stock -= item.quantity
                         item.product.save()
 
-                    items.delete()
-                    # ... (rest of your Mpesa/Email logic)
+                    items.delete() # Clear cart
+
+                    # --- Handle Payment ---
+                    if pay_method == 'mpesa':
+                        # ... (Your STK Push logic here)
+                        pass
+                    
+                    messages.success(request, f"Order #{order.id} placed! Delivery fee: KSh {delivery_fee}")
                     return redirect('products:my_orders')
+
             except Exception as e:
                 messages.error(request, f"Error: {str(e)}")
 
+    # Final calculation for the template display
+    final_total = (total_price - discount) + delivery_fee
+
     return render(request, 'checkout.html', {
-        'cart_items': items, 'total_price': total_price,
-        'addresses': Address.objects.filter(user=request.user),
-        'discount': discount, 'coupon_code': coupon_code
+        'cart_items': items,
+        'total_price': total_price,
+        'addresses': addresses,
+        'selected_address': selected_address,
+        'delivery_fee': delivery_fee,
+        'final_total': final_total,
+        'est_days': est_days,
+        'discount': discount,
+        'coupon_code': coupon_code
     })
+    
 @csrf_exempt
 def mpesa_callback(request):
     try:
@@ -488,3 +578,28 @@ def logout_view(request):
 
 def vouchers(request):
     return render(request, 'vouchers.html', {'coupons': Coupon.objects.filter(active=True)})
+
+
+# Add this to views.py
+@login_required
+def add_address_ajax(request):
+    if request.method == 'POST':
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+            
+            # If set as default, unset others
+            if address.is_default:
+                Address.objects.filter(user=request.user).exclude(id=address.id).update(is_default=False)
+            
+            return JsonResponse({
+                'success': True,
+                'address_id': address.id,
+                'full_name': f"{address.first_name} {address.last_name}",
+                'street': address.street,
+                'town_county': f"{address.town.name}, {address.town.county.name}",
+                'phone': address.phone
+            })
+    return JsonResponse({'success': False, 'errors': form.errors}, status=400)
