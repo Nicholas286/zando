@@ -1,4 +1,6 @@
+import datetime
 from django.contrib import admin
+from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.urls import reverse
@@ -8,15 +10,17 @@ from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from import_export.admin import ImportExportModelAdmin
 from auditlog.models import LogEntry
 from auditlog.admin import LogEntryAdmin
+from decimal import Decimal 
 
 from .models import (
     Product, Category, Order, OrderItem, Wishlist,
     County, Town, Address, Cart, CartItem, Coupon, Review,
-    OrderNotification, OrderTracking, ProductImage, ProductVariant, FlashSale
+    OrderNotification, OrderTracking, ProductImage, ProductVariant, 
+    FlashSale, PromotionStrip  # Added PromotionStrip here
 )
 
 # ----------------------------------------------------------------      
-# 1. CUSTOM ADMIN SITE (DASHBOARD)
+# 1. CUSTOM ADMIN SITE
 # ----------------------------------------------------------------
 class CustomAdminSite(admin.AdminSite):
     site_header = "ZANDO LOGISTICS PORTAL"
@@ -81,6 +85,8 @@ class ProductAdmin(ImportExportModelAdmin):
     list_filter = ('category',)
     search_fields = ('name',)
     inlines = [ProductImageInline, ProductVariantInline, FlashSaleInline]
+    
+    actions = ['bulk_flash_10', 'bulk_flash_25', 'bulk_flash_50']
 
     def current_price_display(self, obj):
         reg_price = f"{int(obj.price):,}"
@@ -105,6 +111,40 @@ class ProductAdmin(ImportExportModelAdmin):
             return mark_safe('<span style="color: #d9534f;">⚡ ACTIVE</span>')
         return "No"
 
+    # --- FIXED ACTION LOGIC ---
+    def apply_bulk_flash(self, request, queryset, percentage):
+        now = timezone.now()
+        end = now + datetime.timedelta(days=2) 
+        
+        count = queryset.count()
+        for product in queryset:
+            # FIX: Convert calculation to Decimal to avoid TypeError
+            discount_factor = Decimal(percentage) / Decimal(100)
+            discount_amount = product.price * discount_factor
+            
+            FlashSale.objects.update_or_create(
+                product=product,
+                defaults={
+                    'discount_price': product.price - discount_amount,
+                    'start_time': now,
+                    'end_time': end,
+                    'is_active': True
+                }
+            )
+        self.message_user(request, f"Successfully applied {percentage}% Flash Sale to {count} products.")
+
+    @admin.action(description="⚡ Apply 10%% Flash Sale")
+    def bulk_flash_10(self, request, queryset):
+        self.apply_bulk_flash(request, queryset, 10)
+
+    @admin.action(description="⚡ Apply 25%% Flash Sale")
+    def bulk_flash_25(self, request, queryset):
+        self.apply_bulk_flash(request, queryset, 25)
+
+    @admin.action(description="⚡ Apply 50%% Flash Sale")
+    def bulk_flash_50(self, request, queryset):
+        self.apply_bulk_flash(request, queryset, 50)
+        
 class FlashSaleAdmin(admin.ModelAdmin):
     list_display = ('product', 'discount_price_display', 'start_time', 'end_time', 'is_active_status')
     list_filter = ('is_active',)
@@ -117,7 +157,22 @@ class FlashSaleAdmin(admin.ModelAdmin):
     is_active_status.boolean = True
 
 # ----------------------------------------------------------------      
-# 4. ORDER ADMIN
+# 4. PROMOTION STRIP ADMIN (Jumia Style Strips)
+# ----------------------------------------------------------------
+class PromotionStripAdmin(admin.ModelAdmin):
+    list_display = ('title', 'is_active', 'order', 'bg_color_preview')
+    filter_horizontal = ('products',) # Makes selecting multiple products easy
+    list_editable = ('is_active', 'order')
+
+    def bg_color_preview(self, obj):
+        return format_html(
+            '<div style="width: 30px; height: 20px; background: {}; border: 1px solid #000;"></div>',
+            obj.bg_color
+        )
+    bg_color_preview.short_description = "Color"
+
+# ----------------------------------------------------------------      
+# 5. ORDER ADMIN
 # ----------------------------------------------------------------
 class OrderAdmin(ImportExportModelAdmin):
     list_display = ('id', 'user', 'colored_status', 'total_price_formatted', 'created_at', 'order_actions')
@@ -135,7 +190,6 @@ class OrderAdmin(ImportExportModelAdmin):
 
     readonly_fields = ('status_timeline', 'customer_email', 'full_address_card', 'user')
 
-    # Logic methods
     def create_status_records(self, order, new_status):
         msg_map = {
             'Confirmed': 'Order confirmed. We are getting it ready.',
@@ -156,7 +210,6 @@ class OrderAdmin(ImportExportModelAdmin):
                 self.create_status_records(obj, obj.status)
         super().save_model(request, obj, form, change)
 
-    # Bulk actions (Now correctly inside the class)
     @admin.action(description="⭐ Mark as Confirmed")
     def bulk_confirm(self, request, queryset):
         for order in queryset: self.create_status_records(order, 'Confirmed')
@@ -182,7 +235,6 @@ class OrderAdmin(ImportExportModelAdmin):
         for order in queryset: self.create_status_records(order, 'Delivered')
         queryset.update(status='Delivered')
 
-    # Display UI Methods (Now correctly inside the class)
     @admin.display(description="Status Timeline")
     def status_timeline(self, obj):
         steps = ['Pending', 'Confirmed', 'Processing', 'Shipped', 'Ready for Pickup', 'Delivered']
@@ -233,8 +285,6 @@ class OrderAdmin(ImportExportModelAdmin):
         url = reverse('admin:products_order_change', args=[obj.pk])
         return format_html('<a class="button" style="background:#ffa500; color:white; border:none; padding: 4px 12px; font-weight: bold;" href="{}">MANAGE</a>', url)
 
-# ... (all your previous code: CustomAdminSite, Inlines, ProductAdmin, OrderAdmin)
-
 # ----------------------------------------------------------------      
 # 5. REGISTRATION
 # ----------------------------------------------------------------
@@ -245,17 +295,15 @@ class ReviewAdmin(admin.ModelAdmin):
     def product_name(self, obj):
         return obj.order_item.product.name
 
-# IMPORTANT: Do NOT unregister User or Group here. 
-# Your CustomAdminSite is already empty. Just register them.
 admin.site.register(User, UserAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
 
-# Register your models
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(FlashSale, FlashSaleAdmin)
 admin.site.register(Review, ReviewAdmin)
+admin.site.register(PromotionStrip, PromotionStripAdmin) # Registered new model
 admin.site.register(Category)
 admin.site.register(Address)
 admin.site.register(Town)

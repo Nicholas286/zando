@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Avg
 from django.utils import timezone
+from decimal import Decimal
 
 # --- 1. GEOGRAPHY ---
 class County(models.Model):
@@ -107,15 +108,49 @@ class Cart(models.Model):
     @property
     def total_price(self):
         return sum(item.subtotal for item in self.items.all())
-
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    cart = models.ForeignKey('Cart', related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+
+    @property
+    def price_analysis(self):
+        """
+        Calculates the full price breakdown for display and checkout.
+        """
+        unit_price = self.product.get_current_price()
+        raw_total = unit_price * self.quantity
+        
+        discount_amount = Decimal('0.00')
+        promo_name = ""
+
+        # Logic for Promotion Strips
+        promo = self.product.promotion_strips.filter(is_active=True).first()
+        if promo and self.quantity >= promo.min_quantity:
+            multiplier = Decimal(promo.discount_percent) / Decimal('100')
+            discount_amount = raw_total * multiplier
+            promo_name = promo.title
+
+        final_subtotal = raw_total - discount_amount
+
+        return {
+            'unit_price': unit_price,
+            'raw_total': raw_total,
+            'discount_amount': discount_amount,
+            'final_subtotal': final_subtotal,
+            'promo_name': promo_name,
+            'is_discounted': discount_amount > 0
+        }
+
     @property
     def subtotal(self):
-        return self.product.get_current_price() * self.quantity
+        """Used by the Cart.total_price property. No () needed."""
+        # FIX: Ensure this matches the property name 'price_analysis'
+        return self.price_analysis['final_subtotal']
 
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name}"
+    
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -194,3 +229,20 @@ class OrderTracking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         ordering = ['created_at']
+        
+class PromotionStrip(models.Model):
+    title = models.CharField(max_length=255, help_text="e.g. Buy 2 Get 10% Off")
+    bg_color = models.CharField(max_length=20, default="#9c27b0", help_text="Hex color code")
+    is_active = models.BooleanField(default=True)
+    products = models.ManyToManyField('Product', related_name='promotion_strips')
+    order = models.PositiveIntegerField(default=0, help_text="Display order on homepage")
+    
+    # Logic Fields: These apply to ANY strip you create
+    min_quantity = models.PositiveIntegerField(default=2, help_text="Quantity to trigger discount")
+    discount_percent = models.PositiveIntegerField(default=10, help_text="Percent to deduct")
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title

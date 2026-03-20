@@ -15,6 +15,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
 from django_daraja.mpesa.core import MpesaClient
+from decimal import Decimal
 
 # Import all models
 from .models import (
@@ -44,6 +45,10 @@ def add_business_days(start_date, days):
 
 from django.utils import timezone  # Ensure this is imported at the top
 
+from django.shortcuts import render
+from django.utils import timezone
+from .models import Product, Category, PromotionStrip # Ensure PromotionStrip is imported
+
 def index(request):
     """The master shop view handling search, categories, and Jumia-style strips."""
     products = Product.objects.all()
@@ -60,30 +65,28 @@ def index(request):
 
     # 2. --- RECENTLY VIEWED (MATCHING base.html NAME) ---
     recent_ids = request.session.get('recently_viewed', [])
-    global_recently_viewed = [] # Renamed to match your base.html
+    global_recently_viewed = []
     if recent_ids:
-        # Fetching items in bulk but maintaining the session order
         items_dict = Product.objects.in_bulk(recent_ids)
         global_recently_viewed = [items_dict[pk] for pk in recent_ids if pk in items_dict]
 
-    # 3. --- RECOMMENDED FOR YOU (Improved Logic) ---
+    # 3. --- RECOMMENDED FOR YOU ---
     recommended = []
     if recent_ids:
-        # Get categories of items the user has actually clicked on
         viewed_cat_ids = Product.objects.filter(id__in=recent_ids).values_list('category', flat=True)
-        
-        # Pull products from those categories. 
-        # We use order_by('?') so it changes slightly every time the user refreshes.
         recommended = Product.objects.filter(
             category__in=viewed_cat_ids,
             stock__gt=0
         ).exclude(id__in=recent_ids).distinct().order_by('?')[:12]
     
-    # If recommended is still empty (new user), show newest arrivals
     if not recommended:
         recommended = Product.objects.filter(stock__gt=0).order_by('-id')[:12]
 
-    # 4. --- FILTERS ---
+    # 4. --- NEW: DYNAMIC PROMOTION STRIPS (Jumia Style) ---
+    # Fetch all active strips and prefetch products to save database hits
+    promo_strips = PromotionStrip.objects.filter(is_active=True).prefetch_related('products').order_by('order')
+
+    # 5. --- FILTERS ---
     query = request.GET.get('q')
     if query:
         products = products.filter(name__icontains=query)
@@ -105,17 +108,17 @@ def index(request):
     elif sort == 'price_high': products = products.order_by('-price')
     elif sort == 'newest': products = products.order_by('-id')
 
-    # 5. --- CONTEXT ---
+    # 6. --- CONTEXT ---
     return render(request, 'index.html', {
         'products': products,
         'categories': categories,
         'active_category': active_category,
         'flash_sales': flash_sales,
         'recommended': recommended,
-        # IMPORTANT: Key must be 'global_recently_viewed' to show up in base.html
+        'promo_strips': promo_strips, # Pass the new strips to index.html
         'global_recently_viewed': global_recently_viewed[:6] 
     })
-        
+            
 def search_suggestions(request):
     query = request.GET.get('q', '')
     suggestions = []
@@ -221,39 +224,66 @@ def submit_review(request, order_item_id):
 def account_settings(request):
     return render(request, 'account.html', {'user': request.user})
 
+
 def view_cart(request):
     if request.user.is_authenticated:
         cart = get_user_cart(request.user)
-        cart_items = cart.items.all()
-        # total_price is handled by the Cart model property (already uses dynamic price)
-        total_price = cart.total_price
-        total_quantity = cart_items.aggregate(total=Sum('quantity'))['total'] or 0
-        wishlist_items = Wishlist.objects.filter(user=request.user)[:5]
+        items = cart.items.all()
+        
+        # 1. Calculate the total quantity
+        total_quantity = items.aggregate(total=Sum('quantity'))['total'] or 0
+        
+        # 2. Get the total price from the Cart model property
+        # (This uses the discounted subtotals we fixed in models.py)
+        total_price = cart.total_price 
+        
+        context = {
+            'cart': cart, 
+            'cart_items': items,
+            'total_quantity': total_quantity,
+            'total_price': total_price,  # <--- ADDED THIS TO FIX THE BLANK SIDEBAR
+        }
     else:
+        # GUEST LOGIC
         session_cart = request.session.get('cart', {})
         cart_items = []
         total_quantity = 0
-        total_price = 0
+        total_price = Decimal('0.00')
+        
         for pid, qty in session_cart.items():
             try:
                 p = Product.objects.get(id=int(pid))
-                # FLASH SALE FIX: Use dynamic price for subtotals
                 current_price = p.get_current_price()
                 sub = current_price * qty
                 
-                cart_items.append({'product': p, 'quantity': qty, 'subtotal': sub})
+                analysis_data = {
+                    'unit_price': current_price,
+                    'raw_total': sub,
+                    'discount_amount': Decimal('0.00'),
+                    'final_subtotal': sub,
+                    'is_discounted': False,
+                    'promo_name': ""
+                }
+                
+                cart_items.append({
+                    'product': p, 
+                    'quantity': qty, 
+                    'price_analysis': analysis_data 
+                })
                 total_quantity += qty
                 total_price += sub
-            except Product.DoesNotExist: continue
-        wishlist_items = []
+            except Product.DoesNotExist:
+                continue
+        
+        context = {
+            'cart_items': cart_items,
+            'total_price': total_price,
+            'total_quantity': total_quantity,
+        }
     
-    return render(request, 'cart.html', {
-        'cart_items': cart_items,
-        'total_price': total_price,
-        'total_quantity': total_quantity,
-        'wishlist_items': wishlist_items,
-        'recently_viewed': Product.objects.all()[:5]
-    })
+    return render(request, 'cart.html', context)
+
+
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     if product.stock <= 0:
@@ -355,41 +385,37 @@ def cart_adjust_api(request, product_id, action):
 
 
 @login_required
-@login_required
 def checkout(request):
     cart = get_user_cart(request.user)
     items = cart.items.all()
     if not items.exists(): 
         return redirect('products:index')
 
-    total_price = cart.total_price  
-    discount = 0
+    # Uses the fixed CartItem.subtotal property
+    cart_subtotal = cart.total_price  
+    
+    discount = Decimal('0.00')
     coupon_code = None
-    
-    # --- DYNAMIC DELIVERY VARIABLES ---
-    delivery_fee = 0
+    delivery_fee = Decimal('0.00')
     est_days = 3
-    # Get address from POST (if placing order) or GET (if just viewing/selecting)
-    selected_addr_id = request.POST.get('selected_address') or request.GET.get('addr_id')
-    addresses = Address.objects.filter(user=request.user)
     
-    # Try to find the selected address, otherwise use the default one
+    addresses = Address.objects.filter(user=request.user)
+    selected_addr_id = request.POST.get('selected_address') or request.GET.get('addr_id')
+    
     selected_address = None
     if selected_addr_id:
         selected_address = addresses.filter(id=selected_addr_id).first()
     else:
         selected_address = addresses.filter(is_default=True).first()
 
-    # --- 1. CALCULATE DELIVERY FEE BASED ON LOCATION & BULKINESS ---
+    # Calculate Delivery
     if selected_address:
         town = selected_address.town
-        delivery_fee = town.base_delivery_fee # e.g., 120 for Nairobi
+        delivery_fee = town.base_delivery_fee 
         est_days = town.estimated_days
         
-        # Check for bulky items and add surcharges
         bulky_items = items.filter(product__is_bulky=True)
         if bulky_items.exists():
-            # Logic: Add the highest bulky surcharge in the cart
             max_surcharge = max(item.product.bulky_surcharge for item in bulky_items)
             delivery_fee += max_surcharge
 
@@ -399,29 +425,26 @@ def checkout(request):
         if action == 'apply_coupon':
             code = request.POST.get('coupon', '').strip()
             cp = Coupon.objects.filter(code__iexact=code, active=True).first()
-            if cp and total_price >= cp.min_total:
-                discount = cp.compute_discount(total_price)
+            if cp and cart_subtotal >= cp.min_total:
+                discount = Decimal(cp.compute_discount(cart_subtotal))
                 coupon_code = cp.code
                 messages.success(request, f"Coupon {code} applied!")
             else:
-                messages.warning(request, "Invalid coupon.")
+                messages.warning(request, "Invalid or ineligible coupon.")
 
         elif action == 'place_order':
             if not selected_address:
-                messages.error(request, "Please select or add a shipping address.")
+                messages.error(request, "Please select a shipping address.")
                 return redirect('products:checkout')
 
             pay_method = request.POST.get('payment_method')
             delivery_method = request.POST.get('delivery_method', 'standard')
             
-            # Additional logic for Express Delivery
             if delivery_method == 'express':
-                delivery_fee += 200 # Add a premium for express
+                delivery_fee += Decimal('200.00')
                 est_days = 1
             
-            final_total = (total_price - discount) + delivery_fee
-
-            # Business Day Estimation
+            final_total = (cart_subtotal - discount) + delivery_fee
             today = timezone.localdate()
             est_start = add_business_days(today, est_days)
             est_end = add_business_days(today, est_days + 1)
@@ -431,7 +454,7 @@ def checkout(request):
                     order = Order.objects.create(
                         user=request.user,
                         total_price=final_total,
-                        shipping_fee=delivery_fee, # Save the dynamic fee
+                        shipping_fee=delivery_fee,
                         address=selected_address,
                         phone_number=request.POST.get('phone_number') or selected_address.phone,
                         payment_method='M-Pesa' if pay_method == 'mpesa' else 'Pay on Delivery',
@@ -443,35 +466,34 @@ def checkout(request):
                     )
                     
                     for item in items:
-                        current_purchase_price = item.product.get_current_price()
+                        # FIX: No parentheses () because price_analysis is a property
+                        analysis = item.price_analysis
+                        
+                        # Calculate discounted unit price
+                        actual_price_per_unit = analysis['final_subtotal'] / item.quantity
+                        
                         OrderItem.objects.create(
                             order=order,
                             product=item.product,
                             quantity=item.quantity,
-                            price=current_purchase_price
+                            price=actual_price_per_unit
                         )
+                        
                         item.product.stock -= item.quantity
                         item.product.save()
 
-                    items.delete() # Clear cart
-
-                    # --- Handle Payment ---
-                    if pay_method == 'mpesa':
-                        # ... (Your STK Push logic here)
-                        pass
-                    
-                    messages.success(request, f"Order #{order.id} placed! Delivery fee: KSh {delivery_fee}")
+                    items.delete()
+                    messages.success(request, f"Order #{order.id} placed successfully!")
                     return redirect('products:my_orders')
 
             except Exception as e:
-                messages.error(request, f"Error: {str(e)}")
+                messages.error(request, f"An error occurred: {str(e)}")
 
-    # Final calculation for the template display
-    final_total = (total_price - discount) + delivery_fee
+    final_total = (cart_subtotal - discount) + delivery_fee
 
     return render(request, 'checkout.html', {
         'cart_items': items,
-        'total_price': total_price,
+        'cart_subtotal': cart_subtotal,
         'addresses': addresses,
         'selected_address': selected_address,
         'delivery_fee': delivery_fee,
@@ -480,7 +502,6 @@ def checkout(request):
         'discount': discount,
         'coupon_code': coupon_code
     })
-    
 @csrf_exempt
 def mpesa_callback(request):
     try:

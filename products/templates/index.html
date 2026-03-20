@@ -12,12 +12,18 @@
     .flash-header { background: #e61601; color: white; padding: 10px 15px; border-radius: 4px 4px 0 0; }
     
     /* Layout Logic */
-    #filterSidebar { transition: all 0.3s ease; border-right: 1px solid #ddd; }
+    #sidebarMenu { transition: all 0.3s ease; border-right: 1px solid #ddd; }
     .cat-bubble { width: 65px; height: 65px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; transition: 0.2s; }
     .active-bubble { border: 2px solid var(--pro-blue) !important; background: #e7f1ff; }
 
     .x-small { font-size: 0.7rem; }
     .text-orange { color: #f68b1e !important; }
+
+    /* Custom Promo Strip Header */
+    .promo-header { color: white; padding: 10px 15px; border-radius: 4px 4px 0 0; }
+    
+    .product-card { transition: transform 0.2s; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important; }
 </style>
 {% endblock %}
 
@@ -39,6 +45,8 @@
 
 <!-- 2. HOME SECTIONS (Hide if searching or filtering) -->
 {% if not request.GET.q and not request.GET.category %}
+    
+    <!-- A. FLASH SALES -->
     {% if flash_sales %}
     <div class="card border-0 shadow-sm mb-4 overflow-hidden">
         <div class="flash-header d-flex justify-content-between align-items-center">
@@ -55,8 +63,6 @@
                     <img src="{{ p.image.url }}" class="img-fluid mb-2" style="height:120px; width:100%; object-fit:contain;">
                     <div class="text-truncate small">{{ p.name }}</div>
                     <div class="fw-bold">KSh {{ p.get_current_price|intcomma }}</div>
-                    
-                    <!-- RED FLASH SALE LINE -->
                     <div class="flash-progress-bar">
                         <div class="flash-progress-fill" style="width: {{ p.stock }}%;"></div>
                     </div>
@@ -68,7 +74,31 @@
     </div>
     {% endif %}
 
-    <!-- RECOMMENDED (Stars Removed) -->
+    <!-- B. DYNAMIC PROMOTION STRIPS -->
+    {% for strip in promo_strips %}
+    <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+        <div class="promo-header d-flex justify-content-between align-items-center" style="background-color: {{ strip.bg_color }};">
+            <h6 class="mb-0 fw-bold text-uppercase">{{ strip.title }}</h6>
+            <a href="#" class="text-white small text-decoration-none">SEE ALL ></a>
+        </div>
+        <div class="d-flex overflow-auto bg-white p-2" style="scrollbar-width: none;">
+            {% for p in strip.products.all %}
+            <div class="p-2" style="min-width:160px; max-width:160px;">
+                <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none text-dark">
+                    <img src="{{ p.image.url }}" class="img-fluid mb-2" style="height:120px; width:100%; object-fit:contain;">
+                    <div class="text-truncate small">{{ p.name }}</div>
+                    <div class="fw-bold">KSh {{ p.get_current_price|intcomma }}</div>
+                    {% if p.get_discount_percentage > 0 %}
+                        <div class="text-muted x-small text-decoration-line-through">KSh {{ p.price|intcomma }}</div>
+                    {% endif %}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- C. RECOMMENDED -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="bg-primary text-white p-2 d-flex justify-content-between align-items-center rounded-top">
             <h6 class="mb-0 fw-bold">RECOMMENDED FOR YOU</h6>
@@ -92,7 +122,6 @@
 <div class="row">
     <div class="col-12 mb-3">
         <div class="d-flex align-items-center">
-            <!-- Three Lines Toggle Icon -->
             <button class="btn btn-light shadow-sm border me-3" id="sidebarToggle" title="Filter Menu">
                 <i class="fa-solid fa-bars fs-5"></i>
             </button>
@@ -102,7 +131,7 @@
         </div>
     </div>
 
-    <!-- LEFT SIDEBAR (Hidden by default) -->
+    <!-- LEFT SIDEBAR -->
     <div id="sidebarMenu" class="col-md-3 d-none">
         <div class="card border-0 shadow-sm p-3 sticky-top" style="top: 90px;">
             <h6 class="fw-bold border-bottom pb-2 mb-3 small">REFINE SEARCH</h6>
@@ -121,39 +150,44 @@
                             <img src="{{ product.image.url }}" class="img-fluid p-2" style="max-height: 100%;">
                         </div>
                     </a>
-
                     <div class="card-body p-1 d-flex flex-column">
                         <h6 class="text-truncate small mb-1 text-dark">{{ product.name }}</h6>
-
-                        <!-- FIXED RATING LOOKUP -->
                         <div class="mb-1 x-small text-warning">
                             {% for i in "12345" %}
                                 <i class="fa{% if product.average_rating >= forloop.counter %}s{% else %}r{% endif %} fa-star"></i>
                             {% endfor %}
                             <span class="text-muted">({{ product.review_count }})</span>
                         </div>
-
                         <p class="fw-bold mb-1 {% if product.flash_sale and product.flash_sale.is_currently_active %}text-danger{% else %}text-dark{% endif %}">
                             KSh {{ product.get_current_price|intcomma }}
                         </p>
-
+                        
                         <div class="mt-auto">
-                            <!-- STOCK STATUS LOGIC RESTORED -->
+                            <!-- STOCK STATUS -->
                             <div class="mb-2">
                                 {% if product.stock < 10 %}
-                                    <span class="text-danger x-small fw-bold">
-                                        <i class="fa-solid fa-bolt-lightning me-1"></i>Only {{ product.stock }} left!
-                                    </span>
+                                    <span class="text-danger x-small fw-bold"><i class="fa-solid fa-bolt-lightning me-1"></i>Only {{ product.stock }} left!</span>
                                 {% elif product.stock < 30 %}
-                                    <span class="text-orange x-small fw-bold">
-                                        <i class="fa-solid fa-circle-exclamation me-1"></i>Few units left
-                                    </span>
+                                    <span class="text-orange x-small fw-bold"><i class="fa-solid fa-circle-exclamation me-1"></i>Few units left</span>
                                 {% else %}
                                     <span class="text-success x-small fw-bold">In Stock</span>
                                 {% endif %}
                             </div>
 
-                            <button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="{{ product.id }}">ADD TO CART</button>
+                            <!-- DYNAMIC AJAX CART AREA -->
+                            <div id="cart-area-{{ product.id }}">
+                                {% with qty=cart_quantities|get_item:product.id %}
+                                    {% if qty %}
+                                        <div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
+                                            <button type="button" class="btn btn-sm btn-primary fw-bold js-cart-dec" data-product-id="{{ product.id }}" style="width:30px;">-</button>
+                                            <span class="fw-bold small">{{ qty }}</span>
+                                            <button type="button" class="btn btn-sm btn-primary fw-bold js-cart-inc" data-product-id="{{ product.id }}" style="width:30px;">+</button>
+                                        </div>
+                                    {% else %}
+                                        <button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="{{ product.id }}">ADD TO CART</button>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -164,45 +198,83 @@
 </div>
 
 <script>
-    // 1. Sidebar Toggle Implementation
-    const btn = document.getElementById('sidebarToggle');
-    const menu = document.getElementById('sidebarMenu');
-    const grid = document.getElementById('productGrid');
+    // 1. Sidebar Toggle
+    const sidebarBtn = document.getElementById('sidebarToggle');
+    const sidebarMenu = document.getElementById('sidebarMenu');
+    const productGrid = document.getElementById('productGrid');
 
-    btn.addEventListener('click', () => {
-        if (menu.classList.contains('d-none')) {
-            menu.classList.remove('d-none');
-            grid.classList.replace('col-md-12', 'col-md-9');
+    sidebarBtn.addEventListener('click', () => {
+        if (sidebarMenu.classList.contains('d-none')) {
+            sidebarMenu.classList.remove('d-none');
+            productGrid.classList.replace('col-md-12', 'col-md-9');
         } else {
-            menu.classList.add('d-none');
-            grid.classList.replace('col-md-9', 'col-md-12');
+            sidebarMenu.classList.add('d-none');
+            productGrid.classList.replace('col-md-9', 'col-md-12');
         }
     });
 
-    // 2. Fixed Flash Sale Timer
+    // 2. Flash Sale Timer
     function updateTimer() {
         const timerClock = document.getElementById('flash-timer-clock');
         if (!timerClock) return;
-
         const endTime = new Date(timerClock.getAttribute('data-endtime')).getTime();
-
         const x = setInterval(function() {
             const now = new Date().getTime();
             const distance = endTime - now;
-
-            if (distance < 0) {
-                clearInterval(x);
-                timerClock.innerHTML = "EXPIRED";
-                return;
-            }
-
+            if (distance < 0) { clearInterval(x); timerClock.innerHTML = "EXPIRED"; return; }
             const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((distance % (1000 * 60)) / 1000);
-
             timerClock.innerHTML = `Ends in: ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
         }, 1000);
     }
     updateTimer();
+
+    // 3. AJAX Cart Transformation Logic
+    async function adjustCart(productId, action) {
+        try {
+            const response = await fetch(`/products/api/cart/${productId}/${action}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                // Update Nav Badge
+                document.querySelectorAll('.global-cart-count').forEach(el => el.textContent = data.global_cart_count);
+
+                // Update UI for this specific product
+                const container = document.getElementById(`cart-area-${productId}`);
+                if (data.quantity > 0) {
+                    container.innerHTML = `
+                        <div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
+                            <button type="button" class="btn btn-sm btn-primary fw-bold js-cart-dec" data-product-id="${productId}" style="width:30px;">-</button>
+                            <span class="fw-bold small">${data.quantity}</span>
+                            <button type="button" class="btn btn-sm btn-primary fw-bold js-cart-inc" data-product-id="${productId}" style="width:30px;">+</button>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `<button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="${productId}">ADD TO CART</button>`;
+                }
+            } else {
+                alert(data.error || "Error updating cart");
+            }
+        } catch (error) {
+            console.error("Cart Error:", error);
+        }
+    }
+
+    // Attach event listeners to document for dynamic buttons
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.js-cart-inc, .js-cart-dec');
+        if (btn) {
+            const productId = btn.dataset.productId;
+            const action = btn.classList.contains('js-cart-inc') ? 'inc' : 'dec';
+            adjustCart(productId, action);
+        }
+    });
 </script>
 {% endblock %}
