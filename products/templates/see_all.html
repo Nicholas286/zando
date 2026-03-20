@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load cart_extras %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <!-- Breadcrumb / Back Button -->
+    <div class="d-flex align-items-center mb-4">
+        <a href="{% url 'products:index' %}" class="btn btn-light shadow-sm border me-3">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h4 class="fw-bold mb-0 text-uppercase" style="font-size: 1.2rem; color: #004b91;">{{ title }}</h4>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+        {% for product in products %}
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm p-2" style="transition: transform 0.2s;">
+                <a href="{% url 'products:product_detail' product.id %}" class="text-center text-decoration-none">
+                    <div style="height: 150px;" class="d-flex align-items-center justify-content-center mb-2">
+                        <img src="{{ product.image.url }}" class="img-fluid p-2" style="max-height: 100%; object-fit: contain;">
+                    </div>
+                </a>
+                <div class="card-body p-1 d-flex flex-column">
+                    <h6 class="text-truncate small mb-1 text-dark">{{ product.name }}</h6>
+                    
+                    <!-- Star Ratings -->
+                    <div class="mb-1" style="font-size: 0.7rem; color: #ffc107;">
+                        {% for i in "12345" %}
+                            <i class="fa{% if product.average_rating >= forloop.counter %}s{% else %}r{% endif %} fa-star"></i>
+                        {% endfor %}
+                        <span class="text-muted">({{ product.review_count }})</span>
+                    </div>
+
+                    <p class="fw-bold mb-1 text-dark">KSh {{ product.get_current_price|intcomma }}</p>
+                    
+                    <div class="mt-auto">
+                        <!-- AJAX Cart Logic -->
+                        <div id="cart-area-{{ product.id }}">
+                            {% with qty=cart_quantities|get_item:product.id %}
+                                {% if qty %}
+                                    <div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
+                                        <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="{{ product.id }}" style="width:30px; background-color: #004b91; border:none;">-</button>
+                                        <span class="fw-bold small">{{ qty }}</span>
+                                        <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="{{ product.id }}" style="width:30px; background-color: #004b91; border:none;">+</button>
+                                    </div>
+                                {% else %}
+                                    <button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="{{ product.id }}" style="background-color: #004b91; border:none;">ADD TO CART</button>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="mb-3"><i class="fas fa-box-open fa-3x text-muted"></i></div>
+            <p class="text-muted">No products found in this section.</p>
+            <a href="{% url 'products:index' %}" class="btn btn-primary px-4" style="background-color: #004b91; border:none;">Go Back Shopping</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Re-use the AJAX Cart Script from Homepage -->
+<script>
+    async function adjustCart(productId, action) {
+        try {
+            const response = await fetch(`/products/api/cart/${productId}/${action}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                // Update nav badge
+                document.querySelectorAll('.global-cart-count').forEach(el => el.textContent = data.global_cart_count);
+
+                // Update UI for this product
+                const container = document.getElementById(`cart-area-${productId}`);
+                if (data.quantity > 0) {
+                    container.innerHTML = `
+                        <div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
+                            <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="${productId}" style="width:30px; background-color: #004b91; border:none;">-</button>
+                            <span class="fw-bold small">${data.quantity}</span>
+                            <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="${productId}" style="width:30px; background-color: #004b91; border:none;">+</button>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `<button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="${productId}" style="background-color: #004b91; border:none;">ADD TO CART</button>`;
+                }
+            }
+        } catch (error) { console.error("Error:", error); }
+    }
+
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.js-cart-inc, .js-cart-dec');
+        if (btn) {
+            const productId = btn.dataset.productId;
+            const action = btn.classList.contains('js-cart-inc') ? 'inc' : 'dec';
+            adjustCart(productId, action);
+        }
+    });
+</script>
+{% endblock %}

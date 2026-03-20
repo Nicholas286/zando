@@ -2,34 +2,37 @@
 {% load humanize %}
 {% block content %}
 <style>
-    :root { --brand-blue: #004b91; --light-blue: #f0f7ff; --pro-orange: #f68b1e; }
+    :root { 
+        --brand-blue: #004b91; 
+        --light-blue: #f0f7ff; 
+        --dark-blue: #003366;
+    }
     body { background-color: #f5f5f5; font-family: 'Inter', sans-serif; }
     
-    /* Step Cards */
+    /* Step Navigation */
     .checkout-step { background: white; border-radius: 4px; margin-bottom: 1rem; border: 1px solid #eee; overflow: hidden; }
     .step-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: white; cursor: pointer; border-bottom: 1px solid #f9f9f9; }
     .step-title { font-weight: bold; text-transform: uppercase; font-size: 14px; display: flex; align-items: center; color: #333; }
-    .step-number { background: #eee; color: #666; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; font-weight: bold; }
+    .step-number { background: #eee; color: #666; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 13px; font-weight: bold; }
     
-    /* Active State */
     .checkout-step.active .step-number { background: var(--brand-blue); color: white; }
     .checkout-step.active .step-header { border-bottom: 1px solid #eee; }
-    
     .step-content { padding: 20px; display: none; }
     .checkout-step.active .step-content { display: block; }
 
-    /* Address Cards */
-    .address-card { border: 1px solid #eee; padding: 15px; border-radius: 4px; margin-bottom: 10px; cursor: pointer; position: relative; transition: 0.2s; }
+    /* Address Selection Cards */
+    .address-card { border: 1px solid #eee; padding: 15px; border-radius: 4px; margin-bottom: 10px; cursor: pointer; position: relative; transition: 0.2s; height: 100%; }
     .address-card:hover { border-color: var(--brand-blue); }
     .address-card.selected { border: 2px solid var(--brand-blue); background: var(--light-blue); }
     
-    /* Order Summary Sidebar */
+    /* Summary Sidebar */
     .summary-card { background: white; padding: 20px; border-radius: 4px; border: 1px solid #eee; position: sticky; top: 100px; }
-    .btn-place-order { background: var(--pro-orange); color: white; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 4px; font-size: 16px; margin-top: 15px; transition: 0.3s; }
-    .btn-place-order:hover { background: #e67e00; transform: translateY(-2px); }
-    .btn-place-order:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+    .btn-place-order { background: var(--brand-blue); color: white; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 4px; font-size: 16px; margin-top: 15px; transition: 0.3s; }
+    .btn-place-order:hover { background: var(--dark-blue); }
+    .btn-place-order:disabled { background: #ccc; cursor: not-allowed; }
 
     .btn-save-continue { background: var(--brand-blue); color: white; font-weight: bold; padding: 12px 30px; border: none; border-radius: 4px; text-transform: uppercase; font-size: 13px; }
+    .text-brand-blue { color: var(--brand-blue) !important; }
 </style>
 
 <div class="container" style="padding-top: 2rem; padding-bottom: 5rem;">
@@ -38,23 +41,20 @@
         <input type="hidden" name="action" value="place_order">
 
         <div class="row g-4">
-            <!-- LEFT: CHECKOUT STEPS -->
+            <!-- LEFT: STEPS -->
             <div class="col-lg-8">
                 
-                <!-- STEP 1: ADDRESS DETAILS -->
+                <!-- STEP 1: ADDRESS -->
                 <div class="checkout-step active" id="step_1">
                     <div class="step-header" onclick="openStep(1)">
                         <div class="step-title"><span class="step-number">1</span> ADDRESS DETAILS</div>
-                        <button type="button" class="btn btn-link btn-sm fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#addAddressModal">+ ADD NEW</button>
+                        <button type="button" class="btn btn-link btn-sm fw-bold text-decoration-none text-brand-blue" data-bs-toggle="modal" data-bs-target="#addAddressModal">+ ADD NEW ADDRESS</button>
                     </div>
                     <div class="step-content">
                         <div class="row g-3">
                             {% for addr in addresses %}
                             <div class="col-md-6">
-                                <div class="address-card {% if selected_address.id == addr.id %}selected{% endif %}" 
-                                     onclick="changeAddress('{{ addr.id }}')">
-                                    <input type="radio" name="selected_address" value="{{ addr.id }}" 
-                                           {% if selected_address.id == addr.id %}checked{% endif %} class="d-none">
+                                <div class="address-card {% if selected_address.id == addr.id %}selected{% endif %}" onclick="changeAddress('{{ addr.id }}')">
                                     <p class="fw-bold mb-1">{{ addr.first_name }} {{ addr.last_name }}</p>
                                     <p class="small text-muted mb-0">{{ addr.street }}</p>
                                     <p class="small text-muted mb-0">{{ addr.town.name }}, {{ addr.town.county.name }}</p>
@@ -62,47 +62,47 @@
                                 </div>
                             </div>
                             {% empty %}
-                            <div class="col-12 text-center py-3">
-                                <p class="text-muted">No addresses found. Please add one to continue.</p>
+                            <div class="col-12 text-center py-4 border rounded">
+                                <p class="text-muted mb-0">No addresses found. Please add a shipping address to continue.</p>
                             </div>
                             {% endfor %}
                         </div>
                         {% if selected_address %}
-                        <button type="button" class="btn-save-continue mt-3" onclick="openStep(2)">SAVE & CONTINUE</button>
+                        <button type="button" class="btn-save-continue mt-4" onclick="openStep(2)">SAVE & CONTINUE</button>
                         {% endif %}
                     </div>
                 </div>
 
-                <!-- STEP 2: DELIVERY METHOD -->
+                <!-- STEP 2: DELIVERY -->
                 <div class="checkout-step" id="step_2">
                     <div class="step-header" onclick="openStep(2)">
                         <div class="step-title"><span class="step-number">2</span> DELIVERY METHOD</div>
                     </div>
                     <div class="step-content">
                         {% if not selected_address %}
-                            <p class="text-danger small">Please select a shipping address in Step 1.</p>
+                            <p class="text-danger small">Please select an address in Step 1 first.</p>
                         {% else %}
                             <div class="form-check border p-3 rounded mb-2">
                                 <input class="form-check-input" type="radio" name="delivery_method" id="std" value="standard" checked 
-                                       onclick="updateSummaryPrice('standard', {{ selected_address.town.base_delivery_fee|default:0 }})">
+                                       onclick="updateSummaryPrice('standard', '{{ selected_address.town.base_delivery_fee|default:0 }}')">
                                 <label class="form-check-label w-100" for="std">
                                     <div class="d-flex justify-content-between">
                                         <strong>Standard Delivery</strong>
                                         <span class="fw-bold">KSh {{ selected_address.town.base_delivery_fee|floatformat:0|intcomma }}</span>
                                     </div>
-                                    <span class="text-muted small">Delivered to {{ selected_address.town.name }} within {{ est_days }} business day(s).</span>
+                                    <span class="text-muted small">Delivery within {{ est_days|default:3 }} business days.</span>
                                 </label>
                             </div>
 
                             <div class="form-check border p-3 rounded mb-3">
                                 <input class="form-check-input" type="radio" name="delivery_method" id="exp" value="express" 
-                                       onclick="updateSummaryPrice('express', {{ selected_address.town.base_delivery_fee|default:0 }})">
+                                       onclick="updateSummaryPrice('express', '{{ selected_address.town.base_delivery_fee|default:0 }}')">
                                 <label class="form-check-label w-100" for="exp">
                                     <div class="d-flex justify-content-between">
                                         <strong>Express Delivery</strong>
                                         <span class="fw-bold">KSh {{ selected_address.town.base_delivery_fee|add:200|floatformat:0|intcomma }}</span>
                                     </div>
-                                    <span class="text-muted small">Priority processing. Delivered within 24 hours (+KSh 200).</span>
+                                    <span class="text-muted small">Priority processing. Next day delivery (+KSh 200).</span>
                                 </label>
                             </div>
                             <button type="button" class="btn-save-continue" onclick="openStep(3)">SAVE & CONTINUE</button>
@@ -110,7 +110,7 @@
                     </div>
                 </div>
 
-                <!-- STEP 3: PAYMENT METHOD -->
+                <!-- STEP 3: PAYMENT -->
                 <div class="checkout-step" id="step_3">
                     <div class="step-header" onclick="openStep(3)">
                         <div class="step-title"><span class="step-number">3</span> PAYMENT METHOD</div>
@@ -124,7 +124,7 @@
                                         <i class="fas fa-mobile-alt text-success fs-4 me-3"></i>
                                         <div>
                                             <p class="fw-bold mb-0">M-Pesa</p>
-                                            <p class="small text-muted mb-0">STK Push prompt</p>
+                                            <p class="small text-muted mb-0">Pay via STK Push</p>
                                         </div>
                                     </div>
                                 </div>
@@ -136,59 +136,56 @@
                                         <i class="fas fa-hand-holding-usd text-warning fs-4 me-3"></i>
                                         <div>
                                             <p class="fw-bold mb-0">Pay on Delivery</p>
-                                            <p class="small text-muted mb-0">Cash or M-Pesa</p>
+                                            <p class="small text-muted mb-0">Cash or M-Pesa at your door</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- M-PESA PHONE INPUT -->
                         <div id="mpesaPhoneBox" class="mt-4 p-3 border rounded bg-light" style="display: block;">
-                            <label class="form-label fw-bold small text-uppercase">M-Pesa Number</label>
+                            <label class="form-label fw-bold small text-muted">M-PESA NUMBER</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white">+254</span>
-                                <input type="text" name="phone_number" class="form-control" placeholder="7XXXXXXXX" 
-                                       value="{{ selected_address.phone|default:'' }}">
+                                <input type="text" name="phone_number" class="form-control" placeholder="712345678" value="{{ selected_address.phone|default:'' }}">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT: ORDER SUMMARY -->
+            <!-- RIGHT: SUMMARY -->
             <div class="col-lg-4">
                 <div class="summary-card shadow-sm">
                     <h6 class="fw-bold border-bottom pb-2">ORDER SUMMARY</h6>
                     <div class="d-flex justify-content-between mt-3 small">
                         <span class="text-muted">Items Total:</span>
-                        <span>KSh {{ total_price|floatformat:0|intcomma }}</span>
+                        <span id="js_items_total">KSh {{ total_price|default:0|floatformat:0|intcomma }}</span>
                     </div>
 
                     {% if discount > 0 %}
                     <div class="d-flex justify-content-between mt-2 small text-success">
-                        <span>Discount ({{ coupon_code }}):</span>
+                        <span>Discount:</span>
                         <span>- KSh {{ discount|floatformat:0|intcomma }}</span>
                     </div>
                     {% endif %}
 
                     <div class="d-flex justify-content-between mt-2 small">
                         <span class="text-muted">Delivery Fee:</span>
-                        <span class="fw-bold text-dark" id="side_fee">KSh {{ delivery_fee|floatformat:0|intcomma }}</span>
+                        <span class="fw-bold text-dark" id="side_fee">KSh {{ delivery_fee|default:0|floatformat:0|intcomma }}</span>
                     </div>
 
                     <hr>
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="fw-bold">Total:</span>
-                        <span class="fw-bold text-primary fs-4" id="side_total">KSh {{ final_total|floatformat:0|intcomma }}</span>
+                        <span class="fw-bold text-brand-blue fs-4" id="side_total">KSh {{ final_total|default:0|floatformat:0|intcomma }}</span>
                     </div>
 
-                    <button type="submit" class="btn-place-order" {% if not selected_address %}disabled{% endif %}>
+                    <button type="submit" class="btn-place-order mt-4" {% if not selected_address %}disabled{% endif %}>
                         CONFIRM ORDER
                     </button>
-                    
                     {% if not selected_address %}
-                    <p class="text-danger x-small mt-2 text-center">Please select a shipping address.</p>
+                    <p class="text-danger x-small mt-2 text-center" style="font-size: 11px;">Please select a shipping address.</p>
                     {% endif %}
                 </div>
             </div>
@@ -196,48 +193,67 @@
     </form>
 </div>
 
-<!-- AJAX ADD ADDRESS MODAL -->
+<!-- FULL ADDRESS MODAL -->
 <div class="modal fade" id="addAddressModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header">
+            <div class="modal-header bg-light">
                 <h5 class="modal-title fw-bold">Add New Shipping Address</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <form id="ajaxAddressForm">
                     {% csrf_token %}
                     <div class="row g-3">
-                        <div class="col-6">
-                            <label class="small fw-bold">FIRST NAME</label>
+                        <div class="col-md-6">
+                            <label class="small fw-bold text-muted">FIRST NAME</label>
                             <input type="text" name="first_name" class="form-control" required>
                         </div>
-                        <div class="col-6">
-                            <label class="small fw-bold">LAST NAME</label>
+                        <div class="col-md-6">
+                            <label class="small fw-bold text-muted">LAST NAME</label>
                             <input type="text" name="last_name" class="form-control" required>
                         </div>
                         <div class="col-12">
-                            <label class="small fw-bold">STREET ADDRESS / BUILDING</label>
-                            <input type="text" name="street" class="form-control" placeholder="e.g. Kimathi St, House 4" required>
-                        </div>
-                        <div class="col-12">
-                            <label class="small fw-bold">TOWN / CITY</label>
-                            <select name="town" class="form-select" required>
-                                <option value="">Select Town</option>
-                                {% for town in towns %}
-                                <option value="{{ town.id }}">{{ town.name }} ({{ town.county.name }})</option>
+                            <label class="small fw-bold text-muted">COUNTY</label>
+                            <select id="modal_county" class="form-select" required>
+                                <option value="">Select County</option>
+                                {% for county in counties %}
+                                <option value="{{ county.id }}">{{ county.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="col-12">
-                            <label class="small fw-bold">PHONE NUMBER</label>
+                            <label class="small fw-bold text-muted">TOWN / CITY</label>
+                            <select name="town" id="modal_town" class="form-select" required disabled>
+                                <option value="">Select County First</option>
+                                {% for town in towns %}
+                                <option value="{{ town.id }}" data-county="{{ town.county.id }}" style="display:none;">{{ town.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="small fw-bold text-muted">STREET / BUILDING / APARTMENT</label>
+                            <textarea name="street" class="form-control" rows="2" required></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small fw-bold text-muted">PHONE NUMBER</label>
                             <div class="input-group">
                                 <span class="input-group-text">+254</span>
                                 <input type="text" name="phone" class="form-control" placeholder="712345678" required>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <label class="small fw-bold text-muted">POSTAL CODE (OPTIONAL)</label>
+                            <input type="text" name="postal_code" class="form-control">
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="is_default" id="def_check">
+                                <label class="form-check-label small" for="def_check">Set as default address</label>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 mt-4 fw-bold py-2">SAVE & USE THIS ADDRESS</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-4 fw-bold py-2 shadow-sm" style="background: var(--brand-blue); border:none;">SAVE ADDRESS</button>
                 </form>
             </div>
         </div>
@@ -245,28 +261,48 @@
 </div>
 
 <script>
-    // Variables from backend
-    const itemsTotal = {{ total_price }};
-    const discountAmount = {{ discount }};
+    // Safeguard variables against empty Django context
+    const itemsTotal = parseFloat("{{ total_price|default:0 }}");
+    const discountAmount = parseFloat("{{ discount|default:0 }}");
 
-    // 1. Navigation Logic
+    // 1. Chained Dropdown Logic (County -> Town)
+    const countySel = document.getElementById('modal_county');
+    const townSel = document.getElementById('modal_town');
+    const townOpts = townSel.querySelectorAll('option');
+
+    countySel.addEventListener('change', function() {
+        const selectedId = this.value;
+        if (selectedId) {
+            townSel.disabled = false;
+            townSel.value = "";
+            townOpts.forEach(opt => {
+                if (opt.getAttribute('data-county') === selectedId || opt.value === "") {
+                    opt.style.display = "block";
+                } else {
+                    opt.style.display = "none";
+                }
+            });
+        } else {
+            townSel.disabled = true;
+        }
+    });
+
+    // 2. Navigation
     function openStep(n) {
-        document.querySelectorAll('.checkout-step').forEach(step => step.classList.remove('active'));
-        document.getElementById('step_' + n).classList.add('active');
+        document.querySelectorAll('.checkout-step').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById('step_' + n);
+        if (target) target.classList.add('active');
     }
 
-    // 2. Address Selection Logic (Backend Calculation)
+    // 3. Address Switcher
     function changeAddress(id) {
-        // We reload the page with the new ID to let Django calculate Town-specific fees
         window.location.href = `?addr_id=${id}`;
     }
 
-    // 3. Delivery Method Toggle (Frontend Calculation)
+    // 4. Real-time Summary Update
     function updateSummaryPrice(method, baseFee) {
-        let shipping = parseFloat(baseFee);
-        if (method === 'express') {
-            shipping += 200;
-        }
+        let shipping = parseFloat(baseFee) || 0;
+        if (method === 'express') shipping += 200;
         
         const finalTotal = (itemsTotal - discountAmount) + shipping;
         
@@ -274,38 +310,32 @@
         document.getElementById('side_total').innerText = 'KSh ' + finalTotal.toLocaleString();
     }
 
-    // 4. Payment Toggle
+    // 5. Payment UI
     function togglePaymentUI(mode) {
         document.getElementById('card_mpesa').classList.remove('selected');
         document.getElementById('card_cod').classList.remove('selected');
-
-        const activeCard = (mode === 'mpesa') ? document.getElementById('card_mpesa') : document.getElementById('card_cod');
-        activeCard.classList.add('selected');
-        activeCard.querySelector('input').checked = true;
-
+        
+        const active = (mode === 'mpesa') ? document.getElementById('card_mpesa') : document.getElementById('card_cod');
+        active.classList.add('selected');
+        active.querySelector('input').checked = true;
+        
         document.getElementById('mpesaPhoneBox').style.display = (mode === 'mpesa') ? 'block' : 'none';
     }
 
-    // 5. AJAX Address Submission
+    // 6. AJAX Submission
     document.getElementById('ajaxAddressForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        const formData = new FormData(this);
-
         fetch("{% url 'products:add_address_ajax' %}", {
             method: "POST",
-            body: formData,
+            body: new FormData(this),
             headers: { "X-CSRFToken": "{{ csrf_token }}" }
         })
         .then(res => res.json())
         .then(data => {
-            if(data.success) {
-                // Address saved successfully, reload page with the new address active
-                window.location.href = `?addr_id=${data.address_id}`;
-            } else {
-                alert("Please check the form for errors.");
-            }
+            if(data.success) window.location.href = `?addr_id=${data.address_id}`;
+            else alert("Error saving address. Please check fields.");
         })
-        .catch(err => alert("An error occurred. Please try again."));
+        .catch(err => alert("Connection error."));
     });
 </script>
 {% endblock %}

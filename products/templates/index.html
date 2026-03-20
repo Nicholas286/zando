@@ -6,7 +6,7 @@
 <style>
     /* Flash Sale Red Progress Bar */
     .flash-progress-bar { height: 6px; background-color: #eee; border-radius: 10px; overflow: hidden; margin-top: 5px; }
-    .flash-progress-fill { height: 100%; background-color: #e61601 !important; } /* SOLID RED */
+    .flash-progress-fill { height: 100%; background-color: #e61601 !important; }
 
     /* Flash Sale Strip */
     .flash-header { background: #e61601; color: white; padding: 10px 15px; border-radius: 4px 4px 0 0; }
@@ -14,7 +14,7 @@
     /* Layout Logic */
     #sidebarMenu { transition: all 0.3s ease; border-right: 1px solid #ddd; }
     .cat-bubble { width: 65px; height: 65px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; transition: 0.2s; }
-    .active-bubble { border: 2px solid var(--pro-blue) !important; background: #e7f1ff; }
+    .active-bubble { border: 2px solid #004b91 !important; background: #e7f1ff; }
 
     .x-small { font-size: 0.7rem; }
     .text-orange { color: #f68b1e !important; }
@@ -24,6 +24,10 @@
     
     .product-card { transition: transform 0.2s; }
     .product-card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important; }
+
+    /* Horizontal Scroller Fix */
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 {% endblock %}
 
@@ -31,7 +35,7 @@
 
 <!-- 1. CATEGORY BUBBLES -->
 <div class="mb-4">
-    <div class="scroll-container d-flex overflow-auto py-2" style="scrollbar-width: none;">
+    <div class="scroll-container d-flex overflow-auto py-2 hide-scrollbar">
         {% for cat in categories %}
         <a href="?category={{ cat.id }}" class="text-decoration-none text-center me-3" style="min-width: 90px;">
             <div class="cat-bubble mx-auto {% if request.GET.category == cat.id|stringformat:'i' %}active-bubble{% endif %}">
@@ -52,11 +56,12 @@
         <div class="flash-header d-flex justify-content-between align-items-center">
             <h6 class="mb-0 fw-bold"><i class="fas fa-bolt me-2"></i> FLASH SALES</h6>
             <div id="flash-timer-clock" class="small fw-bold" data-endtime="{{ flash_sales.0.flash_sale.end_time|date:'Y-m-d H:i:s' }}">
-                Ends in: 00h 00m 00s
+                Ends in: --h --m --s
             </div>
-            <a href="#" class="text-white small text-decoration-none">SEE ALL ></a>
+            <!-- UPDATED: Flash Sale See All -->
+            <a href="{% url 'products:see_all' %}?type=flash" class="text-white small text-decoration-none fw-bold">SEE ALL ></a>
         </div>
-        <div class="d-flex overflow-auto bg-white p-2" style="scrollbar-width: none;">
+        <div class="d-flex overflow-auto bg-white p-2 hide-scrollbar">
             {% for p in flash_sales %}
             <div class="p-2" style="min-width:150px; max-width:150px;">
                 <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none text-dark">
@@ -79,9 +84,10 @@
     <div class="card border-0 shadow-sm mb-4 overflow-hidden">
         <div class="promo-header d-flex justify-content-between align-items-center" style="background-color: {{ strip.bg_color }};">
             <h6 class="mb-0 fw-bold text-uppercase">{{ strip.title }}</h6>
-            <a href="#" class="text-white small text-decoration-none">SEE ALL ></a>
+            <!-- UPDATED: Dynamic Promo See All (Uses strip.id) -->
+            <a href="{% url 'products:see_all' %}?type=promo&strip_id={{ strip.id }}" class="text-white small text-decoration-none fw-bold">SEE ALL ></a>
         </div>
-        <div class="d-flex overflow-auto bg-white p-2" style="scrollbar-width: none;">
+        <div class="d-flex overflow-auto bg-white p-2 hide-scrollbar">
             {% for p in strip.products.all %}
             <div class="p-2" style="min-width:160px; max-width:160px;">
                 <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none text-dark">
@@ -100,11 +106,12 @@
 
     <!-- C. RECOMMENDED -->
     <div class="card border-0 shadow-sm mb-4">
-        <div class="bg-primary text-white p-2 d-flex justify-content-between align-items-center rounded-top">
+        <div class="bg-primary text-white p-2 d-flex justify-content-between align-items-center rounded-top" style="background-color: #004b91 !important;">
             <h6 class="mb-0 fw-bold">RECOMMENDED FOR YOU</h6>
-            <a href="#" class="text-white small text-decoration-none">SEE ALL ></a>
+            <!-- UPDATED: Recommended See All -->
+            <a href="{% url 'products:see_all' %}?type=recommended" class="text-white small text-decoration-none fw-bold">SEE ALL ></a>
         </div>
-        <div class="d-flex overflow-auto p-2" style="scrollbar-width: none;">
+        <div class="d-flex overflow-auto p-2 hide-scrollbar">
             {% for p in recommended %}
             <div class="p-2" style="min-width:150px; max-width:150px;">
                 <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none text-dark">
@@ -122,7 +129,7 @@
 <div class="row">
     <div class="col-12 mb-3">
         <div class="d-flex align-items-center">
-            <button class="btn btn-light shadow-sm border me-3" id="sidebarToggle" title="Filter Menu">
+            <button class="btn btn-light shadow-sm border me-3" id="sidebarToggle">
                 <i class="fa-solid fa-bars fs-5"></i>
             </button>
             <h5 class="fw-bold text-uppercase m-0" style="font-size: 0.9rem;">
@@ -131,7 +138,6 @@
         </div>
     </div>
 
-    <!-- LEFT SIDEBAR -->
     <div id="sidebarMenu" class="col-md-3 d-none">
         <div class="card border-0 shadow-sm p-3 sticky-top" style="top: 90px;">
             <h6 class="fw-bold border-bottom pb-2 mb-3 small">REFINE SEARCH</h6>
@@ -139,7 +145,6 @@
         </div>
     </div>
 
-    <!-- PRODUCTS -->
     <div id="productGrid" class="col-md-12">
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
             {% for product in products %}
@@ -158,30 +163,16 @@
                             {% endfor %}
                             <span class="text-muted">({{ product.review_count }})</span>
                         </div>
-                        <p class="fw-bold mb-1 {% if product.flash_sale and product.flash_sale.is_currently_active %}text-danger{% else %}text-dark{% endif %}">
-                            KSh {{ product.get_current_price|intcomma }}
-                        </p>
+                        <p class="fw-bold mb-1">KSh {{ product.get_current_price|intcomma }}</p>
                         
                         <div class="mt-auto">
-                            <!-- STOCK STATUS -->
-                            <div class="mb-2">
-                                {% if product.stock < 10 %}
-                                    <span class="text-danger x-small fw-bold"><i class="fa-solid fa-bolt-lightning me-1"></i>Only {{ product.stock }} left!</span>
-                                {% elif product.stock < 30 %}
-                                    <span class="text-orange x-small fw-bold"><i class="fa-solid fa-circle-exclamation me-1"></i>Few units left</span>
-                                {% else %}
-                                    <span class="text-success x-small fw-bold">In Stock</span>
-                                {% endif %}
-                            </div>
-
-                            <!-- DYNAMIC AJAX CART AREA -->
                             <div id="cart-area-{{ product.id }}">
                                 {% with qty=cart_quantities|get_item:product.id %}
                                     {% if qty %}
                                         <div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
-                                            <button type="button" class="btn btn-sm btn-primary fw-bold js-cart-dec" data-product-id="{{ product.id }}" style="width:30px;">-</button>
+                                            <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="{{ product.id }}" style="width:30px;">-</button>
                                             <span class="fw-bold small">{{ qty }}</span>
-                                            <button type="button" class="btn btn-sm btn-primary fw-bold js-cart-inc" data-product-id="{{ product.id }}" style="width:30px;">+</button>
+                                            <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="{{ product.id }}" style="width:30px;">+</button>
                                         </div>
                                     {% else %}
                                         <button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="{{ product.id }}">ADD TO CART</button>
@@ -199,29 +190,23 @@
 
 <script>
     // 1. Sidebar Toggle
-    const sidebarBtn = document.getElementById('sidebarToggle');
-    const sidebarMenu = document.getElementById('sidebarMenu');
-    const productGrid = document.getElementById('productGrid');
-
-    sidebarBtn.addEventListener('click', () => {
-        if (sidebarMenu.classList.contains('d-none')) {
-            sidebarMenu.classList.remove('d-none');
-            productGrid.classList.replace('col-md-12', 'col-md-9');
-        } else {
-            sidebarMenu.classList.add('d-none');
-            productGrid.classList.replace('col-md-9', 'col-md-12');
-        }
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+        const menu = document.getElementById('sidebarMenu');
+        const grid = document.getElementById('productGrid');
+        menu.classList.toggle('d-none');
+        grid.classList.toggle('col-md-12');
+        grid.classList.toggle('col-md-9');
     });
 
-    // 2. Flash Sale Timer
+    // 2. Timer Update
     function updateTimer() {
         const timerClock = document.getElementById('flash-timer-clock');
         if (!timerClock) return;
         const endTime = new Date(timerClock.getAttribute('data-endtime')).getTime();
-        const x = setInterval(function() {
+        setInterval(function() {
             const now = new Date().getTime();
             const distance = endTime - now;
-            if (distance < 0) { clearInterval(x); timerClock.innerHTML = "EXPIRED"; return; }
+            if (distance < 0) { timerClock.innerHTML = "EXPIRED"; return; }
             const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((distance % (1000 * 60)) / 1000);
@@ -230,51 +215,31 @@
     }
     updateTimer();
 
-    // 3. AJAX Cart Transformation Logic
+    // 3. AJAX Cart
     async function adjustCart(productId, action) {
-        try {
-            const response = await fetch(`/products/api/cart/${productId}/${action}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                // Update Nav Badge
-                document.querySelectorAll('.global-cart-count').forEach(el => el.textContent = data.global_cart_count);
-
-                // Update UI for this specific product
-                const container = document.getElementById(`cart-area-${productId}`);
-                if (data.quantity > 0) {
-                    container.innerHTML = `
-                        <div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
-                            <button type="button" class="btn btn-sm btn-primary fw-bold js-cart-dec" data-product-id="${productId}" style="width:30px;">-</button>
-                            <span class="fw-bold small">${data.quantity}</span>
-                            <button type="button" class="btn btn-sm btn-primary fw-bold js-cart-inc" data-product-id="${productId}" style="width:30px;">+</button>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = `<button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="${productId}">ADD TO CART</button>`;
-                }
+        const response = await fetch(`/products/api/cart/${productId}/${action}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            document.querySelectorAll('.global-cart-count').forEach(el => el.textContent = data.global_cart_count);
+            const container = document.getElementById(`cart-area-${productId}`);
+            if (data.quantity > 0) {
+                container.innerHTML = `<div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
+                    <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="${productId}" style="width:30px;">-</button>
+                    <span class="fw-bold small">${data.quantity}</span>
+                    <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="${productId}" style="width:30px;">+</button>
+                </div>`;
             } else {
-                alert(data.error || "Error updating cart");
+                container.innerHTML = `<button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="${productId}">ADD TO CART</button>`;
             }
-        } catch (error) {
-            console.error("Cart Error:", error);
         }
     }
 
-    // Attach event listeners to document for dynamic buttons
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.js-cart-inc, .js-cart-dec');
-        if (btn) {
-            const productId = btn.dataset.productId;
-            const action = btn.classList.contains('js-cart-inc') ? 'inc' : 'dec';
-            adjustCart(productId, action);
-        }
+        if (btn) adjustCart(btn.dataset.productId, btn.classList.contains('js-cart-inc') ? 'inc' : 'dec');
     });
 </script>
 {% endblock %}

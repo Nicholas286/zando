@@ -388,11 +388,13 @@ def cart_adjust_api(request, product_id, action):
 def checkout(request):
     cart = get_user_cart(request.user)
     items = cart.items.all()
+    
     if not items.exists(): 
         return redirect('products:index')
 
-    # Uses the fixed CartItem.subtotal property
-    cart_subtotal = cart.total_price  
+    # Total price of items only (before discount and shipping)
+    # This matches the {{ total_price }} variable in your template
+    items_total = cart.total_price  
     
     discount = Decimal('0.00')
     coupon_code = None
@@ -400,6 +402,7 @@ def checkout(request):
     est_days = 3
     
     addresses = Address.objects.filter(user=request.user)
+    # Priority for address selection: POST > GET > Default
     selected_addr_id = request.POST.get('selected_address') or request.GET.get('addr_id')
     
     selected_address = None
@@ -408,12 +411,13 @@ def checkout(request):
     else:
         selected_address = addresses.filter(is_default=True).first()
 
-    # Calculate Delivery
+    # Calculate Base Delivery Fee (Standard + Bulky Surcharge)
     if selected_address:
         town = selected_address.town
         delivery_fee = town.base_delivery_fee 
         est_days = town.estimated_days
         
+        # Check for bulky items and add surcharge
         bulky_items = items.filter(product__is_bulky=True)
         if bulky_items.exists():
             max_surcharge = max(item.product.bulky_surcharge for item in bulky_items)
@@ -422,16 +426,18 @@ def checkout(request):
     if request.method == 'POST':
         action = request.POST.get('action')
 
+        # 1. APPLY COUPON LOGIC
         if action == 'apply_coupon':
             code = request.POST.get('coupon', '').strip()
             cp = Coupon.objects.filter(code__iexact=code, active=True).first()
-            if cp and cart_subtotal >= cp.min_total:
-                discount = Decimal(cp.compute_discount(cart_subtotal))
+            if cp and items_total >= cp.min_total:
+                discount = Decimal(cp.compute_discount(items_total))
                 coupon_code = cp.code
                 messages.success(request, f"Coupon {code} applied!")
             else:
                 messages.warning(request, "Invalid or ineligible coupon.")
 
+        # 2. PLACE ORDER LOGIC
         elif action == 'place_order':
             if not selected_address:
                 messages.error(request, "Please select a shipping address.")
@@ -440,11 +446,14 @@ def checkout(request):
             pay_method = request.POST.get('payment_method')
             delivery_method = request.POST.get('delivery_method', 'standard')
             
+            # Add Express surcharge if selected
             if delivery_method == 'express':
                 delivery_fee += Decimal('200.00')
                 est_days = 1
             
-            final_total = (cart_subtotal - discount) + delivery_fee
+            final_total = (items_total - discount) + delivery_fee
+            
+            # Delivery Dates
             today = timezone.localdate()
             est_start = add_business_days(today, est_days)
             est_end = add_business_days(today, est_days + 1)
@@ -459,6 +468,7 @@ def checkout(request):
                         phone_number=request.POST.get('phone_number') or selected_address.phone,
                         payment_method='M-Pesa' if pay_method == 'mpesa' else 'Pay on Delivery',
                         delivery_method=delivery_method,
+                        status='Pending',
                         discount_amount=discount,
                         coupon_code=coupon_code,
                         estimated_delivery_start=est_start,
@@ -466,10 +476,8 @@ def checkout(request):
                     )
                     
                     for item in items:
-                        # FIX: No parentheses () because price_analysis is a property
                         analysis = item.price_analysis
-                        
-                        # Calculate discounted unit price
+                        # Calculate unit price after individual product promos
                         actual_price_per_unit = analysis['final_subtotal'] / item.quantity
                         
                         OrderItem.objects.create(
@@ -479,9 +487,11 @@ def checkout(request):
                             price=actual_price_per_unit
                         )
                         
+                        # Update Stock
                         item.product.stock -= item.quantity
                         item.product.save()
 
+                    # Clear cart after successful order
                     items.delete()
                     messages.success(request, f"Order #{order.id} placed successfully!")
                     return redirect('products:my_orders')
@@ -489,19 +499,23 @@ def checkout(request):
             except Exception as e:
                 messages.error(request, f"An error occurred: {str(e)}")
 
-    final_total = (cart_subtotal - discount) + delivery_fee
+    # Final calculation for display
+    final_total = (items_total - discount) + delivery_fee
 
     return render(request, 'checkout.html', {
         'cart_items': items,
-        'cart_subtotal': cart_subtotal,
+        'total_price': items_total,     # This fixes the "Items Total 0" issue
         'addresses': addresses,
         'selected_address': selected_address,
         'delivery_fee': delivery_fee,
         'final_total': final_total,
         'est_days': est_days,
         'discount': discount,
-        'coupon_code': coupon_code
+        'coupon_code': coupon_code,
+        'counties': County.objects.all(), # Required for the Add Address Modal
+        'towns': Town.objects.all(),      # Required for the Add Address Modal
     })
+
 @csrf_exempt
 def mpesa_callback(request):
     try:
@@ -641,18 +655,33 @@ def add_address_ajax(request):
     return JsonResponse({'success': False, 'errors': form.errors}, status=400)
 
 
-def search_suggestions(request):
-    query = request.GET.get('q', '')
-    if len(query) > 1:
-        # Search by name and limit to 8 results
-        products = Product.objects.filter(name__icontains=query)[:8]
-        results = []
-        for p in products:
-            results.append({
-                'id': p.id,
-                'name': p.name,
-                'price': f"{int(p.get_current_price()):,}",
-                'image_url': p.image.url
-            })
-        return JsonResponse(results, safe=False)
-    return JsonResponse([], safe=False)
+def see_all_products(request):
+    section_type = request.GET.get('type')
+    strip_id = request.GET.get('strip_id')
+    
+    products = Product.objects.all()
+    title = "All Products"
+
+    if section_type == 'flash':
+        now = timezone.now()
+        products = Product.objects.filter(
+            flash_sale__is_active=True,
+            flash_sale__start_time__lte=now,
+            flash_sale__end_time__gte=now
+        )
+        title = "Flash Sales"
+
+    elif section_type == 'promo' and strip_id:
+        strip = get_object_or_404(PromotionStrip, id=strip_id)
+        products = strip.products.all()
+        title = strip.title
+
+    elif section_type == 'recommended':
+        # logic: show high rated or high stock items
+        products = Product.objects.filter(stock__gt=0).order_by('-id')[:40]
+        title = "Recommended For You"
+
+    return render(request, 'see_all.html', {
+        'products': products,
+        'title': title
+    })
