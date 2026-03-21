@@ -2,51 +2,122 @@
 {% load humanize %}
 {% load cart_extras %}
 
+{% block head_extra %}
+<style>
+    /* --- BRAND COLORS (ZANDO BLUE) --- */
+    :root { 
+        --zando-blue: #006bff; 
+        --zando-dark-blue: #004b91;
+    }
+    .btn-primary, .bg-primary { background-color: var(--zando-blue) !important; border-color: var(--zando-blue) !important; }
+    .text-primary { color: var(--zando-blue) !important; }
+    .text-orange { color: #f68b1e !important; }
+    .text-success { color: #28a745 !important; }
+
+    /* --- TRUNCATION FIX (Exactly 2 lines) --- */
+    .product-name-clamp {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        height: 2.8em; 
+        line-height: 1.4em;
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+        color: #333;
+        text-decoration: none;
+    }
+
+    /* --- LAPTOP STYLES --- */
+    .product-card { transition: transform 0.2s; border: 1px solid #eee !important; height: 100%; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important; }
+    .x-small { font-size: 0.7rem; }
+
+    /* --- MOBILE OVERRIDES (JUMIA STYLE) --- */
+    @media (max-width: 768px) {
+        .container { padding-top: 10px !important; }
+        .product-name-clamp { font-size: 12px !important; height: 32px; }
+        .price-text { font-size: 14px !important; }
+        
+        /* 2-Column Grid on Phone */
+        .row-cols-2 > .col { padding: 4px !important; }
+        .product-card img { height: 110px !important; }
+        .product-card .card-body { padding: 8px !important; }
+        
+        .btn-cart-sm { font-size: 10px !important; padding: 8px 2px !important; }
+        .qty-btn-sm { width: 28px !important; height: 28px !important; }
+        
+        .title-header { font-size: 14px !important; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4 mb-5">
-    <!-- Breadcrumb / Back Button -->
-    <div class="d-flex align-items-center mb-4">
-        <a href="{% url 'products:index' %}" class="btn btn-light shadow-sm border me-3">
+<div class="container py-2">
+    <!-- Header with Back Button -->
+    <div class="d-flex align-items-center mb-3">
+        <a href="javascript:history.back()" class="btn btn-light btn-sm border me-3 shadow-sm">
             <i class="fas fa-arrow-left"></i>
         </a>
-        <h4 class="fw-bold mb-0 text-uppercase" style="font-size: 1.2rem; color: #004b91;">{{ title }}</h4>
+        <h5 class="fw-bold mb-0 text-uppercase title-header" style="color: var(--zando-dark-blue);">{{ title }}</h5>
     </div>
 
-    <!-- Product Grid -->
-    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+    <!-- Product Grid: 2 columns on mobile, 3-5 on laptop -->
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2">
         {% for product in products %}
         <div class="col">
-            <div class="card h-100 border-0 shadow-sm p-2" style="transition: transform 0.2s;">
+            <div class="card h-100 border-0 shadow-sm p-2 product-card">
+                <!-- Image Area -->
                 <a href="{% url 'products:product_detail' product.id %}" class="text-center text-decoration-none">
-                    <div style="height: 150px;" class="d-flex align-items-center justify-content-center mb-2">
-                        <img src="{{ product.image.url }}" class="img-fluid p-2" style="max-height: 100%; object-fit: contain;">
+                    <div style="height: 140px;" class="d-flex align-items-center justify-content-center mb-1">
+                        <img src="{{ product.image.url }}" class="img-fluid" style="max-height: 100%; object-fit: contain;">
                     </div>
                 </a>
-                <div class="card-body p-1 d-flex flex-column">
-                    <h6 class="text-truncate small mb-1 text-dark">{{ product.name }}</h6>
+
+                <div class="card-body p-0 d-flex flex-column">
+                    <!-- Product Name (2 Lines) -->
+                    <a href="{% url 'products:product_detail' product.id %}" class="product-name-clamp">
+                        {{ product.name }}
+                    </a>
                     
-                    <!-- Star Ratings -->
-                    <div class="mb-1" style="font-size: 0.7rem; color: #ffc107;">
+                    <!-- Rating Stars -->
+                    <div class="mb-1 text-warning" style="font-size: 10px;">
                         {% for i in "12345" %}
                             <i class="fa{% if product.average_rating >= forloop.counter %}s{% else %}r{% endif %} fa-star"></i>
                         {% endfor %}
                         <span class="text-muted">({{ product.review_count }})</span>
                     </div>
 
-                    <p class="fw-bold mb-1 text-dark">KSh {{ product.get_current_price|intcomma }}</p>
+                    <!-- Price -->
+                    <p class="fw-bold mb-0 text-dark price-text">KSh {{ product.get_current_price|intcomma }}</p>
                     
+                    {% if product.get_discount_percentage > 0 %}
+                        <div class="text-muted x-small text-decoration-line-through mb-1">KSh {{ product.price|intcomma }}</div>
+                    {% endif %}
+
+                    <!-- STOCK STATUS LOGIC -->
+                    <div class="mt-1 mb-2">
+                        {% if product.stock < 10 %}
+                            <div class="fw-bold text-danger" style="font-size: 10px;">{{ product.stock }} units left</div>
+                        {% elif product.stock < 30 %}
+                            <div class="fw-bold text-orange" style="font-size: 10px;">Few units left</div>
+                        {% else %}
+                            <div class="fw-bold text-success" style="font-size: 10px;">In stock</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Cart Buttons -->
                     <div class="mt-auto">
-                        <!-- AJAX Cart Logic -->
                         <div id="cart-area-{{ product.id }}">
                             {% with qty=cart_quantities|get_item:product.id %}
                                 {% if qty %}
-                                    <div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
-                                        <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="{{ product.id }}" style="width:30px; background-color: #004b91; border:none;">-</button>
+                                    <div class="d-flex align-items-center justify-content-between border rounded bg-light">
+                                        <button type="button" class="btn btn-sm btn-primary qty-btn-sm js-cart-dec" data-product-id="{{ product.id }}" style="width:30px;">-</button>
                                         <span class="fw-bold small">{{ qty }}</span>
-                                        <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="{{ product.id }}" style="width:30px; background-color: #004b91; border:none;">+</button>
+                                        <button type="button" class="btn btn-sm btn-primary qty-btn-sm js-cart-inc" data-product-id="{{ product.id }}" style="width:30px;">+</button>
                                     </div>
                                 {% else %}
-                                    <button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="{{ product.id }}" style="background-color: #004b91; border:none;">ADD TO CART</button>
+                                    <button type="button" class="btn btn-primary btn-sm w-100 fw-bold btn-cart-sm js-cart-inc" data-product-id="{{ product.id }}">ADD TO CART</button>
                                 {% endif %}
                             {% endwith %}
                         </div>
@@ -56,43 +127,36 @@
         </div>
         {% empty %}
         <div class="col-12 text-center py-5">
-            <div class="mb-3"><i class="fas fa-box-open fa-3x text-muted"></i></div>
-            <p class="text-muted">No products found in this section.</p>
-            <a href="{% url 'products:index' %}" class="btn btn-primary px-4" style="background-color: #004b91; border:none;">Go Back Shopping</a>
+            <i class="fas fa-search fa-3x text-light mb-3"></i>
+            <p class="text-muted">No products found here.</p>
+            <a href="{% url 'products:index' %}" class="btn btn-primary btn-sm px-4">Continue Shopping</a>
         </div>
         {% endfor %}
     </div>
 </div>
 
-<!-- Re-use the AJAX Cart Script from Homepage -->
 <script>
+    // AJAX Cart Functionality (Consistent with Home)
     async function adjustCart(productId, action) {
         try {
             const response = await fetch(`/products/api/cart/${productId}/${action}/`, {
                 method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
             });
             const data = await response.json();
 
             if (response.ok) {
-                // Update nav badge
                 document.querySelectorAll('.global-cart-count').forEach(el => el.textContent = data.global_cart_count);
-
-                // Update UI for this product
                 const container = document.getElementById(`cart-area-${productId}`);
                 if (data.quantity > 0) {
                     container.innerHTML = `
-                        <div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
-                            <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="${productId}" style="width:30px; background-color: #004b91; border:none;">-</button>
+                        <div class="d-flex align-items-center justify-content-between border rounded bg-light">
+                            <button type="button" class="btn btn-sm btn-primary qty-btn-sm js-cart-dec" data-product-id="${productId}" style="width:30px;">-</button>
                             <span class="fw-bold small">${data.quantity}</span>
-                            <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="${productId}" style="width:30px; background-color: #004b91; border:none;">+</button>
-                        </div>
-                    `;
+                            <button type="button" class="btn btn-sm btn-primary qty-btn-sm js-cart-inc" data-product-id="${productId}" style="width:30px;">+</button>
+                        </div>`;
                 } else {
-                    container.innerHTML = `<button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="${productId}" style="background-color: #004b91; border:none;">ADD TO CART</button>`;
+                    container.innerHTML = `<button type="button" class="btn btn-primary btn-sm w-100 fw-bold btn-cart-sm js-cart-inc" data-product-id="${productId}">ADD TO CART</button>`;
                 }
             }
         } catch (error) { console.error("Error:", error); }
@@ -100,11 +164,7 @@
 
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.js-cart-inc, .js-cart-dec');
-        if (btn) {
-            const productId = btn.dataset.productId;
-            const action = btn.classList.contains('js-cart-inc') ? 'inc' : 'dec';
-            adjustCart(productId, action);
-        }
+        if (btn) adjustCart(btn.dataset.productId, btn.classList.contains('js-cart-inc') ? 'inc' : 'dec');
     });
 </script>
 {% endblock %}

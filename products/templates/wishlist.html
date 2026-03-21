@@ -1,49 +1,127 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
-<div class="container" style="padding-top: 2rem;">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold">My Wishlist ({{ wishlist_items|length }})</h4>
-        <a href="{% url 'products:index' %}" class="btn btn-outline-primary btn-sm fw-bold">CONTINUE SHOPPING</a>
+<style>
+    :root { 
+        --zando-blue: #006bff; 
+        --soft-bg: #f4f6f9;
+        --border-color: #eee;
+    }
+
+    /* Wishlist Card Styling */
+    .wish-card { 
+        background: white; 
+        border: 1px solid var(--border-color); 
+        border-radius: 4px; 
+        margin-bottom: 12px; 
+        padding: 15px;
+        transition: 0.2s;
+    }
+    .wish-card:hover { border-color: var(--zando-blue); }
+
+    /* Neat Typography */
+    .item-name-clamp {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 14px;
+        line-height: 1.3;
+        font-weight: 600;
+        color: #333;
+        text-decoration: none;
+    }
+    .item-price { font-size: 16px; font-weight: 800; color: #000; margin-top: 4px; }
+
+    /* Buttons */
+    .btn-buy { 
+        background-color: var(--zando-blue); 
+        color: white !important; 
+        font-weight: bold; 
+        font-size: 12px; 
+        padding: 10px 20px; 
+        border-radius: 4px; 
+        text-transform: uppercase;
+        border: none;
+    }
+    .btn-remove { 
+        color: #dc3545; 
+        font-size: 18px; 
+        padding: 5px;
+        background: none;
+        border: none;
+    }
+
+    /* MOBILE OVERRIDES (JUMIA STYLE) */
+    @media (max-width: 768px) {
+        .container { padding-top: 10px !important; }
+        .wish-card { padding: 12px !important; }
+        .item-name-clamp { font-size: 13px !important; }
+        .item-price { font-size: 14px !important; }
+        .btn-buy { font-size: 11px !important; padding: 8px 12px; }
+        
+        /* On mobile, stack the action row */
+        .wish-actions { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+    }
+</style>
+
+<div class="container py-2" style="max-width: 850px;">
+    <!-- Page Header -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h5 class="fw-bold mb-0">My Wishlist <span class="text-muted small">({{ wishlist_items|length }})</span></h5>
+        <a href="{% url 'products:index' %}" class="btn btn-outline-primary btn-sm fw-bold border-0" style="font-size: 11px;">
+            CONTINUE SHOPPING
+        </a>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card border-0 shadow-sm p-3">
-                {% for item in wishlist_items %}
-                <div class="row align-items-center mb-4 border-bottom pb-3">
-                    <div class="col-2 text-center">
-                        <img src="{{ item.product.image_url }}" class="img-fluid rounded" style="max-height: 80px; object-fit: contain;">
-                    </div>
+    <div class="d-flex flex-column">
+        {% for item in wishlist_items %}
+        <div class="wish-card shadow-sm">
+            <div class="row align-items-center g-3">
+                <!-- Product Image -->
+                <div class="col-3 col-md-2">
+                    <a href="{% url 'products:product_detail' item.product.id %}">
+                        <img src="{{ item.product.image.url }}" class="img-fluid rounded" style="max-height: 80px; width: 100%; object-fit: contain;">
+                    </a>
+                </div>
 
-                    <div class="col-5">
-                        <h6 class="fw-bold mb-0 text-truncate">{{ item.product.name }}</h6>
-                        <p class="text-primary fw-bold mb-0">KSh {{ item.product.price }}</p>
-                    </div>
+                <!-- Product Info -->
+                <div class="col-9 col-md-10">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                        <div style="min-width: 0; flex: 1;" class="pe-md-3">
+                            <a href="{% url 'products:product_detail' item.product.id %}" class="item-name-clamp">
+                                {{ item.product.name }}
+                            </a>
+                            <div class="item-price">KSh {{ item.product.get_current_price|floatformat:0|intcomma }}</div>
+                        </div>
 
-                    <div class="col-5 text-end">
-                        <a href="{% url 'products:add_to_cart' item.product.id %}" class="btn btn-primary btn-sm px-3 fw-bold shadow-sm me-2">
-                            ADD TO CART
-                        </a>
-
-                        <a href="{% url 'products:remove_from_wishlist' item.product.id %}"
-                           class="btn btn-outline-danger btn-sm rounded-circle"
-                           title="Remove"
-                           onclick="return confirm('Remove {{ item.product.name }} from wishlist?')">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
+                        <!-- Actions Row -->
+                        <div class="wish-actions mt-2 mt-md-0">
+                            <a href="{% url 'products:add_to_cart' item.product.id %}" class="btn-buy d-inline-block text-decoration-none text-center">
+                                ADD TO CART
+                            </a>
+                            <a href="{% url 'products:remove_from_wishlist' item.product.id %}" 
+                               class="btn-remove ms-3" 
+                               onclick="return confirm('Remove this item from your wishlist?')">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                {% empty %}
-                <div class="text-center py-5">
-                    <i class="far fa-heart fa-3x text-muted mb-3"></i>
-                    <h5>Your wishlist is empty</h5>
-                    <p class="text-muted">Save items you love here to buy them later.</p>
-                    <a href="{% url 'products:index' %}" class="btn btn-primary mt-2 px-4 fw-bold">DISCOVER PRODUCTS</a>
-                </div>
-                {% endfor %}
             </div>
         </div>
+        {% empty %}
+        <!-- Empty State -->
+        <div class="text-center py-5 bg-white border rounded shadow-sm">
+            <i class="far fa-heart fa-4x text-light mb-3"></i>
+            <h6 class="fw-bold text-muted">Your wishlist is empty!</h6>
+            <p class="text-muted small px-4">Found something you like? Tap on the heart icon to save it here.</p>
+            <div class="mt-4">
+                <a href="{% url 'products:index' %}" class="btn btn-pro px-5 py-2 fw-bold">START SHOPPING</a>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

@@ -3,12 +3,18 @@
 
 {% block content %}
 <style>
-    /* Jumia Style Stepper */
+    :root { 
+        --zando-blue: #006bff; 
+        --soft-gray: #f8f9fa;
+        --success-green: #28a745;
+    }
+
+    /* 1. Jumia Style Tracking Stepper */
     .track-container {
-        padding: 40px 0;
+        padding: 25px 10px;
         background: #fff;
-        border-radius: 8px;
-        margin-bottom: 2rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
         border: 1px solid #eee;
     }
     .stepper-wrapper {
@@ -16,7 +22,7 @@
         justify-content: space-between;
         position: relative;
         width: 100%;
-        max-width: 900px;
+        max-width: 800px;
         margin: 0 auto;
     }
     .stepper-item {
@@ -30,17 +36,17 @@
     .stepper-item::before {
         position: absolute;
         content: "";
-        border-bottom: 3px solid #dee2e6;
+        border-bottom: 2px solid #dee2e6;
         width: 100%;
-        top: 15px;
+        top: 12px;
         left: -50%;
         z-index: 1;
     }
     .stepper-item:first-child::before { content: none; }
     
     .stepper-item .step-counter {
-        width: 30px;
-        height: 30px;
+        width: 24px;
+        height: 24px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -48,38 +54,53 @@
         background: #dee2e6;
         color: white;
         margin-bottom: 6px;
-        font-size: 14px;
-        border: 4px solid #fff;
+        font-size: 11px;
+        border: 3px solid #fff;
         box-shadow: 0 0 0 1px #dee2e6;
     }
-    .stepper-item.completed .step-counter { background-color: #28a745; box-shadow: 0 0 0 1px #28a745; }
-    .stepper-item.completed::before { border-bottom-color: #28a745; }
-    .stepper-item.current .step-counter { background-color: #f68b1e; box-shadow: 0 0 0 1px #f68b1e; }
+    .stepper-item.completed .step-counter { background-color: var(--success-green); box-shadow: 0 0 0 1px var(--success-green); }
+    .stepper-item.completed::before { border-bottom-color: var(--success-green); }
+    .stepper-item.current .step-counter { background-color: var(--zando-blue); box-shadow: 0 0 0 1px var(--zando-blue); }
     
-    .step-name { font-size: 11px; font-weight: bold; text-transform: uppercase; color: #6c757d; text-align: center; }
-    .stepper-item.completed .step-name { color: #28a745; }
-    .stepper-item.current .step-name { color: #f68b1e; }
-    .step-date { font-size: 10px; color: #aaa; margin-top: 2px; }
+    .step-name { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #6c757d; text-align: center; line-height: 1.1; }
+    .stepper-item.completed .step-name { color: var(--success-green); }
+    .stepper-item.current .step-name { color: var(--zando-blue); }
 
-    .jumia-card { border: 1px solid #eee; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .jumia-header { background-color: #f8f9fa; border-bottom: 1px solid #eee; padding: 12px 15px; font-weight: bold; text-transform: uppercase; font-size: 14px; }
-    .btn-jumia { background-color: #f68b1e; color: #fff; border: none; font-weight: bold; }
-    .btn-jumia:hover { background-color: #e07b1a; color: #fff; }
+    /* 2. Cards Styling */
+    .jumia-card { border: 1px solid #eee; border-radius: 4px; background: white; margin-bottom: 10px; }
+    .jumia-header { background-color: var(--soft-gray); border-bottom: 1px solid #eee; padding: 10px 15px; font-weight: bold; text-transform: uppercase; font-size: 12px; color: #333; }
+    
+    .info-label { font-size: 11px; color: #888; text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
+    .info-value { font-size: 13px; color: #333; margin-bottom: 12px; line-height: 1.4; }
+
+    /* 3. Mobile Overrides */
+    @media (max-width: 768px) {
+        .container { padding-top: 10px !important; }
+        h4 { font-size: 16px !important; }
+        
+        /* Convert table to cards for mobile */
+        .table-jumia thead { display: none; }
+        .table-jumia tr { display: block; padding: 15px; border-bottom: 1px solid #eee; position: relative; }
+        .table-jumia td { display: block; border: none; padding: 0 !important; }
+        
+        .mobile-price-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+        .btn-return { width: 100%; font-size: 13px; padding: 12px; }
+    }
 </style>
 
-<div class="container" style="max-width: 900px; padding-top: 2rem; padding-bottom: 4rem;">
-    <!-- Header -->
+<div class="container py-3" style="max-width: 900px;">
+    <!-- Order Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h4 class="fw-bold mb-0">Order #{{ order.id }}</h4>
-            <p class="text-muted small">Placed on {{ order.created_at|date:"D, d M Y" }}</p>
+            <h5 class="fw-bold mb-0">Order #{{ order.id }}</h5>
+            <div class="text-muted" style="font-size: 12px;">Placed on {{ order.created_at|date:"d M Y" }}</div>
         </div>
-        <a href="{% url 'products:my_orders' %}" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-list-ul"></i> My Orders
+        <a href="{% url 'products:my_orders' %}" class="btn btn-outline-primary btn-sm fw-bold" style="font-size: 11px;">
+            BACK TO LIST
         </a>
     </div>
 
-    <!-- Jumia Tracking Stepper -->
+    <!-- Tracking Stepper -->
     <div class="track-container shadow-sm">
         <div class="stepper-wrapper">
             {% for step in timeline %}
@@ -88,56 +109,53 @@
                     {% if step.is_done %}<i class="fas fa-check"></i>{% else %}{{ forloop.counter }}{% endif %}
                 </div>
                 <div class="step-name">{{ step.name }}</div>
-                {% if step.date %}
-                    <div class="step-date">{{ step.date|date:"d M" }}</div>
-                {% endif %}
+                {% if step.date %}<div style="font-size: 9px; color: #aaa;">{{ step.date|date:"d M" }}</div>{% endif %}
             </div>
             {% endfor %}
         </div>
     </div>
 
-    <div class="row g-3 mb-4">
-        <!-- Delivery Details -->
+    <div class="row g-2 mb-3">
+        <!-- Delivery Card -->
         <div class="col-md-6">
-            <div class="card jumia-card h-100">
+            <div class="jumia-card h-100">
                 <div class="jumia-header">Delivery Information</div>
-                <div class="card-body">
-                    <h6 class="fw-bold small mb-1">Delivery Method</h6>
-                    <p class="small text-muted mb-3">{{ order.delivery_method|title }} Delivery</p>
+                <div class="p-3">
+                    <div class="info-label">Delivery Method</div>
+                    <div class="info-value">{{ order.delivery_method|title }} Delivery</div>
                     
-                    <h6 class="fw-bold small mb-1">Shipping Address</h6>
-                    <p class="small text-muted mb-0">
-                        <strong>{{ order.address.first_name }} {{ order.address.last_name }}</strong><br>
+                    <div class="info-label">Shipping Address</div>
+                    <div class="info-value" style="font-weight: 500;">
+                        {{ order.address.first_name }} {{ order.address.last_name }}<br>
                         {{ order.address.street }}<br>
                         {{ order.address.town.name }}, {{ order.address.town.county.name }}<br>
-                        Phone: {{ order.phone_number }}
-                    </p>
+                        Tel: +254 {{ order.phone_number }}
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Payment Details -->
+        <!-- Payment Card -->
         <div class="col-md-6">
-            <div class="card jumia-card h-100">
-                <div class="jumia-header">Payment Information</div>
-                <div class="card-body">
-                    <h6 class="fw-bold small mb-1">Payment Method</h6>
-                    <p class="small text-muted mb-3">{{ order.payment_method }}</p>
+            <div class="jumia-card h-100">
+                <div class="jumia-header">Payment Summary</div>
+                <div class="p-3">
+                    <div class="info-label">Payment Method</div>
+                    <div class="info-value">{{ order.payment_method|upper }}</div>
                     
-                    <h6 class="fw-bold small mb-1">Payment Details</h6>
-                    <div class="d-flex justify-content-between small text-muted mb-1">
-                        <span>Items Total:</span>
+                    <div class="d-flex justify-content-between mb-1" style="font-size: 13px;">
+                        <span class="text-muted">Items Subtotal:</span>
                         <span>KSh {{ order.total_price|floatformat:"0"|intcomma }}</span>
                     </div>
                     {% if order.discount_amount > 0 %}
-                    <div class="d-flex justify-content-between small text-success mb-1">
-                        <span>Discount:</span>
+                    <div class="d-flex justify-content-between mb-1 text-success" style="font-size: 13px;">
+                        <span>Discount Applied:</span>
                         <span>- KSh {{ order.discount_amount|floatformat:"0"|intcomma }}</span>
                     </div>
                     {% endif %}
-                    <hr>
-                    <div class="d-flex justify-content-between fw-bold text-dark">
-                        <span>Total Paid:</span>
+                    <hr class="my-2">
+                    <div class="d-flex justify-content-between fw-bold" style="font-size: 15px;">
+                        <span>Total:</span>
                         <span class="text-primary">KSh {{ order.total_price|floatformat:"0"|intcomma }}</span>
                     </div>
                 </div>
@@ -145,49 +163,48 @@
         </div>
     </div>
 
-    <!-- Items List -->
-    <div class="card jumia-card mb-4">
+    <!-- Items Card -->
+    <div class="jumia-card">
         <div class="jumia-header">Items in your order ({{ order.items.count }})</div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-borderless align-middle mb-0">
-                    <thead class="bg-light" style="font-size: 12px; color: #888;">
-                        <tr>
-                            <th class="ps-4">ITEM</th>
-                            <th class="text-center">QTY</th>
-                            <th class="text-end">PRICE</th>
-                            <th class="text-end pe-4">SUBTOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in order.items.all %}
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td class="ps-4 py-3">
-                                <div class="d-flex align-items-center">
-                                    {% if item.product.image %}
-                                        <img src="{{ item.product.image.url }}" class="rounded" style="width: 60px; height: 60px; object-fit: cover; border: 1px solid #eee;">
-                                    {% endif %}
-                                    <div class="ms-3">
-                                        <p class="mb-0 fw-bold small">{{ item.product.name }}</p>
-                                        <span class="badge bg-light text-dark border small" style="font-size: 10px;">{{ item.product.category.name }}</span>
-                                    </div>
+        <div class="p-0">
+            <table class="table table-borderless align-middle mb-0 table-jumia">
+                <thead class="bg-light" style="font-size: 11px; color: #888;">
+                    <tr>
+                        <th class="ps-3">PRODUCT</th>
+                        <th class="text-center">QTY</th>
+                        <th class="text-end pe-3">SUBTOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td class="ps-3 py-3">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ item.product.image.url }}" class="rounded border p-1" style="width: 50px; height: 50px; object-fit: contain;">
+                                <div class="ms-2">
+                                    <div class="fw-bold text-dark" style="font-size: 12px; line-height: 1.2;">{{ item.product.name }}</div>
+                                    <div class="text-muted" style="font-size: 11px;">Unit: KSh {{ item.price|floatformat:"0"|intcomma }}</div>
                                 </div>
-                            </td>
-                            <td class="text-center small">{{ item.quantity }}</td>
-                            <td class="text-end small">KSh {{ item.price|floatformat:"0"|intcomma }}</td>
-                            <td class="text-end pe-4 fw-bold small">KSh {{ item.subtotal|floatformat:"0"|intcomma }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <!-- Show "Qty: X" on mobile, just "X" on laptop -->
+                            <span class="d-md-none text-muted small">Qty: </span><span class="small fw-bold">{{ item.quantity }}</span>
+                        </td>
+                        <td class="text-end pe-3">
+                            <div class="fw-bold text-dark" style="font-size: 13px;">KSh {{ item.subtotal|floatformat:"0"|intcomma }}</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
     <!-- Footer Action -->
-    <div class="text-center">
-        <a href="{% url 'products:index' %}" class="btn btn-jumia px-5 py-2">
-            <i class="fas fa-shopping-cart me-2"></i> RETURN TO SHOP
+    <div class="text-center mt-4">
+        <a href="{% url 'products:index' %}" class="btn btn-primary px-5 py-2 fw-bold btn-return shadow-sm" style="background-color: var(--zando-blue); border:none;">
+            CONTINUE SHOPPING
         </a>
     </div>
 </div>

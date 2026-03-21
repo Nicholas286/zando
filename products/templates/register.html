@@ -1,17 +1,148 @@
 {% extends 'base.html' %}
+{% load humanize %}
+
 {% block content %}
-<div class="container mt-5" style="max-width: 450px;">
-    <div class="card p-4 shadow-sm border-0">
-        <h4 class="text-center fw-bold mb-4" style="color: #f68b1e;">Create Your ZANDO Account</h4>
+<style>
+    :root { 
+        --zando-blue: #006bff; 
+        --soft-bg: #f4f6f9;
+        --border-color: #eee;
+    }
+
+    /* 1. Card Styling */
+    .register-wrapper {
+        max-width: 450px;
+        margin: 2rem auto;
+    }
+
+    .register-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 30px;
+    }
+
+    /* 2. Neat Typography (Jumia Style) */
+    .register-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--zando-blue);
+        text-transform: uppercase;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .form-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #888;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    /* 3. Form Input Styling */
+    .form-control {
+        font-size: 14px !important;
+        padding: 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background-color: #fff;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .form-control:focus {
+        border-color: var(--zando-blue);
+        box-shadow: 0 0 0 0.2rem rgba(0, 107, 255, 0.1);
+        outline: none;
+    }
+
+    /* 4. Register Button */
+    .btn-register {
+        background-color: var(--zando-blue);
+        color: white !important;
+        font-weight: bold;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        width: 100%;
+        text-transform: uppercase;
+        font-size: 14px;
+        margin-top: 10px;
+        transition: 0.2s;
+    }
+    .btn-register:hover {
+        background-color: #0056cc;
+        box-shadow: 0 4px 12px rgba(0, 107, 255, 0.2);
+    }
+
+    /* Error Text Styling */
+    .errorlist {
+        color: #dc3545;
+        font-size: 12px;
+        list-style: none;
+        padding: 0;
+        margin-bottom: 10px;
+    }
+
+    /* 5. Mobile Tweaks */
+    @media (max-width: 768px) {
+        .register-wrapper { margin: 1rem auto; padding: 0 10px; }
+        .register-card { padding: 20px !important; }
+        .register-title { font-size: 16px !important; }
+        .form-label { font-size: 10px !important; }
+        .form-control { font-size: 13px !important; padding: 10px; }
+    }
+</style>
+
+<div class="register-wrapper">
+    <div class="register-card shadow-sm">
+        <h4 class="register-title">Create Your ZANDO Account</h4>
+        
         <form method="POST">
             {% csrf_token %}
             {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-warning w-100 fw-bold py-2 mt-3">REGISTER</button>
+            
+            <div id="register-form-container">
+                {{ form.as_p }}
+            </div>
+
+            <button type="submit" class="btn-register shadow-sm">
+                REGISTER
+            </button>
         </form>
-        <div class="text-center mt-3">
-            <small>Already have an account? <a href="{% url 'products:login' %}{% if next %}?next={{ next }}{% endif %}" class="text-warning text-decoration-none fw-bold">Login</a></small>
+
+        <div class="text-center mt-4 border-top pt-3">
+            <div class="text-muted small mb-2">Already have an account?</div>
+            <a href="{% url 'products:login' %}{% if next %}?next={{ next }}{% endif %}" class="fw-bold text-decoration-none" style="color: var(--zando-blue); font-size: 13px;">
+                LOGIN TO ACCOUNT
+            </a>
         </div>
     </div>
+    
+    <div class="text-center mt-3 text-muted" style="font-size: 11px;">
+        &copy; 2026 ZANDO | Shop Smarter
+    </div>
 </div>
+
+<script>
+    // This script formats the messy 'form.as_p' output into clean app-style fields
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.getElementById('register-form-container');
+        const paragraphs = container.querySelectorAll('p');
+        
+        paragraphs.forEach(p => {
+            const label = p.querySelector('label');
+            const input = p.querySelector('input, select, textarea');
+            
+            if (label && input) {
+                label.className = 'form-label';
+                input.className = 'form-control';
+                // Add placeholder text based on the label
+                input.placeholder = 'Enter ' + label.innerText.replace(':', '').replace('*', '').trim();
+            }
+        });
+    });
+</script>
 {% endblock %}

@@ -1,25 +1,112 @@
-<form method="GET" action="{% url 'products:index' %}">
+<style>
+    :root { 
+        --zando-blue: #006bff; 
+        --zando-dark-blue: #004b91;
+    }
+
+    /* 1. Small & Neat Labels */
+    .filter-label { 
+        font-size: 11px; 
+        font-weight: 700; 
+        color: #888; 
+        text-transform: uppercase; 
+        margin-bottom: 5px; 
+        display: block;
+        letter-spacing: 0.5px;
+    }
+
+    /* 2. Neat Inputs */
+    .filter-input {
+        font-size: 13px !important;
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background-color: #fff;
+        height: auto;
+    }
+    .filter-input:focus {
+        border-color: var(--zando-blue);
+        box-shadow: 0 0 0 0.2rem rgba(0, 107, 255, 0.1);
+        outline: none;
+    }
+
+    /* 3. Action Buttons */
+    .btn-apply {
+        background-color: var(--zando-blue);
+        color: white !important;
+        font-weight: bold;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        width: 100%;
+        text-transform: uppercase;
+        font-size: 12px;
+        margin-top: 10px;
+        transition: 0.2s;
+    }
+    .btn-apply:hover { background-color: var(--zando-dark-blue); }
+
+    .btn-reset-filter {
+        background-color: #f8f9fa;
+        color: #666 !important;
+        font-weight: bold;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 100%;
+        text-transform: uppercase;
+        font-size: 11px;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+</style>
+
+<form method="GET" action="{% url 'products:index' %}" class="p-1">
+    <!-- Preserves the search query if user is filtering results -->
     <input type="hidden" name="q" value="{{ request.GET.q|default:'' }}">
+    
+    {% if request.GET.category %}
+    <input type="hidden" name="category" value="{{ request.GET.category }}">
+    {% endif %}
 
-    <div class="mb-3">
-        <label for="min_p" class="form-label small fw-bold">Min Price</label>
-        <input type="number" id="min_p" name="min_price" class="form-control" value="{{ request.GET.min_price }}">
+    <!-- PRICE RANGE -->
+    <div class="row g-2 mb-3">
+        <div class="col-6">
+            <label for="min_p" class="filter-label">Min Price</label>
+            <input type="number" id="min_p" name="min_price" class="form-control filter-input" placeholder="0" value="{{ request.GET.min_price }}">
+        </div>
+        <div class="col-6">
+            <label for="max_p" class="filter-label">Max Price</label>
+            <input type="number" id="max_p" name="max_price" class="form-control filter-input" placeholder="Max" value="{{ request.GET.max_price }}">
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label for="max_p" class="form-label small fw-bold">Max Price</label>
-        <input type="number" id="max_p" name="max_price" class="form-control" value="{{ request.GET.max_price }}">
-    </div>
-
+    <!-- SORTING -->
     <div class="mb-4">
-        <label for="sort_by" class="form-label small fw-bold">Sort By</label>
-        <select id="sort_by" name="sort" class="form-select">
-            <option value="">Default</option>
-            <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Low to High</option>
-            <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>High to Low</option>
+        <label for="sort_by" class="filter-label">Sort By</label>
+        <select id="sort_by" name="sort" class="form-select filter-input">
+            <option value="">Default (Newest)</option>
+            <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+            <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+            <option value="rating" {% if request.GET.sort == 'rating' %}selected{% endif %}>Customer Rating</option>
         </select>
     </div>
 
-    <button type="submit" class="btn btn-pro w-100 mb-2">APPLY</button>
-    <a href="{% url 'products:index' %}" class="btn btn-light w-100 border">RESET</a>
+    <!-- BUTTONS -->
+    <div class="d-flex flex-column gap-2">
+        <button type="submit" class="btn-apply shadow-sm">
+            APPLY FILTERS
+        </button>
+        <a href="{% url 'products:index' %}" class="btn-reset-filter">
+            RESET ALL
+        </a>
+    </div>
 </form>
+
+<script>
+    // Ensure "Reset" clears the category as well if needed
+    document.querySelector('.btn-reset-filter').addEventListener('click', function(e) {
+        // Optional: If you want reset to truly clear everything back to the default home
+    });
+</script>

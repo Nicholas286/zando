@@ -1,34 +1,122 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
-<div class="container" style="max-width: 800px; padding-top: 2rem;">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold">Address Book</h4>
-        <a href="{% url 'products:add_address' %}" class="btn btn-primary btn-sm fw-bold text-decoration-none">
-            + ADD NEW ADDRESS
+<style>
+    :root { 
+        --zando-blue: #006bff; 
+        --soft-bg: #f4f6f9;
+        --border-color: #eee;
+    }
+
+    /* Page Header */
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+    .btn-back { background: #fff; border: 1px solid #ddd; color: #333; padding: 5px 10px; border-radius: 4px; margin-right: 12px; }
+    
+    .btn-add-new { 
+        background-color: var(--zando-blue); 
+        color: white !important; 
+        font-weight: bold; 
+        font-size: 12px; 
+        padding: 8px 15px; 
+        border-radius: 4px; 
+        text-transform: uppercase;
+        text-decoration: none;
+    }
+
+    /* Address Card Styling (Jumia Look) */
+    .address-card { 
+        background: white; 
+        border: 1px solid var(--border-color); 
+        border-radius: 4px; 
+        padding: 15px; 
+        margin-bottom: 12px; 
+        transition: 0.2s;
+        position: relative;
+    }
+    
+    /* Highlight the Default Address */
+    .address-card.default-address { 
+        border-left: 5px solid var(--zando-blue); 
+        box-shadow: 0 4px 10px rgba(0, 107, 255, 0.08);
+    }
+
+    .address-name { font-size: 14px; font-weight: 700; color: #333; text-transform: uppercase; margin-bottom: 5px; }
+    .address-detail { font-size: 13px; color: #666; line-height: 1.4; margin-bottom: 2px; }
+    
+    .label-badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 2px; text-transform: uppercase; }
+
+    /* Action Links */
+    .address-actions { border-top: 1px solid #f9f9f9; padding-top: 10px; margin-top: 10px; display: flex; gap: 20px; }
+    .action-link { font-size: 12px; font-weight: 800; text-decoration: none; text-transform: uppercase; }
+
+    /* Mobile Overrides */
+    @media (max-width: 768px) {
+        .container { padding-top: 10px !important; }
+        .address-card { padding: 12px !important; }
+        .address-name { font-size: 13px !important; }
+        .address-detail { font-size: 12px !important; }
+        .action-link { font-size: 11px !important; }
+    }
+</style>
+
+<div class="container py-3" style="max-width: 750px;">
+    <!-- Top Navigation -->
+    <div class="page-header">
+        <div class="d-flex align-items-center">
+            <a href="javascript:history.back()" class="btn-back shadow-sm">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <h5 class="fw-bold mb-0">Address Book</h5>
+        </div>
+        <a href="{% url 'products:add_address' %}" class="btn-add-new shadow-sm">
+            + ADD NEW
         </a>
     </div>
 
-    {% for address in addresses %}
-<div class="col-md-6">
-    <div class="card border-0 shadow-sm p-3 mb-3 border-start border-primary border-4">
-        <div class="d-flex justify-content-between">
-            <h6 class="fw-bold text-uppercase">{{ address.first_name }} {{ address.last_name }}</h6>
-            {% if address.is_default %}<span class="badge bg-success">Default</span>{% endif %}
-        </div>
+    <div class="row g-2">
+        {% for address in addresses %}
+        <div class="col-12">
+            <div class="address-card shadow-sm {% if address.is_default %}default-address{% endif %}">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="address-name">{{ address.first_name }} {{ address.last_name }}</div>
+                    {% if address.is_default %}
+                        <span class="label-badge bg-success text-white">DEFAULT</span>
+                    {% endif %}
+                </div>
 
-        <p class="mb-1 mt-2 text-muted small">{{ address.street }}</p>
-        <p class="text-muted small mb-3">
-            {{ address.town.name }}, {{ address.town.county.name }}<br>
-            Phone: {{ address.phone }}
-        </p>
+                <div class="address-detail mt-2">{{ address.street }}</div>
+                <div class="address-detail">{{ address.town.name }}, {{ address.town.county.name }}</div>
+                <div class="address-detail fw-bold text-dark mt-2" style="font-size: 12px;">
+                    <i class="fas fa-phone-alt me-1 text-muted"></i> +254 {{ address.phone }}
+                </div>
 
-        <div class="d-flex gap-2">
-            <a href="{% url 'products:edit_address' address.id %}" class="text-primary small text-decoration-none fw-bold">EDIT</a>
-            <a href="{% url 'products:delete_address' address.id %}" class="text-danger small text-decoration-none fw-bold">DELETE</a>
+                <!-- Footer Actions -->
+                <div class="address-actions">
+                    <a href="{% url 'products:edit_address' address.id %}" class="action-link text-pro">
+                        <i class="far fa-edit me-1"></i> EDIT
+                    </a>
+                    {% if not address.is_default %}
+                    <a href="{% url 'products:delete_address' address.id %}" class="action-link text-danger">
+                        <i class="far fa-trash-alt me-1"></i> DELETE
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
+        {% empty %}
+        <!-- Empty State -->
+        <div class="col-12 text-center py-5">
+            <div class="card p-4 border-0 shadow-sm">
+                <i class="fas fa-map-marked-alt fa-3x text-light mb-3"></i>
+                <h6 class="text-muted">Your address book is empty.</h6>
+                <p class="text-muted small">Add a shipping address to speed up your checkout process.</p>
+                <div class="mt-3">
+                    <a href="{% url 'products:add_address' %}" class="btn btn-pro px-4 fw-bold">ADD ADDRESS</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-</div>
-{% endfor %}
 </div>
 {% endblock %}

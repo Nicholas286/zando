@@ -1,19 +1,139 @@
 {% extends 'base.html' %}
+{% load humanize %}
+
 {% block content %}
-<div class="container mt-5" style="max-width: 450px;">
-    <div class="card p-4 shadow-sm border-0">
-        <h4 class="text-center fw-bold mb-4" style="color: #f68b1e;">Login to ZANDO</h4>
+<style>
+    :root { 
+        --zando-blue: #006bff; 
+        --soft-bg: #f4f6f9;
+        --border-color: #eee;
+    }
+
+    /* 1. Login Card Styling */
+    .login-wrapper {
+        max-width: 420px;
+        margin: 2rem auto;
+    }
+
+    .login-card {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 30px;
+    }
+
+    /* 2. Neat Typography (Jumia Style) */
+    .login-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--zando-blue);
+        text-transform: uppercase;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .form-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #888;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    /* 3. Form Input Styling */
+    .form-control {
+        font-size: 14px !important;
+        padding: 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background-color: #fff;
+    }
+
+    .form-control:focus {
+        border-color: var(--zando-blue);
+        box-shadow: 0 0 0 0.2rem rgba(0, 107, 255, 0.1);
+    }
+
+    /* 4. Login Button */
+    .btn-login {
+        background-color: var(--zando-blue);
+        color: white !important;
+        font-weight: bold;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        width: 100%;
+        text-transform: uppercase;
+        font-size: 14px;
+        margin-top: 10px;
+        transition: 0.2s;
+    }
+    .btn-login:hover {
+        background-color: #0056cc;
+        box-shadow: 0 4px 12px rgba(0, 107, 255, 0.2);
+    }
+
+    /* 5. Mobile Tweaks */
+    @media (max-width: 768px) {
+        .login-wrapper { margin: 1rem auto; padding: 0 10px; }
+        .login-card { padding: 20px !important; border-radius: 4px; }
+        .login-title { font-size: 16px !important; }
+        .form-label { font-size: 10px !important; }
+        .form-control { font-size: 13px !important; padding: 10px; }
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="login-card shadow-sm">
+        <h4 class="login-title">Login to ZANDO</h4>
+        
         <form method="POST">
             {% csrf_token %}
             {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
-            <div class="mb-3">
+            
+            <!-- Django Form Fields -->
+            <div class="mb-4" id="form-fields-container">
                 {{ form.as_p }}
             </div>
-            <button type="submit" class="btn btn-warning w-100 fw-bold py-2">LOGIN</button>
+
+            <button type="submit" class="btn-login shadow-sm">
+                LOG IN
+            </button>
         </form>
-        <div class="text-center mt-3">
-            <small>New to ZANDO? <a href="{% url 'products:register' %}{% if next %}?next={{ next }}{% endif %}" class="text-warning text-decoration-none fw-bold">Create an account</a></small>
+
+        <div class="text-center mt-4 border-top pt-3">
+            <div class="text-muted small mb-2">New to ZANDO?</div>
+            <a href="{% url 'products:register' %}{% if next %}?next={{ next }}{% endif %}" class="fw-bold text-decoration-none" style="color: var(--zando-blue); font-size: 13px;">
+                CREATE AN ACCOUNT
+            </a>
         </div>
     </div>
+    
+    <div class="text-center mt-3 text-muted" style="font-size: 11px;">
+        &copy; 2026 ZANDO | Shop Smarter
+    </div>
 </div>
+
+<script>
+    // This script cleans up the default Django 'form.as_p' to look professional
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.getElementById('form-fields-container');
+        
+        // Find all <p> tags Django created
+        const paragraphs = container.querySelectorAll('p');
+        
+        paragraphs.forEach(p => {
+            // Find label and input
+            const label = p.querySelector('label');
+            const input = p.querySelector('input');
+            
+            if (label && input) {
+                // Add Bootstrap classes
+                label.className = 'form-label';
+                input.className = 'form-control mb-3';
+                input.placeholder = 'Enter ' + label.innerText.replace(':', '');
+            }
+        });
+    });
+</script>
 {% endblock %}

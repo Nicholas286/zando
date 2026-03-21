@@ -1,34 +1,95 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
-<div class="container" style="max-width: 600px; padding-top: 2rem;">
-    <h4 class="fw-bold mb-4">Add New Address</h4>
+<style>
+    :root { 
+        --zando-blue: #006bff; 
+        --soft-bg: #f4f6f9;
+        --border-color: #eee;
+    }
 
-    <div class="card border-0 shadow-sm p-4">
+    /* Page Header styling */
+    .page-header { display: flex; align-items: center; margin-bottom: 15px; }
+    .btn-back { background: #fff; border: 1px solid #ddd; color: #333; padding: 5px 10px; border-radius: 4px; margin-right: 12px; }
+
+    /* Form Styling */
+    .form-card { background: white; border: 1px solid var(--border-color); border-radius: 4px; padding: 20px; }
+    
+    .form-label { 
+        font-size: 11px; 
+        font-weight: 700; 
+        color: #888; 
+        text-transform: uppercase; 
+        margin-bottom: 5px; 
+    }
+
+    .form-control, .form-select {
+        font-size: 14px !important;
+        padding: 10px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background-color: #fff;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--zando-blue);
+        box-shadow: 0 0 0 0.2rem rgba(0, 107, 255, 0.1);
+    }
+
+    /* Submit Button (Jumia Style) */
+    .btn-save-address { 
+        background-color: var(--zando-blue); 
+        color: white; 
+        font-weight: bold; 
+        padding: 12px; 
+        border: none; 
+        border-radius: 4px; 
+        width: 100%; 
+        text-transform: uppercase; 
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    /* Mobile Overrides */
+    @media (max-width: 768px) {
+        .container { padding-top: 10px !important; }
+        .form-card { padding: 15px !important; border-radius: 0; margin-left: -15px; margin-right: -15px; border-left: 0; border-right: 0; }
+        .form-label { font-size: 10px !important; }
+        .form-control, .form-select { font-size: 13px !important; }
+        h4 { font-size: 18px !important; }
+    }
+</style>
+
+<div class="container py-3" style="max-width: 650px;">
+    <!-- Top Navigation -->
+    <div class="page-header">
+        <a href="javascript:history.back()" class="btn-back shadow-sm">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <h5 class="fw-bold mb-0">Add New Address</h5>
+    </div>
+
+    <div class="form-card shadow-sm">
+        <!-- Error Handling -->
         {% if form.errors %}
-        <div class="alert alert-danger">
-            <strong>Please correct the following errors:</strong>
-            <ul>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <li>{{ field.label }}: {{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
+        <div class="alert alert-danger p-2 small">
+            <ul class="mb-0 ps-3">
+                {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
+                {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
             </ul>
         </div>
         {% endif %}
+
         <form method="POST">
             {% csrf_token %}
 
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-6 mb-3">
                     <label class="form-label">First Name</label>
                     {{ form.first_name }}
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-6 mb-3">
                     <label class="form-label">Last Name</label>
                     {{ form.last_name }}
                 </div>
@@ -36,55 +97,79 @@
 
             <div class="mb-3">
                 <label class="form-label">Phone Number</label>
-                {{ form.phone }}
+                <div class="input-group">
+                    <span class="input-group-text bg-light text-muted small" style="font-size: 12px;">+254</span>
+                    {{ form.phone }}
+                </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-6 mb-3">
                     <label class="form-label">County</label>
                     {{ form.county }}
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-6 mb-3">
                     <label class="form-label">Town/City</label>
-                    <select name="town" class="form-control" id="id_town" required>
+                    <select name="town" class="form-select" id="id_town" required>
                         <option value="">Select a town</option>
                     </select>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Street/Building Details</label>
+                <label class="form-label">Street / Building / Apartment</label>
                 {{ form.street }}
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Postal / Zip Code</label>
-                {{ form.postal_code }}
+            <div class="row">
+                <div class="col-6 mb-3">
+                    <label class="form-label">Postal Code</label>
+                    {{ form.postal_code }}
+                </div>
+                <div class="col-6 mb-3 d-flex align-items-center">
+                    <div class="form-check mt-3">
+                        {{ form.is_default }}
+                        <label class="form-check-label small fw-bold text-muted ms-1" style="font-size: 11px;">SET AS DEFAULT</label>
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-3 form-check">
-                {{ form.is_default }}
-                <label class="form-check-label">Set as default address</label>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">SAVE ADDRESS</button>
+            <button type="submit" class="btn-save-address shadow-sm">
+                SAVE ADDRESS
+            </button>
         </form>
     </div>
 </div>
 
 <script>
-    document.getElementById('id_county').addEventListener('change', function() {
-        var countyId = this.value;
-        if (!countyId) return;
-        fetch(`/products/get-towns/?county_id=${countyId}`)
-            .then(response => response.json())
-            .then(data => {
-                var townSelect = document.getElementById('id_town');
-                townSelect.innerHTML = '<option value="">Select a town</option>';
-                data.forEach(town => {
-                    townSelect.innerHTML += `<option value="${town.id}">${town.name}</option>`;
+    // Logic for County -> Town dropdown
+    const countyField = document.querySelector('[name="county"]');
+    if (countyField) {
+        countyField.classList.add('form-select'); // Ensure it has the right style
+        countyField.addEventListener('change', function() {
+            var countyId = this.value;
+            if (!countyId) return;
+            fetch(`/products/get-towns/?county_id=${countyId}`)
+                .then(response => response.json())
+                .then(data => {
+                    var townSelect = document.getElementById('id_town');
+                    townSelect.innerHTML = '<option value="">Select a town</option>';
+                    data.forEach(town => {
+                        townSelect.innerHTML += `<option value="${town.id}">${town.name}</option>`;
+                    });
                 });
-            });
+        });
+    }
+
+    // Apply Bootstrap classes to Django form widgets automatically
+    document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => {
+        el.classList.add('form-control');
+    });
+    document.querySelectorAll('select').forEach(el => {
+        el.classList.add('form-select');
+    });
+    document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+        el.classList.add('form-check-input');
     });
 </script>
 {% endblock %}

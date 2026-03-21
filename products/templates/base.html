@@ -3,130 +3,90 @@
 {% load humanize %}
 <head>
     <meta charset="UTF-8">
-    <!-- CRITICAL: This line makes it look like an app on your phone -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zando | Shop Smarter</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     {% block head_extra %}{% endblock %}
     <style>
-        :root { --pro-blue: #006bff; --soft-bg: #f4f6f9; }
+        :root { --zando-blue: #006bff; --soft-bg: #f4f6f9; }
+        html, body { overflow-x: hidden !important; width: 100% !important; background-color: var(--soft-bg); font-family: 'Inter', sans-serif; }
         
-        /* SAFETY BOX: Prevents the phone from sliding left/right */
-        html, body { overflow-x: hidden !important; width: 100% !important; position: relative; background-color: var(--soft-bg); font-family: 'Inter', sans-serif; }
-        
-        .navbar { background-color: #ffffff; border-bottom: 3px solid var(--pro-blue); padding: 0.5rem 0; z-index: 1030; }
-        .text-pro { color: var(--pro-blue) !important; }
-        .btn-pro { background: var(--pro-blue); color: white; border-radius: 4px !important; font-weight: 600; border: none; transition: 0.2s; }
-        .btn-pro:hover { background: #0056cc; color: white; }
-        .nav-icon-link { color: #333; text-decoration: none; display: flex; align-items: center; cursor: pointer; }
-        
-        /* --- MOBILE APP OVERRIDES --- */
+        .navbar { background-color: #ffffff; border-bottom: 2px solid var(--zando-blue); padding: 0.5rem 0; z-index: 1050; }
+        .text-pro { color: var(--zando-blue) !important; }
+        .btn-pro { background: var(--zando-blue); color: white; border-radius: 4px !important; }
+        .nav-icon-link { color: #333; text-decoration: none; display: flex; align-items: center; }
+
         @media (max-width: 768px) {
             body { font-size: 13px !important; }
-            .navbar-brand { font-size: 1.4rem !important; }
-            
-            /* DROPDOWN FIX: Keeps menu on screen */
+            /* Mobile Dropdown Fix */
             .dropdown-menu { 
-                position: absolute !important; 
-                right: 0 !important; 
-                left: auto !important; 
-                width: 85vw !important; 
-                max-width: 290px; 
-                box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important; 
-                border: 1px solid #ddd !important;
+                position: absolute !important; right: 5px !important; left: auto !important; 
+                width: 280px !important; background: white !important; border: 1px solid #eee !important;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important; z-index: 9999 !important;
             }
-
-            /* TABLE/LIST FIX: Prevents horizontal scroll on Inbox/Orders */
-            .container { padding-left: 8px; padding-right: 8px; width: 100vw !important; }
-            table, .list-group { display: block; width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
-            
-            /* SEARCH BAR: Moves to bottom row on phone */
-            .search-container { margin: 8px 0 0 0 !important; width: 100% !important; }
-            
-            /* Hides names on icons for cleaner header */
+            .dropdown-item { padding: 12px 15px !important; font-size: 14px !important; display: flex !important; align-items: center; border-bottom: 1px solid #f8f8f8; }
+            .dropdown-item i { width: 25px; color: #777; }
+            .search-container { margin-top: 8px !important; width: 100% !important; }
             .nav-icon-link span { display: none !important; }
-            .nav-icon-link i { font-size: 20px !important; }
         }
-
         .recent-card { border: 1px solid #eee !important; border-radius: 4px; background: #fff; }
         .x-small { font-size: 11px; }
-        .pointer { cursor: pointer; }
     </style>
 </head>
 <body>
     <nav class="navbar sticky-top shadow-sm">
         <div class="container d-flex align-items-center justify-content-between flex-wrap">
-            
-            <!-- 1. Logo -->
             <a class="navbar-brand fw-bold text-pro order-1" href="{% url 'products:index' %}">ZANDO</a>
 
-            <!-- 2. Search (Laptop Middle / Phone Bottom) -->
             <form action="{% url 'products:index' %}" method="GET" class="search-container flex-grow-1 mx-lg-4 position-relative order-3 order-lg-2">
-                <div class="input-group shadow-sm" style="border-radius: 4px; overflow: hidden; border: 1px solid #ced4da;">
-                    <input type="text" id="searchInput" name="q" class="form-control border-0 py-2" placeholder="Search products, brands..." value="{{ request.GET.q|default:'' }}" autocomplete="off">
+                <div class="input-group" style="border-radius: 4px; overflow: hidden; border: 1px solid #ced4da;">
+                    <input type="text" id="searchInput" name="q" class="form-control border-0 py-2" placeholder="Search products..." value="{{ request.GET.q|default:'' }}" autocomplete="off">
                     <button class="btn btn-pro px-3" type="submit"><i class="fas fa-search"></i></button>
                 </div>
-                <div id="suggestionsBox" class="list-group position-absolute w-100 shadow-lg d-none" style="top: 100%; z-index: 2000; background: white; border: 1px solid #ddd;"></div>
+                <div id="suggestionsBox" class="list-group position-absolute w-100 d-none shadow" style="top: 100%; z-index: 2000; background: white;"></div>
             </form>
 
-            <!-- 3. Icons (Laptop Right / Phone Top Right) -->
             <div class="d-flex align-items-center gap-3 order-2 order-lg-3">
                 <div class="dropdown">
-                    <a href="#" class="nav-icon-link" data-bs-toggle="dropdown">
-                        <i class="far fa-user"></i>
-                        <span class="d-none d-md-inline ms-2 small fw-bold text-pro">Hi, {{ user.username|default:"Guest" }}</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end p-2 border-0 shadow">
+                    <a href="#" class="nav-icon-link" data-bs-toggle="dropdown"><i class="far fa-user fs-5"></i><span class="d-none d-md-inline ms-2 small fw-bold text-pro">Hi, {{ user.username|default:"Guest" }}</span></a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
                         {% if user.is_authenticated %}
-                            <!-- Truncated Email safety -->
-                            <li class="px-3 py-2 border-bottom mb-2">
-                                <strong class="text-pro small text-truncate d-block" style="max-width: 250px;">{{ user.email }}</strong>
-                            </li>
-                            <li><a class="dropdown-item py-2" href="{% url 'products:account_settings' %}"><i class="fa-regular fa-user me-2 text-secondary"></i> My Account</a></li>
-                            <li><a class="dropdown-item py-2" href="{% url 'products:my_orders' %}"><i class="fa-solid fa-box-archive me-2 text-secondary"></i> Orders</a></li>
-                            <li><a class="dropdown-item py-2" href="{% url 'products:inbox' %}"><i class="fa-regular fa-envelope me-2 text-secondary"></i> Inbox {% if inbox_unread_count %}<span class="badge bg-danger rounded-pill">{{ inbox_unread_count }}</span>{% endif %}</a></li>
-                            <li><a class="dropdown-item py-2" href="{% url 'products:pending_reviews' %}"><i class="fa-regular fa-star me-2 text-secondary"></i> Pending Reviews</a></li>
-                            <li><a class="dropdown-item py-2" href="{% url 'products:view_wishlist' %}"><i class="fa-regular fa-heart me-2 text-secondary"></i> Wishlist</a></li>
+                            <li class="px-3 py-2 border-bottom"><strong class="text-pro small d-block text-truncate">{{ user.email }}</strong></li>
+                            <li><a class="dropdown-item" href="{% url 'products:account_settings' %}"><i class="fa-regular fa-user"></i> My Account</a></li>
+                            <li><a class="dropdown-item" href="{% url 'products:my_orders' %}"><i class="fa-solid fa-box-archive"></i> Orders</a></li>
+                            <li><a class="dropdown-item" href="{% url 'products:inbox' %}"><i class="fa-regular fa-envelope"></i> Inbox {% if inbox_unread_count %}<span class="badge bg-danger ms-auto">{{ inbox_unread_count }}</span>{% endif %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'products:pending_reviews' %}"><i class="fa-regular fa-star"></i> Pending Reviews</a></li>
+                            <li><a class="dropdown-item" href="{% url 'products:view_wishlist' %}"><i class="fa-regular fa-heart"></i> Wishlist</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="post" action="{% url 'products:logout' %}" class="m-0">
-                                    {% csrf_token %}
-                                    <button type="submit" class="dropdown-item text-danger fw-bold">LOGOUT</button>
-                                </form>
-                            </li>
+                            <li><form method="post" action="{% url 'products:logout' %}" class="m-0">{% csrf_token %}<button type="submit" class="dropdown-item text-danger fw-bold">LOGOUT</button></form></li>
                         {% else %}
-                            <li><a class="dropdown-item py-2 fw-bold text-pro" href="{% url 'products:login' %}">LOGIN</a></li>
-                            <li><a class="dropdown-item py-2" href="{% url 'products:register' %}">SIGN UP</a></li>
+                            <li><a class="dropdown-item fw-bold text-pro" href="{% url 'products:login' %}">LOGIN</a></li>
+                            <li><a class="dropdown-item" href="{% url 'products:register' %}">SIGN UP</a></li>
                         {% endif %}
                     </ul>
                 </div>
-                
-                <a href="{% url 'products:view_wishlist' %}" class="nav-icon-link d-none d-md-block"><i class="far fa-heart"></i></a>
-                
                 <a href="{% url 'products:view_cart' %}" class="nav-icon-link">
-                    <div class="position-relative">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle global-cart-count" style="font-size: 10px; padding: 2px 5px;">{{ global_cart_count|default:"0" }}</span>
-                    </div>
+                    <div class="position-relative"><i class="fas fa-shopping-cart fs-5"></i><span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle global-cart-count" style="font-size: 10px;">{{ global_cart_count|default:"0" }}</span></div>
                 </a>
             </div>
         </div>
     </nav>
 
     <div class="container mt-3" style="min-height: 70vh;">
-        {% if messages %}{% for m in messages %}<div class="alert alert-{{ m.tags }} alert-dismissible fade show border-0 shadow-sm small" role="alert">{{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}
+        {% if messages %}{% for m in messages %}<div class="alert alert-{{ m.tags }} alert-dismissible fade show shadow-sm small">{{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}
         {% block content %}{% endblock %}
     </div>
 
+    <!-- RESTORED: Recently Viewed Section -->
     {% if global_recently_viewed %}
     <div class="container mt-5 pt-4 border-top">
-        <h6 class="fw-bold mb-3 text-muted x-small text-uppercase">Recently Viewed</h6>
+        <h6 class="fw-bold mb-3 text-muted x-small text-uppercase">Recently Viewed Items</h6>
         <div class="row row-cols-3 row-cols-md-6 g-2">
             {% for p in global_recently_viewed %}
             <div class="col">
                 <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none">
-                    <div class="card h-100 recent-card p-1 text-center shadow-sm">
+                    <div class="card h-100 recent-card p-1 text-center">
                         <div style="height: 70px;" class="d-flex align-items-center justify-content-center"><img src="{{ p.image.url }}" class="img-fluid" style="max-height: 100%; object-fit: contain;"></div>
                         <div class="card-body p-1"><div class="text-truncate x-small text-dark">{{ p.name }}</div><div class="fw-bold text-pro" style="font-size: 11px;">KSh {{ p.get_current_price|floatformat:0|intcomma }}</div></div>
                     </div>
@@ -137,13 +97,10 @@
     </div>
     {% endif %}
 
-    <footer class="py-4 mt-5 bg-white border-top text-center">
-        <div class="container"><p class="text-muted mb-0" style="font-size: 11px;">&copy; 2026 ZANDO ONLINE SHOPPING | All Rights Reserved</p></div>
-    </footer>
+    <footer class="py-4 mt-5 bg-white border-top text-center"><div class="container"><p class="text-muted mb-0" style="font-size: 11px;">&copy; 2026 ZANDO ONLINE SHOPPING</p></div></footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Suggestion Logic
         const searchInput = document.getElementById('searchInput');
         const suggestionsBox = document.getElementById('suggestionsBox');
         searchInput.addEventListener('input', function() {

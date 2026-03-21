@@ -1,44 +1,133 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row">
+<style>
+    :root { 
+        --zando-blue: #006bff; 
+        --soft-bg: #f4f6f9;
+        --border-color: #eee;
+    }
+
+    /* 1. Sidebar / Menu Styling (Jumia Look) */
+    .acc-sidebar { background: white; border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; }
+    .acc-menu-item { 
+        display: flex; 
+        align-items: center; 
+        padding: 15px 20px; 
+        color: #333; 
+        text-decoration: none; 
+        border-bottom: 1px solid #f9f9f9;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+    .acc-menu-item:hover { background-color: #f8f9fa; color: var(--zando-blue); }
+    .acc-menu-item i { width: 25px; color: #777; font-size: 16px; }
+    .acc-menu-item.active { font-weight: bold; color: var(--zando-blue); border-left: 4px solid var(--zando-blue); }
+
+    /* 2. Overview Cards */
+    .overview-card { background: white; border: 1px solid var(--border-color); border-radius: 4px; padding: 20px; height: 100%; }
+    .small-label { font-size: 11px; font-weight: 800; color: #999; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .value-label { font-size: 14px; color: #333; margin-bottom: 15px; }
+    
+    .btn-manage { 
+        font-size: 12px; 
+        font-weight: 800; 
+        color: var(--zando-blue); 
+        text-decoration: none; 
+        text-transform: uppercase; 
+    }
+
+    /* 3. MOBILE OVERRIDES (JUMIA APP STYLE) */
+    @media (max-width: 768px) {
+        .container { padding-top: 10px !important; }
+        .acc-menu-item { padding: 12px 15px !important; font-size: 13px !important; }
+        .acc-menu-item i { font-size: 14px !important; }
+        
+        .overview-card { padding: 15px !important; margin-bottom: 10px; }
+        .small-label { font-size: 10px !important; }
+        .value-label { font-size: 13px !important; }
+        
+        h4 { font-size: 18px !important; margin-bottom: 15px !important; }
+    }
+</style>
+
+<div class="container py-3">
+    <div class="row g-3">
+        <!-- LEFT: SIDEBAR MENU -->
         <div class="col-md-4 col-lg-3">
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="list-group list-group-flush">
-                    <a href="{% url 'products:account_settings' %}" class="list-group-item list-group-item-action py-3">
-                        <i class="fas fa-user me-2"></i> My Account
-                    </a>
-                    <a href="{% url 'products:my_orders' %}" class="list-group-item list-group-item-action py-3">
-                        <i class="fas fa-box me-2"></i> My Orders
-                    </a>
-                    <a href="{% url 'products:view_wishlist' %}" class="list-group-item list-group-item-action py-3">
-                        <i class="fas fa-heart me-2"></i> Wishlist
-                    </a>
-                    <a href="{% url 'products:logout' %}" class="list-group-item list-group-item-action py-3 text-danger">
-                        <i class="fas fa-sign-out-alt me-2"></i> Logout
-                    </a>
-                </div>
+            <div class="acc-sidebar shadow-sm">
+                <a href="{% url 'products:account_settings' %}" class="acc-menu-item active">
+                    <i class="far fa-user"></i> My Account
+                </a>
+                <a href="{% url 'products:my_orders' %}" class="acc-menu-item">
+                    <i class="fa-solid fa-box-archive"></i> My Orders
+                </a>
+                <a href="{% url 'products:inbox' %}" class="acc-menu-item">
+                    <i class="far fa-envelope"></i> Inbox
+                </a>
+                <a href="{% url 'products:view_wishlist' %}" class="acc-menu-item">
+                    <i class="far fa-heart"></i> Wishlist
+                </a>
+                <a href="{% url 'products:address_book' %}" class="acc-menu-item">
+                    <i class="fa-solid fa-location-dot"></i> Address Book
+                </a>
+                <form method="post" action="{% url 'products:logout' %}" class="m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="acc-menu-item text-danger border-0 bg-transparent w-100" style="text-align: left;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
             </div>
         </div>
 
+        <!-- RIGHT: ACCOUNT OVERVIEW -->
         <div class="col-md-8 col-lg-9">
-            <div class="card border-0 shadow-sm p-4">
-                <h4 class="fw-bold mb-4 border-bottom pb-2">Account Overview</h4>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <div class="p-3 border rounded bg-light">
-                            <h6 class="small fw-bold text-muted text-uppercase">Profile Info</h6>
-                            <p class="mb-1"><strong>Username:</strong> {{ user.username }}</p>
-                            <p class="mb-0"><strong>Email:</strong> {{ user.email }}</p>
+            <h5 class="fw-bold mb-3 d-flex align-items-center">
+                Account Overview
+            </h5>
+
+            <div class="row g-3">
+                <!-- Profile Card -->
+                <div class="col-md-6">
+                    <div class="overview-card shadow-sm">
+                        <div class="d-flex justify-content-between border-bottom pb-2 mb-3">
+                            <h6 class="fw-bold mb-0 text-uppercase small">Personal Details</h6>
+                            <i class="fas fa-pen text-muted small"></i>
                         </div>
+                        
+                        <div class="small-label">Name</div>
+                        <div class="value-label fw-bold">{{ user.username }}</div>
+                        
+                        <div class="small-label">Email Address</div>
+                        <div class="value-label">{{ user.email }}</div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="p-3 border rounded h-100">
-                            <h6 class="small fw-bold text-muted text-uppercase">Shipping Address</h6>
-                            <p class="small text-muted mb-2">No default address saved.</p>
-                            <a href="{% url 'products:address_book' %}" class="btn btn-sm btn-outline-primary fw-bold">Manage Addresses</a>
+                </div>
+
+                <!-- Address Card -->
+                <div class="col-md-6">
+                    <div class="overview-card shadow-sm">
+                        <div class="d-flex justify-content-between border-bottom pb-2 mb-3">
+                            <h6 class="fw-bold mb-0 text-uppercase small">Address Book</h6>
+                            <a href="{% url 'products:address_book' %}" class="btn-manage">Manage</a>
                         </div>
+                        
+                        <div class="small-label">Default Shipping Address</div>
+                        {% if user.addresses.all %}
+                            {% with default_addr=user.addresses.all|first %}
+                                <div class="value-label fw-bold mb-1">
+                                    {{ default_addr.first_name }} {{ default_addr.last_name }}
+                                </div>
+                                <div class="text-muted small">
+                                    {{ default_addr.street }}<br>
+                                    {{ default_addr.town.name }}, {{ default_addr.town.county.name }}<br>
+                                    Tel: +254 {{ default_addr.phone }}
+                                </div>
+                            {% endwith %}
+                        {% else %}
+                            <div class="text-muted small mb-3">You have not set a default shipping address.</div>
+                            <a href="{% url 'products:add_address' %}" class="btn btn-outline-primary btn-sm fw-bold">ADD ADDRESS</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
