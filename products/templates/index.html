@@ -4,74 +4,87 @@
 
 {% block head_extra %}
 <style>
-    /* Flash Sale Red Progress Bar */
+    /* --- BRAND COLORS (ZANDO BLUE) --- */
+    :root { 
+        --zando-blue: #006bff; 
+        --zando-dark-blue: #004b91;
+    }
+    .btn-primary, .bg-primary { background-color: var(--zando-blue) !important; border-color: var(--zando-blue) !important; }
+    .text-primary { color: var(--zando-blue) !important; }
+    .text-orange { color: #f68b1e !important; }
+    .text-success { color: #28a745 !important; }
+
+    /* --- LAPTOP STYLES (UNCHANGED) --- */
     .flash-progress-bar { height: 6px; background-color: #eee; border-radius: 10px; overflow: hidden; margin-top: 5px; }
     .flash-progress-fill { height: 100%; background-color: #e61601 !important; }
-
-    /* Flash Sale Strip */
     .flash-header { background: #e61601; color: white; padding: 10px 15px; border-radius: 4px 4px 0 0; }
-    
-    /* Layout Logic */
     #sidebarMenu { transition: all 0.3s ease; border-right: 1px solid #ddd; }
     .cat-bubble { width: 65px; height: 65px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; transition: 0.2s; }
-    .active-bubble { border: 2px solid #004b91 !important; background: #e7f1ff; }
-
+    .active-bubble { border: 2px solid var(--zando-blue) !important; background: #e7f1ff; }
     .x-small { font-size: 0.7rem; }
-    .text-orange { color: #f68b1e !important; }
-
-    /* Custom Promo Strip Header */
     .promo-header { color: white; padding: 10px 15px; border-radius: 4px 4px 0 0; }
-    
-    .product-card { transition: transform 0.2s; }
+    .product-card { transition: transform 0.2s; border: 1px solid #eee !important; min-height: 100%; }
     .product-card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important; }
-
-    /* Horizontal Scroller Fix */
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* --- MOBILE FIXES (NEAT & TIDY LIKE JUMIA) --- */
+    @media (max-width: 768px) {
+        body { font-size: 0.85rem; }
+        .x-small { font-size: 0.65rem !important; }
+        h6, .fw-bold { font-size: 0.75rem !important; }
+        .container, .main-wrapper { overflow-x: hidden !important; width: 100vw !important; }
+        .navbar-nav { flex-direction: row !important; }
+        .dropdown-menu { position: absolute !important; right: 0 !important; left: auto !important; min-width: 220px; }
+        .row-cols-2 > .col { padding: 4px !important; }
+        .product-card img { height: 110px !important; }
+        .product-card .card-body { padding: 6px !important; }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 
 <!-- 1. CATEGORY BUBBLES -->
-<div class="mb-4">
+<div class="mb-3">
     <div class="scroll-container d-flex overflow-auto py-2 hide-scrollbar">
         {% for cat in categories %}
-        <a href="?category={{ cat.id }}" class="text-decoration-none text-center me-3" style="min-width: 90px;">
+        <a href="?category={{ cat.id }}" class="text-decoration-none text-center me-3" style="min-width: 75px;">
             <div class="cat-bubble mx-auto {% if request.GET.category == cat.id|stringformat:'i' %}active-bubble{% endif %}">
-                <i class="{{ cat.icon_class|default:'fa-solid fa-tag' }} text-primary fs-4"></i>
+                <i class="{{ cat.icon_class|default:'fa-solid fa-tag' }} text-primary fs-5"></i>
             </div>
-            <span class="x-small fw-bold text-dark d-block text-truncate">{{ cat.name }}</span>
+            <span class="x-small fw-bold text-dark d-block text-truncate mt-1">{{ cat.name }}</span>
         </a>
         {% endfor %}
     </div>
 </div>
 
-<!-- 2. HOME SECTIONS (Hide if searching or filtering) -->
+<!-- 2. HOME SECTIONS -->
 {% if not request.GET.q and not request.GET.category %}
     
-    <!-- A. FLASH SALES -->
+    <!-- FLASH SALES SECTION -->
     {% if flash_sales %}
-    <div class="card border-0 shadow-sm mb-4 overflow-hidden">
-        <div class="flash-header d-flex justify-content-between align-items-center">
-            <h6 class="mb-0 fw-bold"><i class="fas fa-bolt me-2"></i> FLASH SALES</h6>
-            <div id="flash-timer-clock" class="small fw-bold" data-endtime="{{ flash_sales.0.flash_sale.end_time|date:'Y-m-d H:i:s' }}">
+    <div class="card border-0 shadow-sm mb-3 overflow-hidden">
+        <div class="flash-header d-flex justify-content-between align-items-center py-2 px-3">
+            <h6 class="mb-0 fw-bold"><i class="fas fa-bolt me-1"></i> FLASH SALES</h6>
+            <div id="flash-timer-clock" class="x-small fw-bold" data-endtime="{{ flash_sales.0.flash_sale.end_time|date:'Y-m-d H:i:s' }}">
                 Ends in: --h --m --s
             </div>
-            <!-- UPDATED: Flash Sale See All -->
-            <a href="{% url 'products:see_all' %}?type=flash" class="text-white small text-decoration-none fw-bold">SEE ALL ></a>
+            <a href="{% url 'products:see_all' %}?type=flash" class="text-white x-small text-decoration-none fw-bold">SEE ALL ></a>
         </div>
         <div class="d-flex overflow-auto bg-white p-2 hide-scrollbar">
             {% for p in flash_sales %}
-            <div class="p-2" style="min-width:150px; max-width:150px;">
+            <div class="p-1" style="min-width:140px; max-width:140px;">
                 <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none text-dark">
-                    <img src="{{ p.image.url }}" class="img-fluid mb-2" style="height:120px; width:100%; object-fit:contain;">
-                    <div class="text-truncate small">{{ p.name }}</div>
-                    <div class="fw-bold">KSh {{ p.get_current_price|intcomma }}</div>
+                    <img src="{{ p.image.url }}" class="img-fluid mb-1" style="height:100px; width:100%; object-fit:contain;">
+                    <div class="text-truncate x-small mb-1">{{ p.name }}</div>
+                    <div class="fw-bold x-small">KSh {{ p.get_current_price|intcomma }}</div>
+                    
+                    <!-- Progress Bar & Items in Stock Count -->
                     <div class="flash-progress-bar">
                         <div class="flash-progress-fill" style="width: {{ p.stock }}%;"></div>
                     </div>
-                    <div class="x-small text-muted mt-1">{{ p.stock }} items left</div>
+                    <div class="x-small text-muted mt-1 fw-bold">{{ p.stock }} items left</div>
                 </a>
             </div>
             {% endfor %}
@@ -79,24 +92,20 @@
     </div>
     {% endif %}
 
-    <!-- B. DYNAMIC PROMOTION STRIPS -->
+    <!-- PROMOTION STRIPS -->
     {% for strip in promo_strips %}
-    <div class="card border-0 shadow-sm mb-4 overflow-hidden">
-        <div class="promo-header d-flex justify-content-between align-items-center" style="background-color: {{ strip.bg_color }};">
-            <h6 class="mb-0 fw-bold text-uppercase">{{ strip.title }}</h6>
-            <!-- UPDATED: Dynamic Promo See All (Uses strip.id) -->
-            <a href="{% url 'products:see_all' %}?type=promo&strip_id={{ strip.id }}" class="text-white small text-decoration-none fw-bold">SEE ALL ></a>
+    <div class="card border-0 shadow-sm mb-3 overflow-hidden">
+        <div class="promo-header d-flex justify-content-between align-items-center py-2 px-3" style="background-color: {{ strip.bg_color }};">
+            <h6 class="mb-0 fw-bold text-uppercase x-small">{{ strip.title }}</h6>
+            <a href="{% url 'products:see_all' %}?type=promo&strip_id={{ strip.id }}" class="text-white x-small text-decoration-none fw-bold">SEE ALL ></a>
         </div>
         <div class="d-flex overflow-auto bg-white p-2 hide-scrollbar">
             {% for p in strip.products.all %}
-            <div class="p-2" style="min-width:160px; max-width:160px;">
+            <div class="p-1" style="min-width:130px; max-width:130px;">
                 <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none text-dark">
-                    <img src="{{ p.image.url }}" class="img-fluid mb-2" style="height:120px; width:100%; object-fit:contain;">
-                    <div class="text-truncate small">{{ p.name }}</div>
-                    <div class="fw-bold">KSh {{ p.get_current_price|intcomma }}</div>
-                    {% if p.get_discount_percentage > 0 %}
-                        <div class="text-muted x-small text-decoration-line-through">KSh {{ p.price|intcomma }}</div>
-                    {% endif %}
+                    <img src="{{ p.image.url }}" class="img-fluid mb-1" style="height:100px; width:100%; object-fit:contain;">
+                    <div class="text-truncate x-small">{{ p.name }}</div>
+                    <div class="fw-bold x-small">KSh {{ p.get_current_price|intcomma }}</div>
                 </a>
             </div>
             {% endfor %}
@@ -104,75 +113,68 @@
     </div>
     {% endfor %}
 
-    <!-- C. RECOMMENDED -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="bg-primary text-white p-2 d-flex justify-content-between align-items-center rounded-top" style="background-color: #004b91 !important;">
-            <h6 class="mb-0 fw-bold">RECOMMENDED FOR YOU</h6>
-            <!-- UPDATED: Recommended See All -->
-            <a href="{% url 'products:see_all' %}?type=recommended" class="text-white small text-decoration-none fw-bold">SEE ALL ></a>
-        </div>
-        <div class="d-flex overflow-auto p-2 hide-scrollbar">
-            {% for p in recommended %}
-            <div class="p-2" style="min-width:150px; max-width:150px;">
-                <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none text-dark">
-                    <img src="{{ p.image.url }}" class="img-fluid mb-2" style="height:120px; width:100%; object-fit:contain;">
-                    <div class="text-truncate small">{{ p.name }}</div>
-                    <div class="fw-bold text-primary">KSh {{ p.get_current_price|intcomma }}</div>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
 {% endif %}
 
 <!-- 3. MAIN PRODUCT GRID -->
 <div class="row">
-    <div class="col-12 mb-3">
-        <div class="d-flex align-items-center">
-            <button class="btn btn-light shadow-sm border me-3" id="sidebarToggle">
-                <i class="fa-solid fa-bars fs-5"></i>
-            </button>
-            <h5 class="fw-bold text-uppercase m-0" style="font-size: 0.9rem;">
-                {% if request.GET.q %}Results for "{{ request.GET.q }}"{% else %}Top Picks For You{% endif %}
-            </h5>
+    <div class="col-12 mb-2">
+        <div class="d-flex align-items-center justify-content-between bg-primary text-white p-2 rounded-top mb-1" style="background-color: var(--zando-blue) !important;">
+            <h6 class="mb-0 fw-bold">RECOMMENDED FOR YOU</h6>
+            <button class="btn btn-sm text-white" id="sidebarToggle"><i class="fa-solid fa-sliders"></i></button>
         </div>
     </div>
 
     <div id="sidebarMenu" class="col-md-3 d-none">
         <div class="card border-0 shadow-sm p-3 sticky-top" style="top: 90px;">
-            <h6 class="fw-bold border-bottom pb-2 mb-3 small">REFINE SEARCH</h6>
+            <h6 class="fw-bold border-bottom pb-2 mb-3 small">FILTER</h6>
             {% include 'includes/filter_form.html' %}
         </div>
     </div>
 
     <div id="productGrid" class="col-md-12">
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2">
             {% for product in products %}
             <div class="col">
                 <div class="card h-100 border-0 shadow-sm p-2 product-card">
                     <a href="{% url 'products:product_detail' product.id %}" class="text-center text-decoration-none">
-                        <div style="height: 150px;" class="d-flex align-items-center justify-content-center mb-2">
-                            <img src="{{ product.image.url }}" class="img-fluid p-2" style="max-height: 100%;">
+                        <div style="height: 130px;" class="d-flex align-items-center justify-content-center mb-1">
+                            <img src="{{ product.image.url }}" class="img-fluid" style="max-height: 100%;">
                         </div>
                     </a>
-                    <div class="card-body p-1 d-flex flex-column">
-                        <h6 class="text-truncate small mb-1 text-dark">{{ product.name }}</h6>
+                    <div class="card-body p-0 d-flex flex-column">
+                        <h6 class="text-truncate x-small mb-1 text-dark">{{ product.name }}</h6>
+                        
+                        <!-- STARS -->
                         <div class="mb-1 x-small text-warning">
                             {% for i in "12345" %}
                                 <i class="fa{% if product.average_rating >= forloop.counter %}s{% else %}r{% endif %} fa-star"></i>
                             {% endfor %}
                             <span class="text-muted">({{ product.review_count }})</span>
                         </div>
-                        <p class="fw-bold mb-1">KSh {{ product.get_current_price|intcomma }}</p>
+
+                        <p class="fw-bold mb-0 text-dark">KSh {{ product.get_current_price|intcomma }}</p>
                         
+                        {% if product.get_discount_percentage > 0 %}
+                            <div class="text-muted x-small text-decoration-line-through mb-1">KSh {{ product.price|intcomma }}</div>
+                        {% endif %}
+
+                        <!-- STOCK STATUS -->
+                        {% if product.stock < 10 %}
+                            <div class="x-small fw-bold text-danger mb-2">{{ product.stock }} units left</div>
+                        {% elif product.stock < 30 %}
+                            <div class="x-small fw-bold text-orange mb-2">Few units left</div>
+                        {% else %}
+                            <div class="x-small fw-bold text-success mb-2">In stock</div>
+                        {% endif %}
+
                         <div class="mt-auto">
                             <div id="cart-area-{{ product.id }}">
                                 {% with qty=cart_quantities|get_item:product.id %}
                                     {% if qty %}
-                                        <div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
-                                            <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="{{ product.id }}" style="width:30px;">-</button>
-                                            <span class="fw-bold small">{{ qty }}</span>
-                                            <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="{{ product.id }}" style="width:30px;">+</button>
+                                        <div class="d-flex align-items-center justify-content-between border rounded bg-light">
+                                            <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="{{ product.id }}" style="width:28px;">-</button>
+                                            <span class="fw-bold x-small">{{ qty }}</span>
+                                            <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="{{ product.id }}" style="width:28px;">+</button>
                                         </div>
                                     {% else %}
                                         <button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="{{ product.id }}">ADD TO CART</button>
@@ -194,8 +196,11 @@
         const menu = document.getElementById('sidebarMenu');
         const grid = document.getElementById('productGrid');
         menu.classList.toggle('d-none');
-        grid.classList.toggle('col-md-12');
-        grid.classList.toggle('col-md-9');
+        if(!menu.classList.contains('d-none')){
+            grid.classList.replace('col-md-12', 'col-md-9');
+        } else {
+            grid.classList.replace('col-md-9', 'col-md-12');
+        }
     });
 
     // 2. Timer Update
@@ -210,7 +215,7 @@
             const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((distance % (1000 * 60)) / 1000);
-            timerClock.innerHTML = `Ends in: ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
+            timerClock.innerHTML = `${h.toString().padStart(2, '0')}h : ${m.toString().padStart(2, '0')}m : ${s.toString().padStart(2, '0')}s`;
         }, 1000);
     }
     updateTimer();
@@ -226,10 +231,10 @@
             document.querySelectorAll('.global-cart-count').forEach(el => el.textContent = data.global_cart_count);
             const container = document.getElementById(`cart-area-${productId}`);
             if (data.quantity > 0) {
-                container.innerHTML = `<div class="d-flex align-items-center justify-content-between border rounded bg-light p-1">
-                    <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="${productId}" style="width:30px;">-</button>
-                    <span class="fw-bold small">${data.quantity}</span>
-                    <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="${productId}" style="width:30px;">+</button>
+                container.innerHTML = `<div class="d-flex align-items-center justify-content-between border rounded bg-light">
+                    <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="${productId}" style="width:28px;">-</button>
+                    <span class="fw-bold x-small">${data.quantity}</span>
+                    <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="${productId}" style="width:28px;">+</button>
                 </div>`;
             } else {
                 container.innerHTML = `<button type="button" class="btn btn-primary btn-sm w-100 fw-bold js-cart-inc" data-product-id="${productId}">ADD TO CART</button>`;
