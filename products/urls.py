@@ -51,4 +51,5 @@ path('review/submit/<int:order_item_id>/', views.submit_review, name='submit_rev
 path('address/add-ajax/', views.add_address_ajax, name='add_address_ajax'),
 path('search-suggestions/', views.search_suggestions, name='search_suggestions'),
 path('see-all/', views.see_all_products, name='see_all'),
+path('bubble/<int:bubble_id>/', views.bubble_products, name='bubble_detail'),
 ]

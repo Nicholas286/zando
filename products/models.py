@@ -231,18 +231,36 @@ class OrderTracking(models.Model):
         ordering = ['created_at']
         
 class PromotionStrip(models.Model):
-    title = models.CharField(max_length=255, help_text="e.g. Buy 2 Get 10% Off")
-    bg_color = models.CharField(max_length=20, default="#9c27b0", help_text="Hex color code")
+    title = models.CharField(max_length=255, help_text="Internal name for the strip line")
+    # NEW FIELD: Manually describe what the badge says. Leave empty to hide badge.
+    badge_text = models.CharField(max_length=50, blank=True, null=True, help_text="Optional: e.g. 'Add 2 to Cart Get 10%'")
+    
+    bg_color = models.CharField(max_length=20, default="#9c27b0")
     is_active = models.BooleanField(default=True)
     products = models.ManyToManyField('Product', related_name='promotion_strips')
-    order = models.PositiveIntegerField(default=0, help_text="Display order on homepage")
+    order = models.PositiveIntegerField(default=0)
     
-    # Logic Fields: These apply to ANY strip you create
-    min_quantity = models.PositiveIntegerField(default=2, help_text="Quantity to trigger discount")
-    discount_percent = models.PositiveIntegerField(default=10, help_text="Percent to deduct")
+    # ... logic fields ...
+    min_quantity = models.PositiveIntegerField(default=2)
+    discount_percent = models.PositiveIntegerField(default=10)
 
     class Meta:
         ordering = ['order']
 
     def __str__(self):
         return self.title
+    
+   # models.py
+class HomeBubble(models.Model):
+    name = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='bubbles/')
+    # This is where you will add products in the admin
+    products = models.ManyToManyField(Product, blank=True, related_name='home_bubbles')
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['order']

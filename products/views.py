@@ -17,12 +17,13 @@ from django.conf import settings
 from django_daraja.mpesa.core import MpesaClient
 from decimal import Decimal
 import re
+from django.http import JsonResponse
 
 # Import all models
 from .models import (
     Product, Category, Cart, CartItem, Order, OrderItem,
     Wishlist, County, Town, Address, Review, OrderNotification,
-    ProductImage, ProductVariant, Coupon, OrderTracking
+    ProductImage, ProductVariant, Coupon,HomeBubble, OrderTracking
 )
 from .forms import AddressForm, CustomUserCreationForm
 
@@ -51,27 +52,41 @@ from django.utils import timezone
 from .models import Product, Category, PromotionStrip # Ensure PromotionStrip is imported
 
 def index(request):
-    """The master shop view handling search, categories, and Jumia-style strips."""
+    """The master shop view handling bubbles, search, categories, and dynamic promo badges."""
     products = Product.objects.all()
     categories = Category.objects.all()
     active_category = None
     now = timezone.now()
 
-    # 1. --- FLASH SALES ---
+    # 1. --- HOME BUBBLES ---
+    bubbles = HomeBubble.objects.filter(is_active=True).order_by('order')
+
+    # 2. --- FLASH SALES ---
     flash_sales = Product.objects.filter(
         flash_sale__is_active=True,
         flash_sale__start_time__lte=now,
         flash_sale__end_time__gte=now
     ).select_related('flash_sale').order_by('?')[:10]
 
-    # 2. --- RECENTLY VIEWED (MATCHING base.html NAME) ---
+    # 3. --- RECENTLY VIEWED ---
     recent_ids = request.session.get('recently_viewed', [])
     global_recently_viewed = []
     if recent_ids:
         items_dict = Product.objects.in_bulk(recent_ids)
-        global_recently_viewed = [items_dict[pk] for pk in recent_ids if pk in items_dict]
+        global_recently_viewed = [items_dict[pk] for pk in recent_ids if pk in items_dict][:10]
 
-    # 3. --- RECOMMENDED FOR YOU ---
+    # 4. --- PROMOTION STRIPS & DYNAMIC BADGES ---
+    promo_strips = PromotionStrip.objects.filter(is_active=True).prefetch_related('products').order_by('order')
+    
+    # Create a map: { product_id: "Promo Title" } to show badges on product cards
+    promo_badge_map = {}
+    for strip in promo_strips:
+        for p in strip.products.all():
+            # If a product is in multiple strips, the first one (by order) wins the badge
+            if p.id not in promo_badge_map:
+                promo_badge_map[p.id] = strip.title
+
+    # 5. --- RECOMMENDED FOR YOU ---
     recommended = []
     if recent_ids:
         viewed_cat_ids = Product.objects.filter(id__in=recent_ids).values_list('category', flat=True)
@@ -83,11 +98,7 @@ def index(request):
     if not recommended:
         recommended = Product.objects.filter(stock__gt=0).order_by('-id')[:12]
 
-    # 4. --- NEW: DYNAMIC PROMOTION STRIPS (Jumia Style) ---
-    # Fetch all active strips and prefetch products to save database hits
-    promo_strips = PromotionStrip.objects.filter(is_active=True).prefetch_related('products').order_by('order')
-
-    # 5. --- FILTERS ---
+    # 6. --- FILTERS & SEARCH ---
     query = request.GET.get('q')
     if query:
         products = products.filter(name__icontains=query)
@@ -97,38 +108,22 @@ def index(request):
         products = products.filter(category_id=cat_id)
         active_category = Category.objects.filter(id=cat_id).first()
 
-    # Price Filters
-    min_p = request.GET.get('min_price')
-    max_p = request.GET.get('max_price')
-    if min_p: products = products.filter(price__gte=min_p)
-    if max_p: products = products.filter(price__lte=max_p)
-
-    # Sorting
+    # Price Filters & Sorting (Keep your existing logic here)
     sort = request.GET.get('sort')
     if sort == 'price_low': products = products.order_by('price')
     elif sort == 'price_high': products = products.order_by('-price')
-    elif sort == 'newest': products = products.order_by('-id')
 
-    # 6. --- CONTEXT ---
     return render(request, 'index.html', {
+        'bubbles': bubbles,
         'products': products,
         'categories': categories,
         'active_category': active_category,
         'flash_sales': flash_sales,
         'recommended': recommended,
-        'promo_strips': promo_strips, # Pass the new strips to index.html
-        'global_recently_viewed': global_recently_viewed[:6] 
+        'promo_strips': promo_strips,
+        'promo_badge_map': promo_badge_map, # New map for the badges
+        'global_recently_viewed': global_recently_viewed 
     })
-            
-def search_suggestions(request):
-    query = request.GET.get('q', '')
-    suggestions = []
-    if query:
-        products = Product.objects.filter(name__icontains=query)[:5]
-        for product in products:
-            suggestions.append({'id': product.id, 'name': product.name})
-    return JsonResponse(suggestions, safe=False)
-
 # --- PRODUCT DETAIL VIEW ---
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -769,3 +764,29 @@ def see_all_products(request):
         'products': products,
         'title': title
     })
+    
+    
+def bubble_products(request, bubble_id):
+    """Shows products assigned to a specific bubble Ball."""
+    bubble = get_object_or_404(HomeBubble, id=bubble_id, is_active=True)
+    products = bubble.products.all()
+    
+    # Reuse your 'see_all' grid for consistency
+    return render(request, 'see_all.html', {
+        'products': products,
+        'title': bubble.name # e.g. "TOP TV DEALS"
+    })
+    
+def search_suggestions(request):
+    """Provides the logic for the search bar auto-complete dropdown."""
+    query = request.GET.get('q', '')
+    suggestions = []
+    if query:
+        # Fetch up to 5 products matching the search text
+        products = Product.objects.filter(name__icontains=query)[:5]
+        for product in products:
+            suggestions.append({
+                'id': product.id, 
+                'name': product.name
+            })
+    return JsonResponse(suggestions, safe=False)
