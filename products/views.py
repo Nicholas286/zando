@@ -237,11 +237,13 @@ def view_cart(request):
         cart = get_user_cart(request.user)
         items = cart.items.all()
     else:
+        # GUEST LOGIC: Use session
         session_cart = request.session.get('cart', {})
         items = []
         for pid, qty in session_cart.items():
             try:
                 p = Product.objects.get(id=int(pid))
+                # Create mock object to match ORM structure
                 items.append(type('obj', (object,), {'product': p, 'quantity': qty}))
             except Product.DoesNotExist: continue
 
@@ -250,8 +252,8 @@ def view_cart(request):
         qty = item.quantity
         total_quantity += qty
         
-        # --- FLASH SALE LOGIC ---
-        # get_current_price() must handle checking start_time/end_time in models.py
+        # --- 1. FLASH SALE LOGIC ---
+        # p.get_current_price() returns flash price if active, else original price
         unit_price = p.get_current_price() 
         
         raw_item_total = unit_price * qty
@@ -260,25 +262,23 @@ def view_cart(request):
         best_item_discount = Decimal('0.00')
         active_promo_name = ""
 
-        # --- AUTO-DETECT PROMOTION STRIPS ---
-        # Find all active strips this specific product belongs to
+        # --- 2. AUTO-DETECT PROMOTION STRIPS ---
         product_strips = PromotionStrip.objects.filter(products=p, is_active=True)
 
         for strip in product_strips:
-            # 1. Automatically extract the percentage from the title (e.g., "Get 15% off" -> 15)
+            # Extract percentage from title (e.g., "10% Off" -> 10)
             match = re.search(r'(\d+)%', strip.title)
             if not match: continue
             
             percent_val = Decimal(match.group(1)) / Decimal(100)
 
-            # 2. Check for "Buy 2" requirement if mentioned in title
+            # Check for "Buy 2" requirement if mentioned in title
             if ("BUY TWO" in strip.title.upper() or "BUY 2" in strip.title.upper()) and qty < 2:
-                continue # User hasn't added enough quantity for this specific promo
+                continue 
 
-            # 3. Calculate discount based on current price (Flash price if active)
             potential_discount = raw_item_total * percent_val
 
-            # 4. If product is in multiple strips, pick the one that gives the biggest discount
+            # Pick the best discount if product is in multiple strips
             if potential_discount > best_item_discount:
                 best_item_discount = potential_discount
                 active_promo_name = strip.title
@@ -301,13 +301,15 @@ def view_cart(request):
             }
         })
 
+    # Final Summary Data
     context = {
         'cart_items': cart_items_data,
-        'total_quantity': total_quantity,
+        'total_quantity': total_quantity, # For the "Cart (4)" heading
+        'global_cart_count': total_quantity, # FOR THE NAVBAR BADGE SYNC
         'total_price': total_price_before_discount - total_discount,
         'total_price_before_discount': total_price_before_discount,
         'discount_amount': total_discount,
-        'promo_script': ", ".join(applied_promo_labels), # Combines names like "5% at checkout, Buy 2 get 10%"
+        'promo_script': ", ".join(applied_promo_labels), 
         'wishlist_items': Wishlist.objects.filter(user=request.user) if request.user.is_authenticated else []
     }
     return render(request, 'cart.html', context)
@@ -388,27 +390,67 @@ def remove_from_cart(request, product_id):
     return redirect('products:view_cart')
 
 def cart_adjust_api(request, product_id, action):
-    """AJAX endpoint for the +/- buttons in the UI."""
+    """AJAX endpoint that works for both Logged-in users and Guests."""
     product = get_object_or_404(Product, id=product_id)
+    
     if request.user.is_authenticated:
+        # --- LOGGED IN USER (Database Logic) ---
         cart = get_user_cart(request.user)
         item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        
         if action == 'inc':
             if item.quantity + 1 > product.stock:
-                return JsonResponse({'error': 'Stock limit'}, status=400)
+                return JsonResponse({'error': 'Stock limit reached'}, status=400)
             item.quantity += 1
         else:
             item.quantity -= 1
         
         if item.quantity <= 0: 
-            item.delete(); qty = 0
+            item.delete()
+            qty = 0
         else: 
-            item.save(); qty = item.quantity
+            item.save()
+            qty = item.quantity
         
-        count = sum(i.quantity for i in cart.items.all())
-        return JsonResponse({'quantity': qty, 'global_cart_count': count})
-    return JsonResponse({'error': 'Unauthorized'}, status=403)
+        # Calculate global count from database
+        global_count = sum(i.quantity for i in cart.items.all())
+        return JsonResponse({'quantity': qty, 'global_cart_count': global_count})
 
+    else:
+        # --- GUEST USER (Session Logic) ---
+        # Get the cart from session or create an empty dict if it doesn't exist
+        cart = request.session.get('cart', {})
+        pid_str = str(product_id) # Session keys must be strings
+        
+        current_qty = cart.get(pid_str, 0)
+        
+        if action == 'inc':
+            if current_qty + 1 > product.stock:
+                return JsonResponse({'error': 'Stock limit reached'}, status=400)
+            current_qty += 1
+        else:
+            current_qty = max(0, current_qty - 1)
+            
+        if current_qty <= 0:
+            if pid_str in cart:
+                del cart[pid_str]
+            qty = 0
+        else:
+            cart[pid_str] = current_qty
+            qty = current_qty
+            
+        # Save back to session
+        request.session['cart'] = cart
+        # CRITICAL: Tell Django the session has changed so it saves to the cookie
+        request.session.modified = True
+        
+        # Calculate global count from session values
+        global_count = sum(cart.values())
+        
+        return JsonResponse({
+            'quantity': qty, 
+            'global_cart_count': global_count
+        })
 # --- 5. CHECKOUT, MPESA & EMAILS ---
 
 

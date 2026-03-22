@@ -4,21 +4,19 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Detect if we're running on Render / PythonAnywhere
+# Detect environments
 IS_RENDER = 'RENDER' in os.environ
 PYTHONANYWHERE_DOMAIN = os.environ.get('PYTHONANYWHERE_DOMAIN') or os.environ.get('PYTHONANYWHERE_SITE')
 IS_PYTHONANYWHERE = bool(PYTHONANYWHERE_DOMAIN) or ('PYTHONANYWHERE' in os.environ)
 
-# 1. Use Environment Variables for sensitive data
 SECRET_KEY = os.environ.get('SECRET_KEY', 'a-safe-fallback-for-local-only')
 
-# 2. DEBUG defaults to True locally, False on Render/PythonAnywhere (override via env var)
 DEBUG = os.environ.get('DEBUG', 'True' if not (IS_RENDER or IS_PYTHONANYWHERE) else 'False') == 'True'
 
-# 3. Allowed hosts
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'zando-online-shopping.onrender.com', '.onrender.com', '.vercel.app', '.pythonanywhere.com']
 if PYTHONANYWHERE_DOMAIN:
     ALLOWED_HOSTS.append(PYTHONANYWHERE_DOMAIN)
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,7 +44,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# TEMPLATES configuration
+# TEMPLATES (Context Processors ensure variables like global_cart_count work on ALL pages)
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -67,11 +65,8 @@ TEMPLATES = [
     },
 ]
 
-# Environment-aware Database configuration:
-# - Use SQLite locally
-# - Use PostgreSQL only when running on Render
+# Database configuration
 if IS_RENDER:
-    # Render provides DATABASE_URL for the managed PostgreSQL instance
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
@@ -80,7 +75,6 @@ if IS_RENDER:
         )
     }
 else:
-    # Local development uses SQLite (no sslmode issues)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -88,7 +82,7 @@ else:
         }
     }
 
-# 4. Configure Static and Media properly
+# --- STATIC & MEDIA ---
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
@@ -97,21 +91,28 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
-
+# --- TIMEZONE & LOCALIZATION ---
 LANGUAGE_CODE = 'en-us'
-
-# FIXED: Set this to Nairobi to match your local time
 TIME_ZONE = 'Africa/Nairobi'
-
 USE_I18N = True
-
-# Keep this as True so Django handles daylight savings and UTC internally
 USE_TZ = True
 
+# --- SESSION & SECURITY (FIXES FOR MOBILE PHONE STABILITY) ---
+# This forces Django to save the cart/session on every click
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 1209600 # 2 weeks (Cart stays even if they close browser)
 
-# 5. M-Pesa Settings
+# Fixes badge/cart visibility for mobile Safari/Chrome
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+# Security settings for deployment
+SESSION_COOKIE_SECURE = IS_RENDER or IS_PYTHONANYWHERE
+CSRF_COOKIE_SECURE = IS_RENDER or IS_PYTHONANYWHERE
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# --- M-PESA SETTINGS ---
 MPESA_ENVIRONMENT = os.environ.get('MPESA_ENVIRONMENT', 'sandbox')
 MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY')
 MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET')
@@ -125,10 +126,9 @@ LOGOUT_REDIRECT_URL = 'products:index'
 LOGIN_URL = 'products:login'
 
 ROOT_URLCONF = 'pyshop.urls'
-
 WSGI_APPLICATION = 'pyshop.wsgi.application'
 
-# Email settings for order notifications
+# --- EMAIL SETTINGS ---
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
@@ -136,15 +136,7 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'admin@zando.com')
 
-# Use SMTP only when credentials are configured; otherwise print emails to console locally.
 if IS_RENDER or (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# Only force Secure cookies on Render/PythonAnywhere (HTTPS deployments).
-# When running locally over http://, Secure cookies break CSRF validation.
-SESSION_COOKIE_SECURE = IS_RENDER or IS_PYTHONANYWHERE
-CSRF_COOKIE_SECURE = IS_RENDER or IS_PYTHONANYWHERE
-
-# SMTP (Gmail) defaults; keep credentials in env vars (EMAIL_HOST_USER / EMAIL_HOST_PASSWORD)
