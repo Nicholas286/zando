@@ -13,47 +13,51 @@
         
         html, body { overflow-x: hidden !important; width: 100% !important; background-color: var(--soft-bg); font-family: 'Inter', sans-serif; }
         
-        /* Navbar Base */
         .navbar { background-color: #ffffff; border-bottom: 2px solid var(--zando-blue); padding: 0.6rem 0; z-index: 2000; }
         .text-pro { color: var(--zando-blue) !important; }
         .btn-pro { background: var(--zando-blue); color: white; border-radius: 4px !important; font-weight: 600; border: none; }
         
-        .nav-icon-link { color: #333; text-decoration: none; display: flex; align-items: center; position: relative; padding: 8px; }
+        /* Icon Navigation Style */
+        .nav-icon-link { color: #333; text-decoration: none; display: flex; align-items: center; padding: 5px; cursor: pointer; }
         .nav-icon-link:hover { color: var(--zando-blue); }
 
-        /* --- CART BADGE: FORCED VISIBILITY --- */
+        /* --- CART BADGE: FIXED FOR MOBILE --- */
+        .cart-wrapper { position: relative; display: inline-block; padding: 5px; }
         .global-cart-count {
+            position: absolute !important;
+            top: -2px !important;
+            right: -2px !important;
             background-color: #e61601 !important; /* Jumia Red */
             color: white !important;
             font-size: 10px !important;
             font-weight: 800 !important;
-            padding: 2px 5px !important;
-            border-radius: 50px !important;
-            position: absolute !important;
-            top: 0px !important; /* Adjusted for better visibility */
-            right: -2px !important;
-            border: 2px solid white;
             min-width: 18px;
-            text-align: center;
+            height: 18px;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white !important;
+            z-index: 5000 !important;
             line-height: 1;
-            z-index: 9999 !important;
-            display: block !important; /* Force it to show */
         }
 
         /* --- LAPTOP HEADER --- */
         @media (min-width: 992px) {
-            .navbar-icons-wrapper { display: flex; align-items: center; gap: 25px; justify-content: flex-end; }
+            .navbar-icons-wrapper { display: flex; align-items: center; gap: 20px; justify-content: flex-end; }
         }
 
-        /* --- MOBILE HEADER --- */
+        /* --- MOBILE HEADER (JUMIA STYLE) --- */
         @media (max-width: 991px) {
             body { font-size: 13px !important; }
             .navbar-brand { font-size: 1.3rem !important; }
+            
+            /* Order: Logo(1) Icons(2) Search(3) */
             .search-container { width: 100% !important; margin-top: 10px !important; order: 3; }
             .navbar-brand { order: 1; }
-            .navbar-icons-wrapper { order: 2; margin-left: auto; display: flex; align-items: center; gap: 18px; }
+            .navbar-icons-wrapper { order: 2; margin-left: auto; display: flex; align-items: center; gap: 10px; }
 
-            /* Dropdown Rescue */
+            /* Fix Dropdown Visibility */
             .dropdown { position: static !important; }
             .dropdown-menu { 
                 position: fixed !important; 
@@ -61,12 +65,12 @@
                 right: 10px !important; 
                 left: 10px !important; 
                 width: auto !important;
-                max-width: 320px;
+                max-width: 300px;
                 margin-left: auto;
                 z-index: 99999 !important; 
                 box-shadow: 0 15px 40px rgba(0,0,0,0.3) !important;
             }
-            .nav-icon-link span { display: none !important; }
+            .nav-icon-link span { display: none !important; } /* Hide text on mobile icons */
             .nav-icon-link i { font-size: 22px !important; }
         }
 
@@ -80,40 +84,29 @@
             <div class="row w-100 align-items-center g-0">
                 
                 <!-- 1. LOGO -->
-                <div class="col-6 col-lg-2">
+                <div class="col-5 col-lg-2">
                     <a class="navbar-brand fw-bold text-pro" href="{% url 'products:index' %}">ZANDO</a>
                 </div>
 
-                <!-- 2. SEARCH BAR -->
-                <div class="col-12 col-lg-7 search-container">
-                    <form action="{% url 'products:index' %}" method="GET" class="position-relative">
-                        <div class="input-group" style="border-radius: 4px; overflow: hidden; border: 1px solid #ced4da;">
-                            <input type="text" id="searchInput" name="q" class="form-control border-0 py-2" placeholder="Search products, brands..." value="{{ request.GET.q|default:'' }}" autocomplete="off">
-                            <button class="btn btn-pro px-3" type="submit"><i class="fas fa-search"></i></button>
-                        </div>
-                        <div id="suggestionsBox" class="list-group position-absolute w-100 d-none shadow" style="top: 100%; z-index: 3000; background: white;"></div>
-                    </form>
-                </div>
-
-                <!-- 3. ICONS (Profile & Cart) -->
-                <div class="col-6 col-lg-3">
+                <!-- 2. ICONS (Profile & Cart) -->
+                <div class="col-7 col-lg-3 order-lg-3">
                     <div class="navbar-icons-wrapper">
                         <!-- Account -->
                         <div class="dropdown">
                             <a href="#" class="nav-icon-link" data-bs-toggle="dropdown" id="userMenu">
-                                <i class="far fa-user fs-5"></i>
+                                <i class="far fa-user"></i>
                                 <span class="d-none d-lg-inline ms-2 small fw-bold text-pro">Hi, {{ user.username|default:"Guest" }}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
                                 {% if user.is_authenticated %}
                                     <li class="px-3 py-3 border-bottom bg-light">
-                                        <strong class="text-pro small text-truncate d-block" style="max-width: 200px;">{{ user.email }}</strong>
+                                        <strong class="text-pro small text-truncate d-block" style="max-width: 220px;">{{ user.email }}</strong>
                                     </li>
-                                    <li><a class="dropdown-item" href="{% url 'products:account_settings' %}"><i class="far fa-user"></i> MY ACCOUNT</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'products:my_orders' %}"><i class="fa-solid fa-box-archive"></i> MY ORDERS</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'products:inbox' %}"><i class="far fa-envelope"></i> INBOX {% if inbox_unread_count %}<span class="badge bg-danger rounded-pill ms-auto">{{ inbox_unread_count }}</span>{% endif %}</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'products:pending_reviews' %}"><i class="far fa-star"></i> PENDING REVIEWS</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'products:view_wishlist' %}"><i class="far fa-heart"></i> WISHLIST</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'products:account_settings' %}"><i class="far fa-user me-2"></i> MY ACCOUNT</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'products:my_orders' %}"><i class="fa-solid fa-box-archive me-2"></i> MY ORDERS</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'products:inbox' %}"><i class="far fa-envelope me-2"></i> INBOX {% if inbox_unread_count %}<span class="badge bg-danger rounded-pill ms-auto">{{ inbox_unread_count }}</span>{% endif %}</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'products:pending_reviews' %}"><i class="far fa-star me-2"></i> PENDING REVIEWS</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'products:view_wishlist' %}"><i class="far fa-heart me-2"></i> WISHLIST</a></li>
                                     <li><hr class="dropdown-divider m-0"></li>
                                     <li>
                                         <form method="post" action="{% url 'products:logout' %}" class="m-0">
@@ -127,17 +120,30 @@
                             </ul>
                         </div>
 
-                        <!-- Wishlist (Desktop) -->
+                        <!-- Wishlist (Desktop Only) -->
                         <a href="{% url 'products:view_wishlist' %}" class="nav-icon-link d-none d-lg-flex">
-                            <i class="far fa-heart fs-5"></i>
+                            <i class="far fa-heart"></i>
                         </a>
                         
-                        <!-- Cart (Important: span class must be global-cart-count) -->
+                        <!-- Cart (Fixed Badge) -->
                         <a href="{% url 'products:view_cart' %}" class="nav-icon-link">
-                            <i class="fas fa-shopping-cart fs-5"></i>
-                            <span class="global-cart-count">{{ global_cart_count|default:"0" }}</span>
+                            <div class="cart-wrapper">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="global-cart-count">{{ global_cart_count|default:"0" }}</span>
+                            </div>
                         </a>
                     </div>
+                </div>
+
+                <!-- 3. SEARCH BAR -->
+                <div class="col-12 col-lg-7 search-container order-lg-2">
+                    <form action="{% url 'products:index' %}" method="GET" class="position-relative">
+                        <div class="input-group shadow-sm" style="border-radius: 4px; overflow: hidden; border: 1px solid #ced4da;">
+                            <input type="text" id="searchInput" name="q" class="form-control border-0 py-2" placeholder="Search products, brands..." value="{{ request.GET.q|default:'' }}" autocomplete="off">
+                            <button class="btn btn-pro px-3" type="submit"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div id="suggestionsBox" class="list-group position-absolute w-100 d-none shadow" style="top: 100%; z-index: 3000; background: white;"></div>
+                    </form>
                 </div>
 
             </div>
