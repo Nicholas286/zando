@@ -20,19 +20,18 @@
     .step-content { padding: 15px; display: none; border-top: 1px solid #f5f5f5; }
     .checkout-step.active .step-content { display: block; }
 
-    /* Cards */
-    .address-card { border: 1px solid #eee; padding: 12px; border-radius: 4px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; background: #fff; }
+    /* Address Cards */
+    .address-card { border: 1px solid #eee; padding: 12px; border-radius: 4px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; background: #fff; position: relative; }
     .address-card.selected { border: 2px solid var(--brand-blue); background: var(--light-blue); }
     
-    /* Summary Styling */
+    /* Summary Styling (Laptop Sidebar) */
     .summary-card { background: white; padding: 15px; border-radius: 4px; border: 1px solid #eee; position: sticky; top: 90px; }
-    .btn-place-order { background: var(--brand-blue); color: white; font-weight: bold; width: 100%; padding: 12px; border: none; border-radius: 4px; font-size: 15px; text-transform: uppercase; }
-    .btn-save-continue { background: var(--brand-blue); color: white; font-weight: bold; padding: 10px 25px; border: none; border-radius: 4px; text-transform: uppercase; font-size: 12px; }
-
+    
     /* Jumia Style Mobile Top Summary */
-    .mobile-top-summary { background: #fff; border-bottom: 1px solid #eee; margin: -10px -15px 15px -15px; padding: 15px; }
-    .mobile-top-summary .label { color: #888; font-size: 12px; text-transform: uppercase; font-weight: 600; }
-    .mobile-top-summary .value { color: #333; font-weight: 700; font-size: 14px; }
+    .mobile-top-summary { background: #f8f9fa; border-bottom: 1px solid #ddd; margin: -10px -15px 15px -15px; padding: 15px; }
+    .mobile-top-summary .label { color: #777; font-size: 12px; text-transform: uppercase; font-weight: 600; }
+    .mobile-top-summary .value { color: #000; font-weight: 700; font-size: 14px; }
+    .mobile-top-summary .promo-value { color: #198754; font-weight: 700; font-size: 14px; }
 
     /* Mobile Specific Tweaks */
     @media (max-width: 768px) {
@@ -44,8 +43,13 @@
             position: fixed; bottom: 0; left: 0; width: 100%; 
             padding: 18px; border-radius: 0; z-index: 1050; 
             box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+            background: var(--brand-blue); color: white; border: none; font-weight: bold; text-transform: uppercase;
         }
-        .summary-card { margin-bottom: 100px; } /* Space for sticky button */
+        /* Hide the bottom summary on phone as it's now at the top */
+        .summary-card-mobile-hide { display: none !important; }
+        
+        /* Space for sticky button */
+        form { margin-bottom: 80px; }
     }
 </style>
 
@@ -54,16 +58,28 @@
         {% csrf_token %}
         <input type="hidden" name="action" value="place_order">
 
-        <!-- JUMIA STYLE TOP SUMMARY (Mobile Only) -->
+        <!-- 1. JUMIA STYLE TOP SUMMARY (Mobile Only) -->
         <div class="d-lg-none mobile-top-summary shadow-sm">
+            <h6 class="text-muted text-uppercase mb-3" style="font-size: 10px; letter-spacing: 0.5px;">Order Summary</h6>
+            
             <div class="d-flex justify-content-between mb-1">
                 <span class="label">Item's total ({{ total_quantity|default:1 }})</span>
                 <span class="value">KSh {{ total_price|default:0|floatformat:0|intcomma }}</span>
             </div>
+
             <div class="d-flex justify-content-between mb-1">
                 <span class="label">Delivery fees</span>
                 <span class="value" id="mobile_side_fee">KSh {{ delivery_fee|default:0|floatformat:0|intcomma }}</span>
             </div>
+
+            <!-- PROMOTION LINE: Shows if a discount is detected -->
+            {% if discount > 0 %}
+            <div class="d-flex justify-content-between mb-1">
+                <span class="label">{{ promo_script|default:"Promotion applied" }}</span>
+                <span class="promo-value">-KSh {{ discount|floatformat:0|intcomma }}</span>
+            </div>
+            {% endif %}
+
             <hr class="my-2">
             <div class="d-flex justify-content-between align-items-center">
                 <span class="fw-bold" style="font-size: 14px;">Total</span>
@@ -72,7 +88,7 @@
         </div>
 
         <div class="row g-3">
-            <!-- LEFT: STEPS -->
+            <!-- LEFT: STEPS (Address, Delivery, Payment) -->
             <div class="col-lg-8">
                 
                 <!-- STEP 1: ADDRESS -->
@@ -181,35 +197,44 @@
                 </div>
             </div>
 
-            <!-- RIGHT: SUMMARY (Desktop Sidebar) -->
-            <div class="col-lg-4">
+            <!-- RIGHT: SUMMARY (Visible only on Laptop) -->
+            <div class="col-lg-4 d-none d-lg-block">
                 <div class="summary-card shadow-sm">
                     <h6 class="fw-bold border-bottom pb-2 mb-3">ORDER SUMMARY</h6>
-                    <div class="d-flex justify-content-between mb-2 x-small">
-                        <span class="text-muted">Items Total:</span>
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-muted">Items Total ({{ total_quantity }}):</span>
                         <span>KSh {{ total_price|default:0|floatformat:0|intcomma }}</span>
                     </div>
 
-                    <div class="d-flex justify-content-between mb-2 x-small">
+                    {% if discount > 0 %}
+                    <div class="d-flex justify-content-between mb-2 small text-success">
+                        <span>{{ promo_script|default:"Discount" }}:</span>
+                        <span>-KSh {{ discount|floatformat:0|intcomma }}</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between mb-2 small">
                         <span class="text-muted">Delivery Fee:</span>
                         <span id="side_fee">KSh {{ delivery_fee|default:0|floatformat:0|intcomma }}</span>
                     </div>
 
                     <hr class="my-2">
                     <div class="d-flex justify-content-between align-items-center">
-                        <span class="fw-bold small">TOTAL:</span>
-                        <span class="fw-bold text-primary fs-5" id="side_total">KSh {{ final_total|default:0|floatformat:0|intcomma }}</span>
+                        <span class="fw-bold">TOTAL:</span>
+                        <span class="fw-bold text-primary fs-4" id="side_total">KSh {{ final_total|default:0|floatformat:0|intcomma }}</span>
                     </div>
 
-                    <button type="submit" class="btn-place-order mt-3" {% if not selected_address %}disabled{% endif %}>
+                    <button type="submit" class="btn btn-primary w-100 py-3 mt-4 fw-bold shadow-sm" {% if not selected_address %}disabled{% endif %}>
                         CONFIRM ORDER
                     </button>
-                    {% if not selected_address %}
-                    <p class="text-danger text-center mt-2 fw-bold" style="font-size: 10px;">Select an address to continue.</p>
-                    {% endif %}
                 </div>
             </div>
         </div>
+
+        <!-- Sticky Bottom Button on Mobile -->
+        <button type="submit" class="btn-place-order d-lg-none" {% if not selected_address %}disabled{% endif %}>
+            CONFIRM ORDER (KSh {{ final_total|floatformat:0|intcomma }})
+        </button>
     </form>
 </div>
 
@@ -240,9 +265,11 @@
 </div>
 
 <script>
-    const itemsTotal = parseFloat("{{ total_price|default:0 }}");
-    const discountAmount = parseFloat("{{ discount|default:0 }}");
+    // Safeguard Context Variables
+    const itemsTotalRaw = parseFloat("{{ total_price|default:0 }}");
+    const totalDiscount = parseFloat("{{ discount|default:0 }}");
 
+    // County chain
     const countySel = document.getElementById('modal_county');
     const townSel = document.getElementById('modal_town');
     countySel.addEventListener('change', function() {
@@ -257,7 +284,6 @@
     function openStep(n) {
         document.querySelectorAll('.checkout-step').forEach(s => s.classList.remove('active'));
         document.getElementById('step_' + n).classList.add('active');
-        window.scrollTo(0,0);
     }
 
     function changeAddress(id) {
@@ -267,15 +293,18 @@
     function updateSummaryPrice(method, baseFee) {
         let shipping = parseFloat(baseFee) || 0;
         if (method === 'express') shipping += 200;
-        const finalTotal = (itemsTotal - discountAmount) + shipping;
+        const finalTotal = (itemsTotalRaw - totalDiscount) + shipping;
         
-        // Update Desktop
-        document.getElementById('side_fee').innerText = 'KSh ' + shipping.toLocaleString();
-        document.getElementById('side_total').innerText = 'KSh ' + finalTotal.toLocaleString();
+        const feeStr = 'KSh ' + shipping.toLocaleString();
+        const totalStr = 'KSh ' + finalTotal.toLocaleString();
+
+        // Update Desktop UI
+        if(document.getElementById('side_fee')) document.getElementById('side_fee').innerText = feeStr;
+        if(document.getElementById('side_total')) document.getElementById('side_total').innerText = totalStr;
         
-        // Update Mobile Top
-        document.getElementById('mobile_side_fee').innerText = 'KSh ' + shipping.toLocaleString();
-        document.getElementById('mobile_side_total').innerText = 'KSh ' + finalTotal.toLocaleString();
+        // Update Mobile UI
+        if(document.getElementById('mobile_side_fee')) document.getElementById('mobile_side_fee').innerText = feeStr;
+        if(document.getElementById('mobile_side_total')) document.getElementById('mobile_side_total').innerText = totalStr;
     }
 
     function togglePaymentUI(mode) {

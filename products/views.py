@@ -16,6 +16,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django_daraja.mpesa.core import MpesaClient
 from decimal import Decimal
+import re
 
 # Import all models
 from .models import (
@@ -226,63 +227,90 @@ def account_settings(request):
 
 
 def view_cart(request):
+    total_price_before_discount = Decimal('0.00')
+    total_discount = Decimal('0.00')
+    total_quantity = 0
+    cart_items_data = []
+    applied_promo_labels = set() # To store unique names of active promos
+
     if request.user.is_authenticated:
         cart = get_user_cart(request.user)
         items = cart.items.all()
-        
-        # 1. Calculate the total quantity
-        total_quantity = items.aggregate(total=Sum('quantity'))['total'] or 0
-        
-        # 2. Get the total price from the Cart model property
-        # (This uses the discounted subtotals we fixed in models.py)
-        total_price = cart.total_price 
-        
-        context = {
-            'cart': cart, 
-            'cart_items': items,
-            'total_quantity': total_quantity,
-            'total_price': total_price,  # <--- ADDED THIS TO FIX THE BLANK SIDEBAR
-        }
     else:
-        # GUEST LOGIC
         session_cart = request.session.get('cart', {})
-        cart_items = []
-        total_quantity = 0
-        total_price = Decimal('0.00')
-        
+        items = []
         for pid, qty in session_cart.items():
             try:
                 p = Product.objects.get(id=int(pid))
-                current_price = p.get_current_price()
-                sub = current_price * qty
-                
-                analysis_data = {
-                    'unit_price': current_price,
-                    'raw_total': sub,
-                    'discount_amount': Decimal('0.00'),
-                    'final_subtotal': sub,
-                    'is_discounted': False,
-                    'promo_name': ""
-                }
-                
-                cart_items.append({
-                    'product': p, 
-                    'quantity': qty, 
-                    'price_analysis': analysis_data 
-                })
-                total_quantity += qty
-                total_price += sub
-            except Product.DoesNotExist:
-                continue
-        
-        context = {
-            'cart_items': cart_items,
-            'total_price': total_price,
-            'total_quantity': total_quantity,
-        }
-    
-    return render(request, 'cart.html', context)
+                items.append(type('obj', (object,), {'product': p, 'quantity': qty}))
+            except Product.DoesNotExist: continue
 
+    for item in items:
+        p = item.product
+        qty = item.quantity
+        total_quantity += qty
+        
+        # --- FLASH SALE LOGIC ---
+        # get_current_price() must handle checking start_time/end_time in models.py
+        unit_price = p.get_current_price() 
+        
+        raw_item_total = unit_price * qty
+        total_price_before_discount += raw_item_total
+        
+        best_item_discount = Decimal('0.00')
+        active_promo_name = ""
+
+        # --- AUTO-DETECT PROMOTION STRIPS ---
+        # Find all active strips this specific product belongs to
+        product_strips = PromotionStrip.objects.filter(products=p, is_active=True)
+
+        for strip in product_strips:
+            # 1. Automatically extract the percentage from the title (e.g., "Get 15% off" -> 15)
+            match = re.search(r'(\d+)%', strip.title)
+            if not match: continue
+            
+            percent_val = Decimal(match.group(1)) / Decimal(100)
+
+            # 2. Check for "Buy 2" requirement if mentioned in title
+            if ("BUY TWO" in strip.title.upper() or "BUY 2" in strip.title.upper()) and qty < 2:
+                continue # User hasn't added enough quantity for this specific promo
+
+            # 3. Calculate discount based on current price (Flash price if active)
+            potential_discount = raw_item_total * percent_val
+
+            # 4. If product is in multiple strips, pick the one that gives the biggest discount
+            if potential_discount > best_item_discount:
+                best_item_discount = potential_discount
+                active_promo_name = strip.title
+
+        if active_promo_name:
+            applied_promo_labels.add(active_promo_name)
+
+        total_discount += best_item_discount
+        
+        cart_items_data.append({
+            'product': p,
+            'quantity': qty,
+            'price_analysis': {
+                'unit_price': unit_price,
+                'raw_total': raw_item_total,
+                'discount_amount': best_item_discount,
+                'final_subtotal': raw_item_total - best_item_discount,
+                'is_discounted': best_item_discount > 0,
+                'promo_name': active_promo_name
+            }
+        })
+
+    context = {
+        'cart_items': cart_items_data,
+        'total_quantity': total_quantity,
+        'total_price': total_price_before_discount - total_discount,
+        'total_price_before_discount': total_price_before_discount,
+        'discount_amount': total_discount,
+        'promo_script': ", ".join(applied_promo_labels), # Combines names like "5% at checkout, Buy 2 get 10%"
+        'wishlist_items': Wishlist.objects.filter(user=request.user) if request.user.is_authenticated else []
+    }
+    return render(request, 'cart.html', context)
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -392,68 +420,90 @@ def checkout(request):
     if not items.exists(): 
         return redirect('products:index')
 
-    # Total price of items only (before discount and shipping)
-    # This matches the {{ total_price }} variable in your template
-    items_total = cart.total_price  
+    # --- CALCULATE TOTALS & PROMOS ---
+    total_quantity = 0
+    total_price_before_discount = Decimal('0.00')
+    total_promo_discount = Decimal('0.00')
+    applied_promo_labels = set()
+
+    for item in items:
+        p = item.product
+        qty = item.quantity
+        total_quantity += qty
+        
+        # 1. Use Flash price if active, otherwise original price
+        unit_price = p.get_current_price()
+        raw_item_total = unit_price * qty
+        total_price_before_discount += raw_item_total
+        
+        best_item_discount = Decimal('0.00')
+        active_promo_name = ""
+
+        # 2. Check Promotion Strips (Auto-detecting percentages)
+        product_strips = PromotionStrip.objects.filter(products=p, is_active=True)
+        for strip in product_strips:
+            match = re.search(r'(\d+)%', strip.title)
+            if not match: continue
+            
+            percent_val = Decimal(match.group(1)) / Decimal(100)
+            
+            # Check "Buy 2" rule
+            if ("BUY TWO" in strip.title.upper() or "BUY 2" in strip.title.upper()) and qty < 2:
+                continue
+
+            potential_discount = raw_item_total * percent_val
+            if potential_discount > best_item_discount:
+                best_item_discount = potential_discount
+                active_promo_name = strip.title
+
+        if active_promo_name:
+            applied_promo_labels.add(active_promo_name)
+        
+        total_promo_discount += best_item_discount
+
+    # This is the "Subtotal" before shipping but after item-specific promos
+    items_total_after_promos = total_price_before_discount - total_promo_discount
+
+    # --- ADDRESS & SHIPPING ---
+    addresses = Address.objects.filter(user=request.user)
+    selected_addr_id = request.POST.get('selected_address') or request.GET.get('addr_id')
     
-    discount = Decimal('0.00')
-    coupon_code = None
+    selected_address = addresses.filter(id=selected_addr_id).first() if selected_addr_id else addresses.filter(is_default=True).first()
+
     delivery_fee = Decimal('0.00')
     est_days = 3
     
-    addresses = Address.objects.filter(user=request.user)
-    # Priority for address selection: POST > GET > Default
-    selected_addr_id = request.POST.get('selected_address') or request.GET.get('addr_id')
-    
-    selected_address = None
-    if selected_addr_id:
-        selected_address = addresses.filter(id=selected_addr_id).first()
-    else:
-        selected_address = addresses.filter(is_default=True).first()
-
-    # Calculate Base Delivery Fee (Standard + Bulky Surcharge)
     if selected_address:
         town = selected_address.town
         delivery_fee = town.base_delivery_fee 
         est_days = town.estimated_days
         
-        # Check for bulky items and add surcharge
+        # Bulky item surcharge
         bulky_items = items.filter(product__is_bulky=True)
         if bulky_items.exists():
-            max_surcharge = max(item.product.bulky_surcharge for item in bulky_items)
-            delivery_fee += max_surcharge
+            delivery_fee += max(item.product.bulky_surcharge for item in bulky_items)
+
+    # --- COUPON & POST LOGIC ---
+    coupon_discount = Decimal('0.00')
+    coupon_code = None
 
     if request.method == 'POST':
         action = request.POST.get('action')
+        pay_method = request.POST.get('payment_method')
+        delivery_method = request.POST.get('delivery_method', 'standard')
 
-        # 1. APPLY COUPON LOGIC
-        if action == 'apply_coupon':
-            code = request.POST.get('coupon', '').strip()
-            cp = Coupon.objects.filter(code__iexact=code, active=True).first()
-            if cp and items_total >= cp.min_total:
-                discount = Decimal(cp.compute_discount(items_total))
-                coupon_code = cp.code
-                messages.success(request, f"Coupon {code} applied!")
-            else:
-                messages.warning(request, "Invalid or ineligible coupon.")
+        if delivery_method == 'express':
+            delivery_fee += Decimal('200.00')
+            est_days = 1
 
-        # 2. PLACE ORDER LOGIC
-        elif action == 'place_order':
+        if action == 'place_order':
             if not selected_address:
                 messages.error(request, "Please select a shipping address.")
                 return redirect('products:checkout')
 
-            pay_method = request.POST.get('payment_method')
-            delivery_method = request.POST.get('delivery_method', 'standard')
+            # Final Math
+            final_total = (items_total_after_promos - coupon_discount) + delivery_fee
             
-            # Add Express surcharge if selected
-            if delivery_method == 'express':
-                delivery_fee += Decimal('200.00')
-                est_days = 1
-            
-            final_total = (items_total - discount) + delivery_fee
-            
-            # Delivery Dates
             today = timezone.localdate()
             est_start = add_business_days(today, est_days)
             est_end = add_business_days(today, est_days + 1)
@@ -469,53 +519,45 @@ def checkout(request):
                         payment_method='M-Pesa' if pay_method == 'mpesa' else 'Pay on Delivery',
                         delivery_method=delivery_method,
                         status='Pending',
-                        discount_amount=discount,
+                        discount_amount=total_promo_discount + coupon_discount,
                         coupon_code=coupon_code,
                         estimated_delivery_start=est_start,
                         estimated_delivery_end=est_end
                     )
                     
                     for item in items:
-                        analysis = item.price_analysis
-                        # Calculate unit price after individual product promos
-                        actual_price_per_unit = analysis['final_subtotal'] / item.quantity
-                        
+                        # Logic to calculate the individual item price saved to the order
                         OrderItem.objects.create(
-                            order=order,
-                            product=item.product,
-                            quantity=item.quantity,
-                            price=actual_price_per_unit
+                            order=order, product=item.product,
+                            quantity=item.quantity, price=item.product.get_current_price()
                         )
-                        
-                        # Update Stock
                         item.product.stock -= item.quantity
                         item.product.save()
 
-                    # Clear cart after successful order
                     items.delete()
                     messages.success(request, f"Order #{order.id} placed successfully!")
                     return redirect('products:my_orders')
-
             except Exception as e:
-                messages.error(request, f"An error occurred: {str(e)}")
+                messages.error(request, f"Error: {str(e)}")
 
     # Final calculation for display
-    final_total = (items_total - discount) + delivery_fee
+    final_total = (items_total_after_promos - coupon_discount) + delivery_fee
 
     return render(request, 'checkout.html', {
         'cart_items': items,
-        'total_price': items_total,     # This fixes the "Items Total 0" issue
-        'addresses': addresses,
-        'selected_address': selected_address,
+        'total_quantity': total_quantity, # Correct total count (e.g. 4)
+        'total_price': total_price_before_discount, # The "Raw Total"
+        'discount': total_promo_discount, # The "Offer Applied" value
+        'promo_script': ", ".join(applied_promo_labels),
         'delivery_fee': delivery_fee,
         'final_total': final_total,
-        'est_days': est_days,
-        'discount': discount,
-        'coupon_code': coupon_code,
-        'counties': County.objects.all(), # Required for the Add Address Modal
-        'towns': Town.objects.all(),      # Required for the Add Address Modal
+        'addresses': addresses,
+        'selected_address': selected_address,
+        'counties': County.objects.all(),
+        'towns': Town.objects.all(),
     })
-
+    
+    
 @csrf_exempt
 def mpesa_callback(request):
     try:

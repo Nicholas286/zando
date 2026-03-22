@@ -176,22 +176,26 @@
     </div>
 
     <!-- 4. RELATED PRODUCTS (2-column on mobile) -->
-    <div class="mt-4">
-        <h6 class="fw-bold mb-3 text-uppercase x-small">You may also like</h6>
-        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-2">
-            {% for related in related_products %}
-            <div class="col">
-                <div class="card shadow-sm border-0 h-100 p-2">
-                    <a href="{% url 'products:product_detail' related.id %}" class="text-decoration-none">
-                        <img src="{{ related.image.url }}" class="img-fluid mb-2" alt="{{ related.name }}" style="height: 120px; object-fit: contain; width: 100%;">
-                        <div class="text-truncate text-dark x-small mb-1">{{ related.name }}</div>
-                        <p class="text-pro fw-bold mb-0 x-small">KSh {{ related.get_current_price|intcomma }}</p>
-                    </a>
-                </div>
+   <!-- 4. RELATED PRODUCTS (Horizontal Scroller) -->
+<div class="mt-4">
+    <h6 class="fw-bold mb-3 text-uppercase x-small">You may also like</h6>
+    <div class="d-flex overflow-auto hide-scrollbar pb-3" style="gap: 10px;">
+        {% for related in related_products|slice:":10" %}
+        <div class="flex-shrink-0" style="width: 140px;">
+            <div class="card shadow-sm border-0 h-100 p-2">
+                <a href="{% url 'products:product_detail' related.id %}" class="text-decoration-none">
+                    <div style="height: 110px;" class="d-flex align-items-center justify-content-center mb-2">
+                        <img src="{{ related.image.url }}" class="img-fluid" alt="{{ related.name }}" style="max-height: 100%; object-fit: contain;">
+                    </div>
+                    <!-- Reuse your name clamping here if you have it -->
+                    <div class="text-truncate text-dark x-small mb-1" style="font-size: 12px;">{{ related.name }}</div>
+                    <p class="text-pro fw-bold mb-0" style="font-size: 13px;">KSh {{ related.get_current_price|intcomma }}</p>
+                </a>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
+</div>
 
 <!-- 5. REVIEWS SECTION -->
     <div class="mt-5" id="reviews">

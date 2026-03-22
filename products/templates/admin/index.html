@@ -10,101 +10,101 @@
         --zando-dark: #004b91;
     }
 
-    /* Override Django Admin defaults with Zando Blue */
-    #header, .module h2, .module caption, .section, .visualiane, a:link, a:visited { background-color: var(--zando-blue) !important; color: white !important; }
-    .module h2 a, .module caption a { color: white !important; }
+    /* Professional Header & Section Overrides */
+    #header { background: var(--zando-blue) !important; color: #fff !important; }
+    #branding h1 { color: #fff !important; font-weight: 800; }
+    .module h2, .module caption, .section { background-color: var(--zando-blue) !important; color: white !important; font-weight: 700; }
     div.breadcrumbs a { color: var(--zando-blue) !important; }
-    .addlink, .changelink { color: var(--zando-blue) !important; font-weight: bold; }
+    .addlink, .changelink { color: var(--zando-blue) !important; font-weight: 700; }
 
-    /* --- DASHBOARD LAYOUT --- */
-    #content { padding: 20px 15px !important; }
+    /* Dashboard Layout Styling */
+    #content { padding: 20px 15px !important; max-width: 1400px; margin: 0 auto; }
 
     .dashboard-stats {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        margin-bottom: 30px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-bottom: 35px;
     }
 
     .stat-card {
         background: white;
-        border: 1px solid #eee;
-        border-radius: 4px;
-        padding: 20px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 25px 20px;
         text-align: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        border-top: 4px solid var(--zando-blue);
+        transition: transform 0.2s, box-shadow 0.2s;
+        border-top: 5px solid var(--zando-blue);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
     }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
 
     .stat-card h3 {
         margin: 0;
-        font-size: 1.8rem;
+        font-size: 2rem;
         color: var(--zando-blue);
-        font-weight: 800;
+        font-weight: 900;
+        letter-spacing: -0.5px;
     }
 
     .stat-card p {
-        margin: 5px 0 0 0;
-        color: #888;
-        font-size: 11px;
+        margin: 8px 0 0 0;
+        color: #777;
+        font-size: 12px;
         text-transform: uppercase;
         font-weight: 700;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
     }
 
-    /* --- RECENT ORDERS TABLE --- */
-    .recent-orders-wrapper {
+    /* Orders & Admin Tables Responsiveness */
+    .responsive-table-wrapper {
         background: white;
         border: 1px solid #eee;
         border-radius: 4px;
         overflow-x: auto; /* Fix horizontal scroll on mobile */
+        -webkit-overflow-scrolling: touch;
         margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
     .recent-orders-table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 600px; /* Ensures table looks good if shrunk */
+        min-width: 700px; /* Forces scroll inside the box rather than stretching screen */
     }
 
     .recent-orders-table th {
-        background: #f8f9fa;
-        padding: 12px 15px;
+        background: #fcfcfc;
+        padding: 15px;
         text-align: left;
         font-size: 11px;
         text-transform: uppercase;
-        color: #666;
-        border-bottom: 2px solid #eee;
+        color: #888;
+        border-bottom: 2px solid #f0f0f0;
     }
 
     .recent-orders-table td {
-        padding: 12px 15px;
-        border-bottom: 1px solid #f9f9f9;
+        padding: 14px 15px;
+        border-bottom: 1px solid #f7f7f7;
         font-size: 13px;
         color: #333;
     }
 
-    /* --- MOBILE OVERRIDES (PHONE ONLY) --- */
-    @media (max-width: 768px) {
-        h1 { font-size: 18px !important; margin-bottom: 15px !important; }
-        
-        /* Smaller Stats Cards */
-        .stat-card { padding: 15px; }
-        .stat-card h3 { font-size: 1.4rem; }
-        
-        /* Table Font Shrink */
-        .recent-orders-table td { font-size: 12px !important; padding: 10px 8px; }
-        .recent-orders-table th { padding: 10px 8px; }
+    /* Fix Administration Module Tables for Mobile */
+    .module table { display: block; overflow-x: auto; width: 100%; }
 
-        /* Admin Module List Fix */
-        .module table { display: block; overflow-x: auto; width: 100%; }
+    /* --- MOBILE OVERRIDES --- */
+    @media (max-width: 768px) {
+        h1 { font-size: 20px !important; margin-bottom: 20px !important; }
+        .stat-card { padding: 20px 15px; }
+        .stat-card h3 { font-size: 1.6rem; }
+        .recent-orders-table td { font-size: 12px !important; padding: 12px 10px; }
         
-        /* Fix the Top User Menu (Logout/View Site) hiding on phone */
         #user-tools { 
             position: relative !important; 
             float: none !important; 
             text-align: right !important;
-            padding: 10px !important;
+            padding: 10px 5px !important;
             font-size: 11px !important;
         }
     }
@@ -112,7 +112,7 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="fw-bold">{% trans 'Dashboard Overview' %}</h1>
+<h1 class="fw-bold" style="margin-bottom: 25px;">{% trans 'Dashboard Overview' %}</h1>
 
 <!-- Dashboard Stats Cards -->
 <div class="dashboard-stats">
@@ -122,44 +122,44 @@
     </div>
     <div class="stat-card">
         <h3>KSh {{ total_revenue|default:0|floatformat:0|intcomma }}</h3>
-        <p>{% trans 'Total Revenue' %}</p>
+        <p>{% trans 'Revenue' %}</p>
     </div>
-    <div class="stat-card">
-        <h3>{{ pending_orders|default:"0" }}</h3>
-        <p>{% trans 'Pending Orders' %}</p>
+    <div class="stat-card" style="border-top-color: #f68b1e;">
+        <h3 style="color: #f68b1e;">{{ pending_orders|default:"0" }}</h3>
+        <p>{% trans 'Pending' %}</p>
     </div>
 </div>
 
 <!-- Recent Orders Section -->
 <div class="module" style="background: none; border: none;">
-    <h2 style="margin-bottom: 10px; border-radius: 4px 4px 0 0;">{% trans 'Recent Orders' %}</h2>
-    <div class="recent-orders-wrapper shadow-sm">
+    <h2 style="margin-bottom: 12px; border-radius: 4px;">{% trans 'Recent Logistics Activity' %}</h2>
+    <div class="responsive-table-wrapper">
         <table class="recent-orders-table">
             <thead>
                 <tr>
-                    <th>{% trans 'Order ID' %}</th>
+                    <th>{% trans 'ID' %}</th>
                     <th>{% trans 'Customer' %}</th>
                     <th>{% trans 'Status' %}</th>
-                    <th>{% trans 'Total' %}</th>
-                    <th>{% trans 'Date' %}</th>
+                    <th>{% trans 'Total Value' %}</th>
+                    <th>{% trans 'Order Date' %}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for order in recent_orders %}
                 <tr>
-                    <td class="fw-bold"><a href="{% url 'admin:products_order_change' order.id %}" style="color: var(--zando-blue) !important;">#{{ order.id }}</a></td>
-                    <td>{{ order.user.username }}</td>
+                    <td class="fw-bold"><a href="{% url 'admin:products_order_change' order.id %}" style="color: var(--zando-blue) !important; text-decoration: none;">#{{ order.id }}</a></td>
+                    <td style="font-weight: 500;">{{ order.user.username }}</td>
                     <td>
-                        <span style="font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: bold; background: #eee; color: #333;">
-                            {{ order.get_status_display }}
+                        <span style="font-size: 10px; padding: 4px 10px; border-radius: 4px; font-weight: 800; background: #f0f0f0; color: #444; border: 1px solid #ddd;">
+                            {{ order.get_status_display|upper }}
                         </span>
                     </td>
                     <td class="fw-bold">KSh {{ order.total_price|floatformat:0|intcomma }}</td>
-                    <td class="text-muted">{{ order.created_at|date:"M d, Y" }}</td>
+                    <td class="text-muted" style="font-size: 12px;">{{ order.created_at|date:"M d, Y" }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center py-4">{% trans 'No recent orders found.' %}</td>
+                    <td colspan="5" class="text-center py-5 text-muted">{% trans 'No orders recorded yet.' %}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -167,10 +167,10 @@
     </div>
 </div>
 
-<!-- Administration / App List (Default Django Table) -->
-<h2 style="margin-top: 20px; border-radius: 4px 4px 0 0;">{% trans 'Site Administration' %}</h2>
+<!-- Administration Section -->
+<h2 style="margin-top: 10px; border-radius: 4px;">{% trans 'Zando Site Administration' %}</h2>
 {% for app in app_list %}
-<div class="module shadow-sm" style="margin-bottom: 20px;">
+<div class="module shadow-sm" style="margin-bottom: 25px; border-radius: 4px; overflow: hidden;">
     <table>
         <caption>
             <a href="{{ app.url }}" class="section" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name }}</a>
@@ -178,9 +178,9 @@
         {% for model in app.models %}
             <tr class="model-{{ model.object_name|lower }}">
             {% if model.admin_url %}
-                <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
+                <th scope="row" style="padding-left: 20px;"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
             {% else %}
-                <th scope="row">{{ model.name }}</th>
+                <th scope="row" style="padding-left: 20px;">{{ model.name }}</th>
             {% endif %}
 
             {% if model.add_url %}
