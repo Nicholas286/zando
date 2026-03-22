@@ -9,116 +9,134 @@
     .btn-primary, .bg-primary { background-color: var(--zando-blue) !important; border-color: var(--zando-blue) !important; }
     .text-pro { color: var(--zando-blue) !important; }
 
-    /* --- SCROLLER ITEM STYLING (Flash Sales & Promos) --- */
-    .scroller-item { min-width: 125px; max-width: 125px; padding: 5px; }
-    .scroller-img { height: 90px; width: 100%; object-fit: contain; margin-bottom: 5px; }
-    
-    /* Name: 1 line, NOT bold */
-    .scroller-name {
-        display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        font-size: 0.72rem; font-weight: 400 !important; color: #333; text-decoration: none; margin-bottom: 2px;
+    /* --- THE BUBBLES (ADMIN MANAGEABLE BALLS) --- */
+    .bubbles-container { display: flex; overflow-x: auto; gap: 12px; padding: 10px 5px; margin-bottom: 10px; }
+    .bubble-item { min-width: 75px; text-align: center; text-decoration: none !important; }
+    .bubble-circle {
+        width: 60px; height: 60px; 
+        background: #fff; border-radius: 50%; 
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 5px auto;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        overflow: hidden;
     }
-    /* Price: NOT bold */
+    .bubble-circle img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+    .bubble-text { font-size: 10px; font-weight: 400 !important; color: #333; display: block; line-height: 1.2; }
+
+    /* --- SCROLLERS (Flash & Promos: 1 Line, No Bold) --- */
+    .scroller-item { min-width: 125px; max-width: 125px; padding: 5px; flex-shrink: 0; }
+    .scroller-img-wrap { height: 90px; width: 100%; display: flex; align-items: center; justify-content: center; background: #fff; margin-bottom: 5px; }
+    .scroller-img { max-height: 100%; max-width: 100%; object-fit: contain; }
+    .scroller-name { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.72rem; font-weight: 400 !important; color: #333; text-decoration: none; }
     .scroller-price { font-size: 11px; font-weight: 400 !important; color: #000; display: block; }
 
-    /* --- MAIN GRID STYLING (Recommended) --- */
+    /* --- MAIN GRID (Recommended: 2 Lines, Small, No Bold) --- */
     .grid-name {
         display: -webkit-box;
-        -webkit-line-clamp: 2; /* 2 LINES */
+        -webkit-line-clamp: 2; /* 2 LINES FOR GRID */
         -webkit-box-orient: vertical;
         overflow: hidden;
         font-size: 0.75rem; 
-        font-weight: 400 !important; /* NOT BOLD */
+        font-weight: 400 !important; 
         color: #333;
         text-decoration: none;
-        height: 2.4em; 
+        height: 2.5em; 
         line-height: 1.2;
         margin-bottom: 4px;
     }
-    .product-card { transition: transform 0.2s; border: 1px solid #f0f0f0 !important; height: 100%; background: #fff; border-radius: 4px; }
-    .grid-img-container { height: 95px; display: flex; align-items: center; justify-content: center; background: #fff; }
+    .product-card { border: 1px solid #f0f0f0 !important; height: 100%; background: #fff; border-radius: 4px; transition: transform 0.2s; }
+    .grid-img-wrap { height: 95px; display: flex; align-items: center; justify-content: center; background: #fff; }
     .grid-img { max-height: 100%; max-width: 100%; object-fit: contain; }
-    
-    /* Grid Price: NOT bold */
     .grid-price { font-size: 12px; font-weight: 400 !important; color: #000; }
+    .stock-label { font-size: 9px; font-weight: 400 !important; display: block; margin-bottom: 4px; }
 
-    /* Stock Text: Small and Lightweight */
-    .stock-label { font-size: 9px; font-weight: 400 !important; display: block; margin-bottom: 4px; line-height: 1; }
-
-    /* Layout Components */
+    /* Component Headers */
     .flash-header { background: #e61601; color: white; padding: 8px 12px; border-radius: 4px 4px 0 0; }
     .flash-progress-bar { height: 3px; background-color: #eee; border-radius: 10px; overflow: hidden; margin-top: 4px; }
     .flash-progress-fill { height: 100%; background-color: #e61601 !important; }
-    
-    .cat-bubble { width: 55px; height: 55px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; }
-    .active-bubble { border: 2px solid var(--zando-blue) !important; background: #e7f1ff; }
-    
+
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+    @media (min-width: 992px) {
+        .bubbles-container { justify-content: space-around; overflow: visible; }
+    }
     @media (max-width: 768px) {
-        .small-mobile-text { font-size: 9px !important; }
-        .row.g-1 > .col { padding: 3px; padding-bottom: 6px; }
+        .row.g-1 > .col { padding: 3px; padding-bottom: 8px; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
 
-<!-- 1. CATEGORY BUBBLES -->
-<div class="mb-2">
-    <div class="d-flex overflow-auto py-2 hide-scrollbar">
-        {% for cat in categories %}
-        <a href="?category={{ cat.id }}" class="text-decoration-none text-center me-3" style="min-width: 65px;">
-            <div class="cat-bubble mx-auto {% if request.GET.category == cat.id|stringformat:'i' %}active-bubble{% endif %}">
-                <i class="{{ cat.icon_class|default:'fa-solid fa-tag' }} text-pro"></i>
-            </div>
-            <span class="text-dark d-block text-truncate mt-1" style="font-size: 10px; font-weight: 400;">{{ cat.name }}</span>
-        </a>
-        {% endfor %}
-    </div>
+<!-- 1. THE BALLS (Manageable Bubbles from Admin) -->
+<div class="bubbles-container hide-scrollbar">
+    <!-- Assuming you pass 'bubbles' from your view -->
+    {% for b in bubbles %}
+    <a href="{{ b.link_url }}" class="bubble-item">
+        <div class="bubble-circle shadow-sm">
+            <img src="{{ b.image.url }}" alt="{{ b.name }}">
+        </div>
+        <span class="bubble-text">{{ b.name }}</span>
+    </a>
+    {% endfor %}
 </div>
 
 {% if not request.GET.q and not request.GET.category %}
     
     <!-- 2. FLASH SALES -->
     {% if flash_sales %}
-    <div class="card border-0 shadow-sm mb-3 overflow-hidden">
-        <div class="flash-header d-flex justify-content-between align-items-center">
-            <h6 class="mb-0 fw-bold" style="font-size: 11px;"><i class="fas fa-bolt me-1"></i> FLASH SALES</h6>
-            <div id="flash-timer-clock" class="fw-bold" style="font-size: 10px;">--:--:--</div>
-            <a href="{% url 'products:see_all' %}?type=flash" class="text-white text-decoration-none fw-bold" style="font-size: 10px;">SEE ALL ></a>
+<div class="card border-0 shadow-sm mb-3 overflow-hidden">
+    <div class="flash-header d-flex justify-content-between align-items-center">
+        <!-- UPDATED TITLE -->
+        <h6 class="mb-0 fw-bold" style="font-size: 11px;">
+            <i class="fas fa-bolt me-1"></i> FLASH SALES | LIVE NOW
+        </h6>
+
+        <!-- UPDATED TIMER: Added data-endtime and placeholder text -->
+        <div id="flash-timer-clock" class="fw-bold text-white" style="font-size: 11px;" 
+             data-endtime="{{ flash_sales.0.flash_sale.end_time|date:'Y/m/d H:i:s' }}">
+            Time Left: 00h : 00m : 00s
         </div>
-        <div class="d-flex overflow-auto bg-white p-1 hide-scrollbar">
-            {% for p in flash_sales %}
-            <div class="scroller-item">
-                <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none text-dark">
-                    <img src="{{ p.image.url }}" class="scroller-img">
-                    <div class="scroller-name">{{ p.name }}</div>
-                    <div class="scroller-price">KSh {{ p.get_current_price|intcomma }}</div>
-                    <div class="flash-progress-bar">
-                        <div class="flash-progress-fill" style="width: {{ p.stock }}%;"></div>
-                    </div>
-                    <span class="stock-label text-muted mt-1">{{ p.stock }} units left</span>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
+
+        <a href="{% url 'products:see_all' %}?type=flash" class="text-white text-decoration-none fw-bold" style="font-size: 10px;">SEE ALL ></a>
     </div>
-    {% endif %}
+
+    <div class="d-flex overflow-auto bg-white p-1 hide-scrollbar">
+        {% for p in flash_sales %}
+        <div class="scroller-item">
+            <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none">
+                <div class="scroller-img-wrap">
+                    {% if p.image %}<img src="{{ p.image.url }}" class="scroller-img">{% endif %}
+                </div>
+                <div class="scroller-name">{{ p.name }}</div>
+                <div class="scroller-price">KSh {{ p.get_current_price|intcomma }}</div>
+                <div class="flash-progress-bar">
+                    <div class="flash-progress-fill" style="width: {{ p.stock }}%;"></div>
+                </div>
+                <span class="stock-label text-muted mt-1">{{ p.stock }} units left</span>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
     <!-- 3. PROMO STRIPS -->
     {% for strip in promo_strips %}
     <div class="card border-0 shadow-sm mb-3 overflow-hidden">
-        <div class="p-2 d-flex justify-content-between align-items-center text-white" style="background-color: {{ strip.bg_color }};">
+        <div class="p-2 d-flex justify-content-between align-items-center text-white" style="background-color: {{ strip.bg_color }}; border-radius: 4px 4px 0 0;">
             <h6 class="mb-0 fw-bold text-uppercase" style="font-size: 11px;">{{ strip.title }}</h6>
             <a href="{% url 'products:see_all' %}?type=promo&strip_id={{ strip.id }}" class="text-white text-decoration-none fw-bold" style="font-size: 10px;">SEE ALL ></a>
         </div>
         <div class="d-flex overflow-auto bg-white p-1 hide-scrollbar">
             {% for p in strip.products.all %}
             <div class="scroller-item">
-                <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none text-dark">
-                    <img src="{{ p.image.url }}" class="scroller-img">
+                <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none">
+                    <div class="scroller-img-wrap">
+                        {% if p.image %}<img src="{{ p.image.url }}" class="scroller-img">{% endif %}
+                    </div>
                     <div class="scroller-name">{{ p.name }}</div>
                     <div class="scroller-price">KSh {{ p.get_current_price|intcomma }}</div>
                 </a>
@@ -130,7 +148,7 @@
 
 {% endif %}
 
-<!-- 4. MAIN PRODUCT GRID (Recommended) -->
+<!-- 4. RECOMMENDED GRID (2-Line Names, Smaller, Not Bold) -->
 <div class="row g-1">
     <div class="col-12 mb-2">
         <div class="d-flex align-items-center justify-content-between bg-primary text-white p-2 rounded-top" style="background-color: var(--zando-blue) !important;">
@@ -140,13 +158,13 @@
     </div>
 
     <div id="productGrid" class="col-md-12">
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-1">
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-1">
             {% for product in products %}
             <div class="col">
                 <div class="card product-card p-2 shadow-sm">
-                    <a href="{% url 'products:product_detail' product.id %}" class="text-center text-decoration-none">
-                        <div class="grid-img-container mb-1">
-                            <img src="{{ product.image.url }}" class="grid-img">
+                    <a href="{% url 'products:product_detail' product.id %}">
+                        <div class="grid-img-wrap mb-1">
+                            {% if product.image %}<img src="{{ product.image.url }}" class="grid-img">{% endif %}
                         </div>
                     </a>
                     <div class="card-body p-0 d-flex flex-column">
@@ -156,8 +174,7 @@
                             {% for i in "12345" %}
                                 <i class="fa{% if product.average_rating >= forloop.counter %}s{% else %}r{% endif %} fa-star"></i>
                             {% endfor %}
-                            <!-- ADDED BACK: Review count in brackets -->
-                            <span class="text-muted" style="font-size: 8px;">({{ product.review_count }})</span>
+                            <span class="text-muted">({{ product.review_count }})</span>
                         </div>
 
                         <p class="mb-1 grid-price">KSh {{ product.get_current_price|intcomma }}</p>
@@ -172,14 +189,15 @@
                             {% endif %}
                         </div>
 
+                        <!-- AJAX Cart Buttons -->
                         <div class="mt-auto">
                             <div id="cart-area-{{ product.id }}">
                                 {% with qty=cart_quantities|get_item:product.id %}
                                     {% if qty %}
-                                        <div class="d-flex align-items-center justify-content-between border rounded bg-light p-0">
-                                            <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="{{ product.id }}" style="width:22px; padding:1px 0; font-size: 10px;">-</button>
+                                        <div class="d-flex align-items-center justify-content-between border rounded bg-light">
+                                            <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="{{ product.id }}" style="width:22px; padding:1px 0;">-</button>
                                             <span style="font-size: 11px;">{{ qty }}</span>
-                                            <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="{{ product.id }}" style="width:22px; padding:1px 0; font-size: 10px;">+</button>
+                                            <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="{{ product.id }}" style="width:22px; padding:1px 0;">+</button>
                                         </div>
                                     {% else %}
                                         <button type="button" class="btn btn-primary btn-sm w-100 js-cart-inc" data-product-id="{{ product.id }}" style="padding: 5px 0; font-size: 10px; font-weight: 700;">ADD TO CART</button>
@@ -194,4 +212,39 @@
         </div>
     </div>
 </div>
+<script>
+function updateFlashTimer() {
+    const timerClock = document.getElementById('flash-timer-clock');
+    if (!timerClock) return;
+
+    // Get the time from the data attribute
+    const endTimeStr = timerClock.getAttribute('data-endtime');
+    // Mobile fix: Replace dashes with slashes for Safari/Phone compatibility
+    const countDownDate = new Date(endTimeStr.replace(/-/g, "/")).getTime();
+
+    // Clear any previous interval if the script re-runs
+    if (window.flashTimerInterval) clearInterval(window.flashTimerInterval);
+
+    window.flashTimerInterval = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = countDownDate - now;
+
+        if (distance < 0) {
+            clearInterval(window.flashTimerInterval);
+            timerClock.innerHTML = "FLASH SALE EXPIRED";
+            return;
+        }
+
+        const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Update the display with "Time Left:" prefix
+        timerClock.innerHTML = `Time Left: ${h.toString().padStart(2, '0')}h : ${m.toString().padStart(2, '0')}m : ${s.toString().padStart(2, '0')}s`;
+    }, 1000);
+}
+
+// Ensure the timer starts as soon as the page is ready
+document.addEventListener('DOMContentLoaded', updateFlashTimer);
+</script>
 {% endblock %}

@@ -11,93 +11,114 @@
     <style>
         :root { --zando-blue: #006bff; --soft-bg: #f4f6f9; }
         
-        /* Stop the phone from sliding left/right */
         html, body { overflow-x: hidden !important; width: 100% !important; background-color: var(--soft-bg); font-family: 'Inter', sans-serif; }
         
-        .navbar { background-color: #ffffff; border-bottom: 2px solid var(--zando-blue); padding: 0.6rem 0; z-index: 2000; }
+        /* Navbar Base */
+        .navbar { background-color: #ffffff; border-bottom: 2px solid var(--zando-blue); padding: 0.5rem 0; z-index: 2000; }
         .text-pro { color: var(--zando-blue) !important; }
         .btn-pro { background: var(--zando-blue); color: white; border-radius: 4px !important; font-weight: 600; border: none; }
         
-        .nav-icon-link { color: #333; text-decoration: none; display: flex; align-items: center; position: relative; padding: 5px; cursor: pointer; }
+        /* --- SIDEBAR (3 LINES MENU) --- */
+        .menu-toggle { background: transparent; border: none; color: #333; font-size: 20px; padding: 10px; cursor: pointer; }
+        .offcanvas { width: 280px !important; border: none; }
+        .side-menu-item { display: flex; align-items: center; padding: 14px 20px; color: #333; text-decoration: none; border-bottom: 1px solid #f9f9f9; font-size: 14px; font-weight: 400; }
+        .side-menu-item i { width: 25px; color: #777; margin-right: 12px; font-size: 16px; }
+        .side-menu-item:hover { background: #f8f9fa; color: var(--zando-blue); }
 
-        /* --- CART BADGE: FIXED POSITION FOR MOBILE --- */
+        /* --- HEADER ICONS & BADGE --- */
+        .nav-icon-link { color: #333; text-decoration: none; display: flex; align-items: center; position: relative; padding: 5px; cursor: pointer; }
         .cart-wrapper { position: relative; display: inline-flex; align-items: center; justify-content: center; }
         .global-cart-count {
-            background-color: #e61601 !important; /* Jumia Red */
+            background-color: #e61601 !important;
             color: white !important;
             font-size: 10px !important;
             font-weight: 800 !important;
-            min-width: 18px;
-            height: 18px;
+            min-width: 18px; height: 18px;
             border-radius: 50% !important;
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
             position: absolute !important;
-            top: -6px !important;
-            right: -6px !important; 
+            top: -8px !important;
+            right: -8px !important; 
             border: 2px solid white;
-            line-height: 1;
+            display: flex !important;
+            align-items: center; justify-content: center;
             z-index: 9999 !important;
         }
 
-        /* --- LAPTOP NAVIGATION LAYOUT --- */
+        /* --- LAYOUTS --- */
         .nav-container { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-        .search-wrapper { flex-grow: 1; margin: 0 40px; max-width: 800px; }
-        .navbar-icons-wrapper { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+        .search-wrapper { flex-grow: 1; margin: 0 30px; max-width: 700px; }
+        .navbar-icons-wrapper { display: flex; align-items: center; gap: 20px; }
 
-        /* --- MOBILE NAVIGATION LAYOUT --- */
         @media (max-width: 991px) {
             .nav-container { flex-wrap: wrap; }
-            .navbar-brand { order: 1; flex: 0 0 auto; }
-            
-            /* Add extra padding on the right so the badge doesn't hit the screen edge */
-            .navbar-icons-wrapper { 
-                order: 2; 
-                margin-left: auto; 
-                gap: 18px; 
-                padding-right: 15px !important; /* Forces the badge inward */
-                overflow: visible !important; 
-            }
-            
-            .search-wrapper { order: 3; width: 100%; margin: 10px 0 0 0; max-width: none; }
+            .navbar-brand { order: 1; margin-right: auto; font-size: 1.3rem !important; }
+            .navbar-icons-wrapper { order: 2; gap: 15px; padding-right: 10px; }
+            .search-wrapper { order: 3; width: 100%; margin: 8px 0 0 0; }
             .nav-icon-link span { display: none !important; }
-            .nav-icon-link i { font-size: 22px !important; }
-            
-            /* Dropdown Fix */
-            .dropdown { position: static !important; }
-            .dropdown-menu { 
-                position: fixed !important; 
-                top: 55px !important; 
-                right: 10px !important; 
-                left: 10px !important; 
-                width: auto !important;
-                max-width: 320px;
-                margin-left: auto;
-                z-index: 99999 !important; 
-                box-shadow: 0 15px 40px rgba(0,0,0,0.3) !important;
-            }
+            .global-cart-count { top: -5px !important; right: -5px !important; }
         }
 
-        /* Horizontal Scrollbar Utility */
+        /* Bubbles/Balls Scroller Styling */
+        .bubbles-row { display: flex; overflow-x: auto; gap: 15px; padding: 15px 5px; margin-bottom: 10px; }
+        .bubble-item { min-width: 80px; text-align: center; text-decoration: none !important; }
+        .bubble-circle { width: 60px; height: 60px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px auto; box-shadow: 0 3px 10px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; overflow: hidden; }
+        .bubble-circle img { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
+        .bubble-text { font-size: 11px; color: #333; font-weight: 400; display: block; line-height: 1.2; }
+
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .recent-card { border: 1px solid #eee !important; border-radius: 4px; background: #fff; }
-        .x-small { font-size: 11px; }
     </style>
 </head>
 <body>
+
+    <!-- 1. SIDEBAR (OFFCANVAS MENU) -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="sideMenu">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="fw-bold mb-0 text-pro">ZANDO</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            {% if user.is_authenticated %}
+                <div class="p-3 bg-light border-bottom">
+                    <p class="small text-muted mb-0">Welcome,</p>
+                    <div class="fw-bold text-truncate">{{ user.username }}</div>
+                </div>
+                <a href="{% url 'products:account_settings' %}" class="side-menu-item"><i class="far fa-user"></i> My Account</a>
+                <a href="{% url 'products:my_orders' %}" class="side-menu-item"><i class="fa-solid fa-box"></i> My Orders</a>
+                <a href="{% url 'products:inbox' %}" class="side-menu-item"><i class="far fa-envelope"></i> Inbox</a>
+                <a href="{% url 'products:pending_reviews' %}" class="side-menu-item"><i class="far fa-star"></i> Pending Reviews</a>
+                <a href="{% url 'products:view_wishlist' %}" class="side-menu-item"><i class="far fa-heart"></i> Wishlist</a>
+                <form method="post" action="{% url 'products:logout' %}" class="m-0">
+                    {% csrf_token %}<button type="submit" class="side-menu-item w-100 border-0 bg-transparent text-danger fw-bold"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'products:login' %}" class="side-menu-item fw-bold text-pro">Login / Register</a>
+            {% endif %}
+
+            <div class="p-3 bg-light small fw-bold text-muted text-uppercase">Categories</div>
+            {% for cat in categories %}
+                <a href="{% url 'products:index' %}?category={{ cat.id }}" class="side-menu-item">{{ cat.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 2. NAVBAR -->
     <nav class="navbar sticky-top shadow-sm">
         <div class="container">
             <div class="nav-container">
-                
-                <!-- 1. LOGO -->
+                <!-- Hamburger Button -->
+                <button class="menu-toggle" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- Logo -->
                 <a class="navbar-brand fw-bold text-pro" href="{% url 'products:index' %}">ZANDO</a>
 
-                <!-- 2. SEARCH BAR -->
+                <!-- Search (Middle on Laptop) -->
                 <div class="search-wrapper">
                     <form action="{% url 'products:index' %}" method="GET" class="position-relative">
-                        <div class="input-group shadow-sm" style="border-radius: 4px; overflow: hidden; border: 1px solid #ced4da;">
+                        <div class="input-group">
                             <input type="text" id="searchInput" name="q" class="form-control border-0 py-2" placeholder="Search products, brands..." value="{{ request.GET.q|default:'' }}" autocomplete="off">
                             <button class="btn btn-pro px-3" type="submit"><i class="fas fa-search"></i></button>
                         </div>
@@ -105,75 +126,39 @@
                     </form>
                 </div>
 
-                <!-- 3. ICONS (Fixed Badge inside icons-wrapper) -->
+                <!-- Icons (Right) -->
                 <div class="navbar-icons-wrapper">
-                    <!-- Account -->
-                    <div class="dropdown">
-                        <a href="#" class="nav-icon-link" data-bs-toggle="dropdown" id="userMenu">
-                            <i class="far fa-user"></i>
-                            <span class="d-none d-lg-inline ms-2 small fw-bold text-pro">Hi, {{ user.username|default:"Guest" }}</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                            {% if user.is_authenticated %}
-                                <li class="px-3 py-3 border-bottom bg-light">
-                                    <strong class="text-pro small text-truncate d-block" style="max-width: 200px;">{{ user.email }}</strong>
-                                </li>
-                                <li><a class="dropdown-item py-2" href="{% url 'products:account_settings' %}"><i class="far fa-user me-2"></i> MY ACCOUNT</a></li>
-                                <li><a class="dropdown-item py-2" href="{% url 'products:my_orders' %}"><i class="fa-solid fa-box-archive me-2"></i> MY ORDERS</a></li>
-                                <li><a class="dropdown-item py-2" href="{% url 'products:inbox' %}"><i class="far fa-envelope me-2"></i> INBOX {% if inbox_unread_count %}<span class="badge bg-danger rounded-pill ms-auto">{{ inbox_unread_count }}</span>{% endif %}</a></li>
-                                <li><a class="dropdown-item py-2" href="{% url 'products:pending_reviews' %}"><i class="far fa-star me-2"></i> PENDING REVIEWS</a></li>
-                                <li><a class="dropdown-item py-2" href="{% url 'products:view_wishlist' %}"><i class="far fa-heart me-2"></i> WISHLIST</a></li>
-                                <li><hr class="dropdown-divider m-0"></li>
-                                <li>
-                                    <form method="post" action="{% url 'products:logout' %}" class="m-0">
-                                        {% csrf_token %}<button type="submit" class="dropdown-item text-danger fw-bold">LOGOUT</button>
-                                    </form>
-                                </li>
-                            {% else %}
-                                <li><a class="dropdown-item py-2 fw-bold text-pro" href="{% url 'products:login' %}">LOGIN</a></li>
-                                <li><a class="dropdown-item" href="{% url 'products:register' %}">SIGN UP</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
-
-                    <!-- Wishlist -->
-                    <a href="{% url 'products:view_wishlist' %}" class="nav-icon-link d-none d-lg-flex">
-                        <i class="far fa-heart"></i>
-                    </a>
-                    
-                    <!-- Cart (Safety wrapper around icon and badge) -->
+                    <a href="{% url 'products:account_settings' %}" class="nav-icon-link d-none d-lg-flex"><i class="far fa-user fs-5"></i></a>
                     <a href="{% url 'products:view_cart' %}" class="nav-icon-link">
                         <div class="cart-wrapper">
-                            <i class="fas fa-shopping-cart"></i>
+                            <i class="fas fa-shopping-cart fs-5"></i>
                             <span class="global-cart-count">{{ global_cart_count|default:"0" }}</span>
                         </div>
                     </a>
                 </div>
-
             </div>
         </div>
     </nav>
 
+    <!-- 3. MAIN CONTENT -->
     <div class="container mt-3" style="min-height: 70vh;">
         {% if messages %}{% for m in messages %}<div class="alert alert-{{ m.tags }} alert-dismissible fade show border-0 shadow-sm small">{{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}
         {% block content %}{% endblock %}
     </div>
 
-    <!-- Recently Viewed (Swipeable Horizontal Scroller) -->
+    <!-- 4. RECENTLY VIEWED (Horizontal) -->
     {% if global_recently_viewed %}
     <div class="container mt-5 pt-4 border-top">
-        <h6 class="fw-bold mb-3 text-muted x-small text-uppercase">Recently Viewed Items</h6>
-        <div class="d-flex overflow-auto hide-scrollbar pb-3" style="gap: 10px;">
+        <h6 class="fw-bold mb-3 text-muted x-small text-uppercase">Recently Viewed</h6>
+        <div class="d-flex overflow-auto hide-scrollbar pb-3" style="gap: 12px;">
             {% for p in global_recently_viewed|slice:":10" %}
-            <div class="flex-shrink-0" style="width: 130px;">
+            <div class="flex-shrink-0" style="width: 120px;">
                 <a href="{% url 'products:product_detail' p.id %}" class="text-decoration-none">
-                    <div class="card h-100 recent-card p-2 text-center shadow-sm border-0">
-                        <div style="height: 80px;" class="d-flex align-items-center justify-content-center">
-                            {% if p.image %}<img src="{{ p.image.url }}" class="img-fluid" style="max-height: 100%; object-fit: contain;">{% endif %}
-                        </div>
+                    <div class="card h-100 recent-card p-1 text-center shadow-sm border-0">
+                        <img src="{{ p.image.url }}" style="height: 70px; object-fit: contain; width: 100%;">
                         <div class="card-body p-1">
                             <div class="text-truncate x-small text-dark" style="font-size: 11px;">{{ p.name }}</div>
-                            <div class="fw-bold text-pro" style="font-size: 12px;">KSh {{ p.get_current_price|floatformat:0|intcomma }}</div>
+                            <div class="fw-bold text-pro" style="font-size: 11px;">KSh {{ p.get_current_price|floatformat:0|intcomma }}</div>
                         </div>
                     </div>
                 </a>
