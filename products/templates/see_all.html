@@ -4,48 +4,64 @@
 
 {% block head_extra %}
 <style>
-    /* --- BRAND COLORS (ZANDO BLUE) --- */
+    /* --- BRAND COLORS --- */
     :root { 
         --zando-blue: #006bff; 
         --zando-dark-blue: #004b91;
     }
     .btn-primary, .bg-primary { background-color: var(--zando-blue) !important; border-color: var(--zando-blue) !important; }
     .text-primary { color: var(--zando-blue) !important; }
-    .text-orange { color: #f68b1e !important; }
-    .text-success { color: #28a745 !important; }
 
-    /* --- TRUNCATION FIX (Exactly 2 lines) --- */
+    /* --- JUMIA STYLE PROMO TAG (Optional Badge) --- */
+    .promo-tag-badge {
+        background-color: #fef3d1 !important;
+        color: #f68b1e !important;
+        padding: 2px 6px !important;
+        font-size: 9px !important;
+        font-weight: 400 !important; /* NOT bold */
+        border-radius: 3px !important;
+        display: inline-flex !important;
+        align-items: center;
+        margin-top: 4px;
+        margin-bottom: 2px;
+    }
+    .promo-tag-badge i { margin-right: 4px; font-size: 8px; }
+
+    /* --- GRID STYLING --- */
     .product-name-clamp {
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 2; /* 2 LINES FOR CONSISTENCY */
         -webkit-box-orient: vertical;
         overflow: hidden;
-        height: 2.8em; 
-        line-height: 1.4em;
-        font-size: 0.85rem;
+        height: 2.5em; 
+        line-height: 1.25;
+        font-size: 0.8rem;
+        font-weight: 400 !important; /* NOT bold */
         margin-bottom: 4px;
         color: #333;
         text-decoration: none;
     }
 
-    /* --- LAPTOP STYLES --- */
-    .product-card { transition: transform 0.2s; border: 1px solid #eee !important; height: 100%; }
-    .product-card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important; }
-    .x-small { font-size: 0.7rem; }
+    .product-card { transition: transform 0.2s; border: 1px solid #f0f0f0 !important; height: 100%; background: #fff; }
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important; }
+    
+    .price-text { font-size: 14px; font-weight: 400 !important; color: #000; }
+    .stock-label { font-size: 9px; font-weight: 400 !important; display: block; margin-bottom: 4px; }
 
-    /* --- MOBILE OVERRIDES (JUMIA STYLE) --- */
+    /* --- MOBILE OVERRIDES (RESCUE VIEW) --- */
     @media (max-width: 768px) {
-        .container { padding-top: 10px !important; }
-        .product-name-clamp { font-size: 12px !important; height: 32px; }
-        .price-text { font-size: 14px !important; }
+        .container { padding-top: 10px !important; overflow-x: hidden !important; width: 100vw !important; }
         
-        /* 2-Column Grid on Phone */
+        /* Ensure 2 columns with no gaps hidden */
         .row-cols-2 > .col { padding: 4px !important; }
-        .product-card img { height: 110px !important; }
+        .product-card img { height: 110px !important; object-fit: contain; }
         .product-card .card-body { padding: 8px !important; }
-        
-        .btn-cart-sm { font-size: 10px !important; padding: 8px 2px !important; }
-        .qty-btn-sm { width: 28px !important; height: 28px !important; }
+
+        /* Force long titles/reviews to never break the screen width */
+        .product-name-clamp, .text-muted { 
+            word-wrap: break-word !important; 
+            overflow-wrap: break-word !important; 
+        }
         
         .title-header { font-size: 14px !important; }
     }
@@ -59,50 +75,61 @@
         <a href="javascript:history.back()" class="btn btn-light btn-sm border me-3 shadow-sm">
             <i class="fas fa-arrow-left"></i>
         </a>
-        <h5 class="fw-bold mb-0 text-uppercase title-header" style="color: var(--zando-dark-blue);">{{ title }}</h5>
+        <h5 class="fw-bold mb-0 text-uppercase title-header" style="color: var(--zando-dark-blue); font-weight: 700 !important;">{{ title }}</h5>
     </div>
 
-    <!-- Product Grid: 2 columns on mobile, 3-5 on laptop -->
+    <!-- Product Grid: 2 columns on mobile -->
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2">
         {% for product in products %}
         <div class="col">
             <div class="card h-100 border-0 shadow-sm p-2 product-card">
                 <!-- Image Area -->
                 <a href="{% url 'products:product_detail' product.id %}" class="text-center text-decoration-none">
-                    <div style="height: 140px;" class="d-flex align-items-center justify-content-center mb-1">
-                        <img src="{{ product.image.url }}" class="img-fluid" style="max-height: 100%; object-fit: contain;">
+                    <div style="height: 130px; position: relative;" class="d-flex align-items-center justify-content-center mb-1">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="img-fluid" style="max-height: 100%; object-fit: contain;">
+                        {% endif %}
                     </div>
                 </a>
 
                 <div class="card-body p-0 d-flex flex-column">
-                    <!-- Product Name (2 Lines) -->
+                    <!-- Product Name -->
                     <a href="{% url 'products:product_detail' product.id %}" class="product-name-clamp">
                         {{ product.name }}
                     </a>
                     
-                    <!-- Rating Stars -->
-                    <div class="mb-1 text-warning" style="font-size: 10px;">
+                    <!-- Rating Stars & Count (Verified Visible) -->
+                    <div class="mb-1 text-warning" style="font-size: 9px; white-space: nowrap;">
                         {% for i in "12345" %}
                             <i class="fa{% if product.average_rating >= forloop.counter %}s{% else %}r{% endif %} fa-star"></i>
                         {% endfor %}
-                        <span class="text-muted">({{ product.review_count }})</span>
+                        <span class="text-muted" style="font-weight: 400;">({{ product.review_count }})</span>
                     </div>
 
                     <!-- Price -->
-                    <p class="fw-bold mb-0 text-dark price-text">KSh {{ product.get_current_price|intcomma }}</p>
+                    <p class="mb-0 price-text">KSh {{ product.get_current_price|intcomma }}</p>
                     
                     {% if product.get_discount_percentage > 0 %}
-                        <div class="text-muted x-small text-decoration-line-through mb-1">KSh {{ product.price|intcomma }}</div>
+                        <div class="text-muted text-decoration-line-through mb-1" style="font-size: 10px;">KSh {{ product.price|intcomma }}</div>
                     {% endif %}
 
-                    <!-- STOCK STATUS LOGIC -->
+                    <!-- CUSTOM OPTIONAL BADGE (Picked from Promotion Strips) -->
+                    {% for strip in product.promotion_strips.all %}
+                        {% if strip.is_active and strip.badge_text %}
+                            <div class="promo-tag-badge">
+                                <i class="fas fa-tag"></i> {{ strip.badge_text }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- STOCK LOGIC -->
                     <div class="mt-1 mb-2">
                         {% if product.stock < 10 %}
-                            <div class="fw-bold text-danger" style="font-size: 10px;">{{ product.stock }} units left</div>
+                            <span class="stock-label text-danger">{{ product.stock }} units left</span>
                         {% elif product.stock < 30 %}
-                            <div class="fw-bold text-orange" style="font-size: 10px;">Few units left</div>
+                            <span class="stock-label text-warning" style="color: #f68b1e !important;">Few units left</span>
                         {% else %}
-                            <div class="fw-bold text-success" style="font-size: 10px;">In stock</div>
+                            <span class="stock-label text-success">In stock</span>
                         {% endif %}
                     </div>
                     
@@ -112,12 +139,12 @@
                             {% with qty=cart_quantities|get_item:product.id %}
                                 {% if qty %}
                                     <div class="d-flex align-items-center justify-content-between border rounded bg-light">
-                                        <button type="button" class="btn btn-sm btn-primary qty-btn-sm js-cart-dec" data-product-id="{{ product.id }}" style="width:30px;">-</button>
-                                        <span class="fw-bold small">{{ qty }}</span>
-                                        <button type="button" class="btn btn-sm btn-primary qty-btn-sm js-cart-inc" data-product-id="{{ product.id }}" style="width:30px;">+</button>
+                                        <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="{{ product.id }}" style="width:25px; padding:2px 0;">-</button>
+                                        <span style="font-size: 11px; font-weight: 400;">{{ qty }}</span>
+                                        <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="{{ product.id }}" style="width:25px; padding:2px 0;">+</button>
                                     </div>
                                 {% else %}
-                                    <button type="button" class="btn btn-primary btn-sm w-100 fw-bold btn-cart-sm js-cart-inc" data-product-id="{{ product.id }}">ADD TO CART</button>
+                                    <button type="button" class="btn btn-primary btn-sm w-100 js-cart-inc" data-product-id="{{ product.id }}" style="padding: 6px 0; font-size: 10px; font-weight: 400;">ADD TO CART</button>
                                 {% endif %}
                             {% endwith %}
                         </div>
@@ -136,12 +163,12 @@
 </div>
 
 <script>
-    // AJAX Cart Functionality (Consistent with Home)
+    // AJAX Cart Functionality (Fixed with getCookie)
     async function adjustCart(productId, action) {
         try {
             const response = await fetch(`/products/api/cart/${productId}/${action}/`, {
                 method: 'POST',
-                headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
+                headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' }
             });
             const data = await response.json();
 
@@ -151,12 +178,12 @@
                 if (data.quantity > 0) {
                     container.innerHTML = `
                         <div class="d-flex align-items-center justify-content-between border rounded bg-light">
-                            <button type="button" class="btn btn-sm btn-primary qty-btn-sm js-cart-dec" data-product-id="${productId}" style="width:30px;">-</button>
-                            <span class="fw-bold small">${data.quantity}</span>
-                            <button type="button" class="btn btn-sm btn-primary qty-btn-sm js-cart-inc" data-product-id="${productId}" style="width:30px;">+</button>
+                            <button type="button" class="btn btn-sm btn-primary js-cart-dec" data-product-id="${productId}" style="width:25px; padding:2px 0;">-</button>
+                            <span style="font-size: 11px; font-weight: 400;">${data.quantity}</span>
+                            <button type="button" class="btn btn-sm btn-primary js-cart-inc" data-product-id="${productId}" style="width:25px; padding:2px 0;">+</button>
                         </div>`;
                 } else {
-                    container.innerHTML = `<button type="button" class="btn btn-primary btn-sm w-100 fw-bold btn-cart-sm js-cart-inc" data-product-id="${productId}">ADD TO CART</button>`;
+                    container.innerHTML = `<button type="button" class="btn btn-primary btn-sm w-100 js-cart-inc" data-product-id="${productId}" style="padding: 6px 0; font-size: 10px; font-weight: 400;">ADD TO CART</button>`;
                 }
             }
         } catch (error) { console.error("Error:", error); }
