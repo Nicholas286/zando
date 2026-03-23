@@ -13,38 +13,48 @@
         
         html, body { overflow-x: hidden !important; width: 100% !important; background-color: var(--soft-bg); font-family: 'Inter', sans-serif; }
         
-        /* Navbar Base */
+        /* Navbar */
         .navbar { background-color: #ffffff; border-bottom: 2px solid var(--zando-blue); padding: 0.5rem 0; z-index: 2000; }
         .text-pro { color: var(--zando-blue) !important; }
         .btn-pro { background: var(--zando-blue); color: white; border-radius: 4px !important; font-weight: 600; border: none; }
+
+        /* --- SEARCH SUGGESTIONS BOX (CRITICAL FIX) --- */
+        #suggestionsBox {
+            z-index: 9999 !important; /* Ensure it stays above bubbles/content */
+            background: white !important;
+            border: 1px solid #ced4da;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
         
-        /* --- SIDEBAR (3 LINES MENU) --- */
+        /* --- PAGE LOADER OVERLAY --- */
+        #page-loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.9); z-index: 999999; display: flex; align-items: center; justify-content: center;
+        }
+        .loader-box { text-align: center; }
+        .loader-logo { font-size: 45px; color: var(--zando-blue); animation: zando-pulse 1.2s infinite ease-in-out; margin-bottom: 10px; }
+        .loader-text { font-size: 13px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+        @keyframes zando-pulse { 0% { transform: scale(0.9); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.6; } }
+
+        /* Sidebar & Icons */
         .menu-toggle { background: transparent; border: none; color: #333; font-size: 20px; padding: 10px; cursor: pointer; }
         .offcanvas { width: 280px !important; border: none; }
-        .side-menu-item { display: flex; align-items: center; padding: 14px 20px; color: #333; text-decoration: none; border-bottom: 1px solid #f9f9f9; font-size: 14px; font-weight: 400; }
+        .side-menu-item { display: flex; align-items: center; padding: 14px 20px; color: #333; text-decoration: none; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
         .side-menu-item i { width: 25px; color: #777; margin-right: 12px; font-size: 16px; }
         .side-menu-item:hover { background: #f8f9fa; color: var(--zando-blue); }
 
-        /* --- HEADER ICONS & BADGE --- */
         .nav-icon-link { color: #333; text-decoration: none; display: flex; align-items: center; position: relative; padding: 5px; cursor: pointer; }
         .cart-wrapper { position: relative; display: inline-flex; align-items: center; justify-content: center; }
         .global-cart-count {
-            background-color: #e61601 !important;
-            color: white !important;
-            font-size: 10px !important;
-            font-weight: 800 !important;
-            min-width: 18px; height: 18px;
-            border-radius: 50% !important;
-            position: absolute !important;
-            top: -8px !important;
-            right: -8px !important; 
-            border: 2px solid white;
-            display: flex !important;
-            align-items: center; justify-content: center;
-            z-index: 9999 !important;
+            background-color: #e61601 !important; color: white !important; font-size: 10px !important; font-weight: 800 !important;
+            min-width: 18px; height: 18px; border-radius: 50% !important; position: absolute !important;
+            top: -8px !important; right: -8px !important; border: 2px solid white; display: flex !important;
+            align-items: center; justify-content: center; z-index: 9999 !important;
         }
 
-        /* --- LAYOUTS --- */
         .nav-container { display: flex; align-items: center; justify-content: space-between; width: 100%; }
         .search-wrapper { flex-grow: 1; margin: 0 30px; max-width: 700px; }
         .navbar-icons-wrapper { display: flex; align-items: center; gap: 20px; }
@@ -52,27 +62,27 @@
         @media (max-width: 991px) {
             .nav-container { flex-wrap: wrap; }
             .navbar-brand { order: 1; margin-right: auto; font-size: 1.3rem !important; }
-            .navbar-icons-wrapper { order: 2; gap: 15px; padding-right: 10px; }
+            .navbar-icons-wrapper { order: 2; gap: 15px; padding-right: 15px !important; } /* Safe padding for cart badge */
             .search-wrapper { order: 3; width: 100%; margin: 8px 0 0 0; }
             .nav-icon-link span { display: none !important; }
             .global-cart-count { top: -5px !important; right: -5px !important; }
         }
 
-        /* Bubbles/Balls Scroller Styling */
-        .bubbles-row { display: flex; overflow-x: auto; gap: 15px; padding: 15px 5px; margin-bottom: 10px; }
-        .bubble-item { min-width: 80px; text-align: center; text-decoration: none !important; }
-        .bubble-circle { width: 60px; height: 60px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px auto; box-shadow: 0 3px 10px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; overflow: hidden; }
-        .bubble-circle img { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
-        .bubble-text { font-size: 11px; color: #333; font-weight: 400; display: block; line-height: 1.2; }
-
+        .recent-card { border: 1px solid #eee !important; border-radius: 4px; background: #fff; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .recent-card { border: 1px solid #eee !important; border-radius: 4px; background: #fff; }
     </style>
 </head>
 <body>
 
-    <!-- 1. SIDEBAR (OFFCANVAS MENU) -->
+    <div id="page-loader">
+        <div class="loader-box">
+            <div class="loader-logo"><i class="fas fa-shopping-bag"></i></div>
+            <div class="loader-text">ZANDO</div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="sideMenu">
         <div class="offcanvas-header border-bottom">
             <h5 class="fw-bold mb-0 text-pro">ZANDO</h5>
@@ -103,30 +113,24 @@
         </div>
     </div>
 
-    <!-- 2. NAVBAR -->
+    <!-- NAVBAR -->
     <nav class="navbar sticky-top shadow-sm">
         <div class="container">
             <div class="nav-container">
-                <!-- Hamburger Button -->
-                <button class="menu-toggle" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">
-                    <i class="fas fa-bars"></i>
-                </button>
-
-                <!-- Logo -->
+                <button class="menu-toggle" data-bs-toggle="offcanvas" data-bs-target="#sideMenu"><i class="fas fa-bars"></i></button>
                 <a class="navbar-brand fw-bold text-pro" href="{% url 'products:index' %}">ZANDO</a>
 
-                <!-- Search (Middle on Laptop) -->
                 <div class="search-wrapper">
-                    <form action="{% url 'products:index' %}" method="GET" class="position-relative">
+                    <form action="{% url 'products:index' %}" method="GET" class="position-relative" id="searchForm">
                         <div class="input-group">
                             <input type="text" id="searchInput" name="q" class="form-control border-0 py-2" placeholder="Search products, brands..." value="{{ request.GET.q|default:'' }}" autocomplete="off">
                             <button class="btn btn-pro px-3" type="submit"><i class="fas fa-search"></i></button>
                         </div>
-                        <div id="suggestionsBox" class="list-group position-absolute w-100 d-none shadow" style="top: 100%; z-index: 3000; background: white;"></div>
+                        <!-- Suggestions Container -->
+                        <div id="suggestionsBox" class="list-group position-absolute w-100 d-none shadow"></div>
                     </form>
                 </div>
 
-                <!-- Icons (Right) -->
                 <div class="navbar-icons-wrapper">
                     <a href="{% url 'products:account_settings' %}" class="nav-icon-link d-none d-lg-flex"><i class="far fa-user fs-5"></i></a>
                     <a href="{% url 'products:view_cart' %}" class="nav-icon-link">
@@ -140,13 +144,13 @@
         </div>
     </nav>
 
-    <!-- 3. MAIN CONTENT -->
+    <!-- MAIN CONTENT -->
     <div class="container mt-3" style="min-height: 70vh;">
         {% if messages %}{% for m in messages %}<div class="alert alert-{{ m.tags }} alert-dismissible fade show border-0 shadow-sm small">{{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}
         {% block content %}{% endblock %}
     </div>
 
-    <!-- 4. RECENTLY VIEWED (Horizontal) -->
+    <!-- Recently Viewed Section -->
     {% if global_recently_viewed %}
     <div class="container mt-5 pt-4 border-top">
         <h6 class="fw-bold mb-3 text-muted x-small text-uppercase">Recently Viewed</h6>
@@ -172,6 +176,57 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // 1. GLOBAL VARIABLES
+        const zandoLoader = document.getElementById('page-loader');
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsBox = document.getElementById('suggestionsBox');
+
+        // 2. LOADER LOGIC
+        window.addEventListener('load', () => { if(zandoLoader) zandoLoader.style.display = 'none'; });
+        document.addEventListener('submit', () => { if(zandoLoader) zandoLoader.style.display = 'flex'; });
+        
+        // Loader on internal links
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (link && link.href && !link.href.includes('#') && !link.getAttribute('data-bs-toggle') && link.target !== '_blank') {
+                zandoLoader.style.display = 'flex';
+            }
+        });
+
+        // 3. SEARCH SUGGESTIONS LOGIC
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                if (query.length > 1) {
+                    fetch("{% url 'products:search_suggestions' %}?q=" + query)
+                        .then(res => res.json())
+                        .then(data => {
+                            suggestionsBox.innerHTML = '';
+                            if (data && data.length > 0) {
+                                suggestionsBox.classList.remove('d-none');
+                                data.forEach(item => {
+                                    const div = document.createElement('div');
+                                    div.className = 'list-group-item list-group-item-action border-0 py-2 pointer small';
+                                    div.innerHTML = `<i class="fas fa-search text-muted me-2"></i>${item.name}`;
+                                    div.onclick = () => { 
+                                        searchInput.value = item.name; 
+                                        if(zandoLoader) zandoLoader.style.display = 'flex';
+                                        searchInput.closest('form').submit(); 
+                                    };
+                                    suggestionsBox.appendChild(div);
+                                });
+                            } else { suggestionsBox.classList.add('d-none'); }
+                        });
+                } else { suggestionsBox.classList.add('d-none'); }
+            });
+        }
+        
+        // Close suggestions box on outside click
+        document.addEventListener('click', e => { 
+            if (searchInput && !searchInput.contains(e.target)) suggestionsBox.classList.add('d-none'); 
+        });
+
+        // CSRF Utility
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -186,30 +241,6 @@
             }
             return cookieValue;
         }
-
-        const searchInput = document.getElementById('searchInput');
-        const suggestionsBox = document.getElementById('suggestionsBox');
-        if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                const query = this.value.trim();
-                if (query.length > 1) {
-                    fetch("{% url 'products:search_suggestions' %}?q=" + query).then(res => res.json()).then(data => {
-                        suggestionsBox.innerHTML = '';
-                        if (data && data.length > 0) {
-                            suggestionsBox.classList.remove('d-none');
-                            data.forEach(item => {
-                                const div = document.createElement('div');
-                                div.className = 'list-group-item list-group-item-action border-0 py-2 pointer small';
-                                div.innerHTML = `<i class="fas fa-search text-muted me-2"></i>${item.name}`;
-                                div.onclick = () => { searchInput.value = item.name; searchInput.closest('form').submit(); };
-                                suggestionsBox.appendChild(div);
-                            });
-                        } else { suggestionsBox.classList.add('d-none'); }
-                    });
-                } else { suggestionsBox.classList.add('d-none'); }
-            });
-        }
-        document.addEventListener('click', e => { if (searchInput && !searchInput.contains(e.target)) suggestionsBox.classList.add('d-none'); });
     </script>
 </body>
 </html>
